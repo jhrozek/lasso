@@ -983,16 +983,32 @@
 /**
  * LASSO_XSI_HREF:
  *
- * Namespace for FIXME
+ * Namespace for XMLSchema instance
  *
  */
 #define LASSO_XSI_HREF "http://www.w3.org/2001/XMLSchema-instance"
 /**
  * LASSO_XSI_PREFIX:
  *
- * Preferred prefix for namespace of FIXME
+ * Preferred prefix for namespace of XMLSChema instance
  *
  */
 #define LASSO_XSI_PREFIX "xsi"
+
+
+/**
+ * LASSO_XML_HREF:
+ *
+ * Namespace for XML namespace
+ */
+#define LASSO_XML_HREF "http://www.w3.org/XML/1998/namespace"
+
+/**
+ * LASSO_XML_PREFIX:
+ *
+ * Preferred prefix for XML namespace
+ */
+#define LASSO_XML_PREFIX "xml"
+
 
 #endif /* __LASSO_STRINGS_H__ */
