@@ -1636,8 +1636,11 @@ lasso_node_impl_init_from_xml(LassoNode *node, xmlNode *xmlnode)
 			g_hash_table_insert(*any_attribute, key, g_strdup((char*)content));
 			lasso_release_xml_string(content);
 		} else if (! ok) {
-			warning("lasso_node_impl_init_from_xml: Unexpected attribute: {%s}%s = %s",
-					attr->ns ? attr->ns->href : NULL, attr->name, content);
+			if (! attr->ns || (lasso_strisnotequal((char*)attr->ns->href, LASSO_XSI_HREF) &&
+					   lasso_strisnotequal((char*)attr->ns->href, LASSO_XML_HREF))) {
+				warning("lasso_node_impl_init_from_xml: Unexpected attribute: {%s}%s = %s",
+						attr->ns ? attr->ns->href : NULL, attr->name, content);
+			}
 		}
 		lasso_release_xml_string(content);
 	}
