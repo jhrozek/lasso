@@ -301,6 +301,28 @@ class BindingTestCase(unittest.TestCase):
         server = lasso.Server.newFromDump(server_dump)
         assert isinstance(server, lasso.Server)
 
+    def test12(self):
+        node = lasso.Samlp2Extensions()
+        assert not node.any
+        content = '''<samlp:Extensions
+                        xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+                        xmlns:eo="https://www.entrouvert.com/" eo:huhu="xxx">
+                      <eo:next_url>%s</eo:next_url>
+                   </samlp:Extensions>'''
+        node = lasso.Node.newFromXmlNode(content)
+        assert 'next_url' in node.any[1]
+        assert 'huhu' in node.attributes.keys()[0]
+        assert node.attributes.values()[0] == 'xxx'
+        node.any = ('<zob>coin</zob>',)
+        node.attributes = {'michou': 'zozo'}
+        assert '<zob>coin</zob>' in node.dump()
+        assert 'michou="zozo"' in node.dump()
+        node = lasso.Node.newFromDump(node.dump())
+        assert node.any == ('<zob>coin</zob>',)
+        # on reparse non namespaces attributes are ignore, they should not exist
+        assert node.attributes == {}
+
+
 bindingSuite = unittest.makeSuite(BindingTestCase, 'test')
 
 allTests = unittest.TestSuite((bindingSuite, ))

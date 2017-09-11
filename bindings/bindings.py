@@ -374,7 +374,7 @@ class DocString:
                 raise Exception('should not happen: could not found type for default: ' + annotation)
             arg[2]['default'] = prefix + m.group(1)
             arg[2]['optional'] = True
-        m = re.search(r'\(\s*element-type\s+(\w+)(?:\s+(\w+))?', annotation)
+        m = re.search(r'\(\s*element-type\s+([\w*]+)(?:\s+([\w*]+))?', annotation)
         if m:
             if len(m.groups()) > 2:
                 arg[2]['key-type'] = \

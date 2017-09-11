@@ -198,6 +198,10 @@
   <func name="lasso_log_set_handler" skip="true"/>
   <func name="lasso_log_remove_handler" skip="true"/>
   <func name="lasso_key_new_for_signature_from_memory" skip="true"/>
+  <func name="lasso_samlp2_extensions_get_any" skip="php5,perl,java"/>
+  <func name="lasso_samlp2_extensions_set_any" skip="php5,perl,java"/>
+  <func name="lasso_samlp2_extensions_get_attributes" skip="php5,perl,java"/>
+  <func name="lasso_samlp2_extensions_set_attributes" skip="php5,perl,java"/>
   <!-- Xml -->
   <func name="lasso_node_export_to_soap_with_headers">
     <param name="node"/>

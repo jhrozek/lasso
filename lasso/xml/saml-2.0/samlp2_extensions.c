@@ -45,32 +45,34 @@
  *
  */
 
+typedef struct _LassoSamlp2ExtensionsPrivate LassoSamlp2ExtensionsPrivate;
+
+struct _LassoSamlp2ExtensionsPrivate {
+	GList *any;
+	GHashTable *attributes;
+};
+
 /*****************************************************************************/
 /* private methods                                                           */
 /*****************************************************************************/
 
 
 static struct XmlSnippet schema_snippets[] = {
+	{"", SNIPPET_LIST_XMLNODES | SNIPPET_ANY | SNIPPET_PRIVATE,
+		G_STRUCT_OFFSET(LassoSamlp2ExtensionsPrivate, any), NULL, NULL, NULL},
+	{"", SNIPPET_ATTRIBUTE | SNIPPET_ANY | SNIPPET_PRIVATE,
+		G_STRUCT_OFFSET(LassoSamlp2ExtensionsPrivate, attributes), NULL, NULL, NULL},
 	{NULL, 0, 0, NULL, NULL, NULL}
 };
 
 static LassoNodeClass *parent_class = NULL;
 
+#define GET_PRIVATE(x) G_TYPE_INSTANCE_GET_PRIVATE(x, \
+		LASSO_TYPE_SAMLP2_EXTENSIONS, LassoSamlp2ExtensionsPrivate)
+
 /*****************************************************************************/
 /* instance and class init functions                                         */
 /*****************************************************************************/
-
-static xmlNode*
-get_xmlNode(LassoNode *node, gboolean lasso_dump)
-{
-	LassoNodeClass *parent_class = NULL;
-	xmlNode *cur;
-
-	parent_class = g_type_class_peek_parent(LASSO_NODE_GET_CLASS(node));
-	cur = parent_class->get_xmlNode(node, lasso_dump);
-
-	return lasso_node_get_xmlnode_for_any_type(node, cur);
-}
 
 static void
 class_init(LassoSamlp2ExtensionsClass *klass)
@@ -80,10 +82,10 @@ class_init(LassoSamlp2ExtensionsClass *klass)
 	parent_class = g_type_class_peek_parent(klass);
 	nclass->node_data = g_new0(LassoNodeClassData, 1);
 	nclass->node_data->keep_xmlnode = TRUE;
-	nclass->get_xmlNode = get_xmlNode;
 	lasso_node_class_set_nodename(nclass, "Extensions");
 	lasso_node_class_set_ns(nclass, LASSO_SAML2_PROTOCOL_HREF, LASSO_SAML2_PROTOCOL_PREFIX);
 	lasso_node_class_add_snippets(nclass, schema_snippets);
+	g_type_class_add_private(G_OBJECT_CLASS(klass), sizeof(LassoSamlp2ExtensionsPrivate));
 }
 
 GType
@@ -122,4 +124,71 @@ LassoNode*
 lasso_samlp2_extensions_new()
 {
 	return g_object_new(LASSO_TYPE_SAMLP2_EXTENSIONS, NULL);
+}
+
+/**
+ * lasso_samlp2_extensions_get_any:
+ *
+ * Return the list of contained XML nodes.
+ *
+ * Return value:(element-type xmlNode)(transfer none): a #GList of xmlNode.
+ */
+GList*
+lasso_samlp2_extensions_get_any(LassoSamlp2Extensions *extensions)
+{
+	LassoSamlp2ExtensionsPrivate *pv = NULL;
+
+	pv = GET_PRIVATE(extensions);
+
+	return pv->any;
+}
+
+/**
+ * lasso_samlp2_extensions_set_any:
+ * @any:(allow-none)(element-type xmlNode)(transfer none): a list of xmlNode.
+ *
+ * Set the list of contained XML nodes.
+ *
+ */
+void
+lasso_samlp2_extensions_set_any(LassoSamlp2Extensions *extensions, GList *any)
+{
+	LassoSamlp2ExtensionsPrivate *pv = NULL;
+
+	pv = GET_PRIVATE(extensions);
+
+	lasso_assign_list_of_xml_node(pv->any, any);
+}
+
+/**
+ * lasso_samlp2_extensions_get_attributes:
+ *
+ * Return the list of contained XML nodes.
+ *
+ * Return value:(element-type xmlNode)(transfer none): a #GList of xmlNode.
+ */
+GHashTable*
+lasso_samlp2_extensions_get_attributes(LassoSamlp2Extensions *extensions)
+{
+	LassoSamlp2ExtensionsPrivate *pv = NULL;
+
+	pv = GET_PRIVATE(extensions);
+
+	return pv->attributes;
+}
+
+/**
+ * lasso_samlp2_extensions_set_attributes:
+ * @attributes:(element-type char* char*): table of attributes.
+ *
+ * Set the table of XML attributes.
+ */
+void
+lasso_samlp2_extensions_set_attributes(LassoSamlp2Extensions *extensions, GHashTable *attributes)
+{
+	LassoSamlp2ExtensionsPrivate *pv = NULL;
+
+	pv = GET_PRIVATE(extensions);
+
+	lasso_assign_table_of_attributes(pv->attributes, attributes);
 }

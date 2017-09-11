@@ -148,18 +148,20 @@ get_dict_from_hashtable_of_strings(GHashTable *value)
 
 	dict = PyDict_New();
 
-	begin = keys = g_hash_table_get_keys(value);
-	for (; keys; keys = g_list_next(keys)) {
-		item_value = g_hash_table_lookup(value, keys->data);
-		if (item_value) {
-			item = PyString_FromString(item_value);
-			PyDict_SetItemString(dict, (char*)keys->data, item);
-			Py_DECREF(item);
-		} else {
-			PyErr_Warn(PyExc_RuntimeWarning, "hashtable contains a null value");
+	if (value) {
+		begin = keys = g_hash_table_get_keys(value);
+		for (; keys; keys = g_list_next(keys)) {
+			item_value = g_hash_table_lookup(value, keys->data);
+			if (item_value) {
+				item = PyString_FromString(item_value);
+				PyDict_SetItemString(dict, (char*)keys->data, item);
+				Py_DECREF(item);
+			} else {
+				PyErr_Warn(PyExc_RuntimeWarning, "hashtable contains a null value");
+			}
 		}
+		g_list_free(begin);
 	}
-	g_list_free(begin);
 
 	proxy = PyDictProxy_New(dict);
 	Py_DECREF(dict);
@@ -303,7 +305,7 @@ set_hashtable_of_strings(GHashTable *a_hash, PyObject *dict)
 	while (PyDict_Next(dict, &i, &key, &value)) {
 		char *ckey = PyString_AsString(key);
 		char *cvalue = PyString_AsString(value);
-		g_hash_table_insert (a_hash, ckey, cvalue);
+		g_hash_table_insert (a_hash, g_strdup(ckey), g_strdup(cvalue));
 	}
 failure:
 	return;

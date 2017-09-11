@@ -62,7 +62,10 @@ struct _LassoSamlp2ExtensionsClass {
 
 LASSO_EXPORT GType lasso_samlp2_extensions_get_type(void);
 LASSO_EXPORT LassoNode* lasso_samlp2_extensions_new(void);
-
+LASSO_EXPORT GList* lasso_samlp2_extensions_get_any(LassoSamlp2Extensions *extensions);
+LASSO_EXPORT void lasso_samlp2_extensions_set_any(LassoSamlp2Extensions *extensions, GList *any);
+LASSO_EXPORT GHashTable* lasso_samlp2_extensions_get_attributes(LassoSamlp2Extensions *extensions);
+LASSO_EXPORT void lasso_samlp2_extensions_set_attributes(LassoSamlp2Extensions *extensions, GHashTable *attributes);
 
 
 #ifdef __cplusplus

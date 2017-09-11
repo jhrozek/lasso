@@ -87,7 +87,13 @@ class Binding:
             else:
                 raise Exception('Unsupported caller owned return type %s' % ((repr(type), name),))
         elif is_hashtable(type):
-            raise Exception('Unsupported caller owned return type %s' % ((repr(type), name),))
+            el_type = element_type(type)
+            k_type = key_type(type)
+            v_type = value_type(type)
+            if is_cstring(el_type) or (is_cstring(k_type) and is_cstring(v_type)):
+                print_('    g_hash_table_destroy(%s);' % name, file=fd)
+            else:
+                raise Exception('Unsupported free value of type GHashTable: %s' % type)
         elif is_object(type):
             print_('    if (return_value) g_object_unref(%s);' % name, file=fd)
         else:
@@ -528,7 +534,9 @@ if WSF_SUPPORT:
                 print_('        rc = _lasso.%s(self._cptr%s)' % (
                         function_name, c_args), file=fd)
                 print_('        Error.raise_on_rc(rc)', file=fd)
-            elif is_int(m.return_arg, self.binding_data) or is_xml_node(m.return_arg) or is_cstring(m.return_arg) or is_boolean(m.return_arg):
+            elif (is_int(m.return_arg, self.binding_data) or is_xml_node(m.return_arg) or
+                    is_cstring(m.return_arg) or is_boolean(m.return_arg) or
+                    is_hashtable(m.return_arg)):
                 print_('        return _lasso.%s(self._cptr%s)' % (
                         function_name, c_args), file=fd)
             elif is_glist(m.return_arg):
@@ -539,13 +547,11 @@ if WSF_SUPPORT:
                     print_('        if value is not None:', file=fd)
                     print_('            value = tuple([cptrToPy(x) for x in value])', file=fd)
                     print_('        return value', file=fd)
-                elif is_cstring(el_type):
+                elif is_cstring(el_type) or is_xml_node(el_type):
                     print_('        return _lasso.%s(self._cptr%s)' % (
                             function_name, c_args), file=fd)
                 else:
                     raise Exception('Return Type GList<%s> is not supported' % el_type)
-            elif is_hashtable(m.return_arg):
-                raise Exception('Return type GHashTable unsupported')
             elif is_object(m.return_arg):
                 print_('        return cptrToPy(_lasso.%s(self._cptr%s))' % (
                         function_name, c_args), file=fd)
@@ -929,7 +935,7 @@ register_constants(PyObject *d)
                     arg_def = '    %s %s = %s;' % (arg[0], arg[1], defval)
                 else:
                     arg_def = '    %s %s;' % (arg[0], arg[1])
-            elif is_xml_node(arg) or is_list(arg) or is_time_t_pointer(arg):
+            elif is_hashtable(arg) or is_xml_node(arg) or is_list(arg) or is_time_t_pointer(arg):
                 parse_tuple_format.append('O')
                 parse_tuple_args.append('&cvt_%s' % aname)
                 arg_def = '    %s %s = NULL;' % (arg[0], arg[1])
@@ -970,7 +976,7 @@ register_constants(PyObject *d)
                 qualifier = element_type(arg)
                 if is_cstring(qualifier):
                     print_('    set_list_of_strings(&%s, cvt_%s);' % (arg[1], arg[1]), file=fd)
-                elif qualifier == 'xmlNode*':
+                elif is_xml_node(qualifier):
                     print_('    set_list_of_xml_nodes(&%s, cvt_%s);' % (arg[1], arg[1]), file=fd)
                 elif isinstance(qualifier, str) and qualifier.startswith('Lasso'):
                     print_('    set_list_of_pygobject(&%s, cvt_%s);' % (arg[1], arg[1]), file=fd)
@@ -980,6 +986,14 @@ register_constants(PyObject *d)
                 print_('    %s = get_xml_node_from_pystring(cvt_%s);' % (arg[1], arg[1]), file=fd)
             elif is_time_t_pointer(arg):
                 print_('    %s = get_time_t(cvt_%s);' % (arg[1], arg[1]), file=fd)
+            elif is_hashtable(arg):
+                el_type = element_type(arg)
+                k_type = key_type(arg)
+                v_type = value_type(arg)
+                if is_cstring(el_type) or (is_cstring(k_type) and is_cstring(v_type)):
+
+                    print_('    %s = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_free);' % arg[1], file=fd)
+                    print_('    set_hashtable_of_strings(%s, cvt_%s);' % (arg[1], arg[1]), file=fd)
             elif f == 'O':
                 if is_optional(arg):
                     print_('    if (PyObject_TypeCheck((PyObject*)cvt_%s, &PyGObjectPtrType)) {' % arg[1], file=fd)
@@ -1021,14 +1035,16 @@ register_constants(PyObject *d)
                 print_('    PyList_SetItem(cvt_%s_out, 0, out_pyvalue);' % arg[1], file=fd)
             elif arg[0] == 'GList*':
                 qualifier = arg[2].get('element-type')
-                if qualifier == 'char*':
+                if is_cstring(qualifier):
                     print_('    free_list(&%s, (GFunc)g_free);' % arg[1], file=fd)
-                elif qualifier == 'xmlNode*':
+                elif is_xml_node(qualifier):
                     print_('    free_list(&%s, (GFunc)xmlFreeNode);' % arg[1], file=fd)
-                elif qualifier == 'LassoNode':
+                elif is_object(qualifier):
                     print_('    free_list(&%s, (GFunc)g_object_unref);' % arg[1], file=fd)
             elif is_time_t_pointer(arg):
                 print_('    if (%s) free(%s);' % (arg[1], arg[1]), file=fd)
+            elif not is_transfer_full(arg) and is_hashtable(arg):
+                self.free_value(fd, arg)
             elif not is_transfer_full(arg) and is_xml_node(arg):
                 self.free_value(fd, arg)
 
