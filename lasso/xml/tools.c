@@ -57,7 +57,6 @@
 #include <xmlsec/errors.h>
 #include <xmlsec/openssl/x509.h>
 #include <xmlsec/openssl/crypto.h>
-#include <xmlsec/soap.h>
 
 #include <zlib.h>
 
@@ -71,6 +70,7 @@
 #include <stdarg.h>
 #include <ctype.h>
 #include "../lasso_config.h"
+#include <lasso/xml/xmlsec_soap.h>
 
 /**
  * SECTION:tools

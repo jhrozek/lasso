@@ -29,7 +29,6 @@
 #include <xmlsec/xmldsig.h>
 #include <xmlsec/templates.h>
 #include <xmlsec/crypto.h>
-#include <xmlsec/soap.h>
 
 #include "../utils.h"
 
@@ -60,6 +59,7 @@
 #include "../id-ff/providerprivate.h"
 #include "../id-ff/sessionprivate.h"
 #include "../xml/misc_text_node.h"
+#include <../xml/xmlsec_soap.h>
 
 /**
  * SECTION:wsf_profile
