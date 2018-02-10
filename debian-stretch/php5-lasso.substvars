@@ -1,0 +1,4 @@
+shlibs:Depends=libc6 (>= 2.2.5), libglib2.0-0 (>= 2.41.1), liblasso3 (>= 2.5.0), libssl1.0.2 (>= 1.0.2d), libxml2 (>= 2.7.4), libxmlsec1 (>= 1.2.20), libxmlsec1-openssl (>= 1.2.20), libxslt1.1 (>= 1.1.25), zlib1g (>= 1:1.1.4)
+php:Depends=phpapi-20131226
+misc:Depends=
+misc:Pre-Depends=
