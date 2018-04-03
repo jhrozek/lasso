@@ -59,7 +59,6 @@
 #include "../id-ff/providerprivate.h"
 #include "../id-ff/sessionprivate.h"
 #include "../xml/misc_text_node.h"
-#include <../xml/xmlsec_soap.h>
 
 /**
  * SECTION:wsf_profile
@@ -1369,7 +1368,7 @@ lasso_wsf_profile_add_saml_signature(LassoWsfProfile *wsf_profile, xmlDoc *doc) 
 
 	/* Lookup all referenced node and their Ids */
 	envelope = xmlDocGetRootElement(doc);
-	header = xmlSecSoap11GetHeader(envelope);
+	header = lasso_xml_soap11_get_header(envelope);
 
 	provider = xmlSecFindNode(header, (xmlChar*) "Provider",
 		(xmlChar*) LASSO_SOAP_BINDING_HREF);
@@ -1377,7 +1376,7 @@ lasso_wsf_profile_add_saml_signature(LassoWsfProfile *wsf_profile, xmlDoc *doc) 
 		(xmlChar*) LASSO_SOAP_BINDING_HREF);
 	interaction = xmlSecFindNode(header, (xmlChar*) "UserInteraction",
 		(xmlChar*) LASSO_IS_HREF);
-	body = xmlSecSoap11GetBody(envelope);
+	body = lasso_xml_soap11_get_body(envelope);
 	xmlSecAddIDs(doc, envelope, ids);
 	goto_cleanup_if_fail_with_rc(header != NULL, LASSO_XML_ERROR_NODE_NOT_FOUND);
 	goto_cleanup_if_fail_with_rc(provider != NULL, LASSO_XML_ERROR_NODE_NOT_FOUND);

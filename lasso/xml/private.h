@@ -265,7 +265,18 @@ xmlDocPtr lasso_xml_parse_memory(const char *buffer, int size);
 
 xmlNode* lasso_xml_get_soap_content(xmlNode *root);
 
+xmlNodePtr lasso_xml_next_element_node(xmlNodePtr node);
+
+const xmlChar* lasso_xml_get_node_ns_href(const xmlNodePtr node);
+
+gboolean lasso_xml_is_element_node(const xmlNodePtr node,
+                                   const xmlChar *name, const xmlChar *ns);
+
 gboolean lasso_xml_is_soap(xmlNode *root);
+
+xmlNodePtr lasso_xml_soap11_get_header(xmlNodePtr envelope_node);
+
+xmlNodePtr lasso_xml_soap11_get_body(xmlNodePtr envelope_node);
 
 gboolean lasso_eval_xpath_expression(xmlXPathContextPtr xpath_ctx, const char *expression,
 		xmlXPathObjectPtr *xpath_object_ptr, int *xpath_error_code);

@@ -70,7 +70,6 @@
 #include <stdarg.h>
 #include <ctype.h>
 #include "../lasso_config.h"
-#include <lasso/xml/xmlsec_soap.h>
 
 /**
  * SECTION:tools
@@ -1677,30 +1676,156 @@ cleanup:
 	return rc;
 }
 
+/**
+ * lasso_xml_next_element_node:
+ * @node:                the pointer to an XML node.
+ *
+ * Seraches for the next element node.
+ *
+ * Returns: the pointer to next element node or NULL if it is not found.
+ */
+xmlNodePtr
+lasso_xml_next_element_node(xmlNodePtr node)
+{
+
+    for (; node != NULL && node->type != XML_ELEMENT_NODE; node = node->next);
+    return node;
+}
+
+/**
+ * lasso_xml_get_node_ns_href:
+ * @node: the pointer to node.
+ *
+ * Get's node's namespace href.
+ *
+ * Returns: node's namespace href.
+ */
+const xmlChar*
+lasso_xml_get_node_ns_href(const xmlNodePtr node)
+{
+    xmlNsPtr ns;
+
+    if (node == NULL) {
+        return NULL;
+    }
+
+    /* do we have a namespace in the node? */
+    if (node->ns != NULL) {
+        return node->ns->href;
+    }
+
+    /* search for default namespace */
+    ns = xmlSearchNs(node->doc, node, NULL);
+    if (ns != NULL) {
+        return ns->href;
+    }
+
+    return NULL;
+}
+
+/**
+ * lasso_xml_is_element_node:
+ * @node: the pointer to an XML node.
+ * @name: the name,
+ * @ns:   the namespace href.
+ *
+ * Checks that the node has a given name and a given namespace href.
+ *
+ * Returns: true if the node matches false otherwise.
+ */
+gboolean
+lasso_xml_is_element_node(const xmlNodePtr node,
+                          const xmlChar *name, const xmlChar *ns)
+{
+    if (node == NULL) {
+        return FALSE;
+    }
+
+    return (node->type == XML_ELEMENT_NODE &&
+            xmlStrEqual(node->name, name) &&
+            xmlStrEqual(lasso_xml_get_node_ns_href(node), ns));
+}
+
 gboolean
 lasso_xml_is_soap(xmlNode *root)
 {
-	return xmlSecCheckNodeName(root, xmlSecNodeEnvelope, xmlSecSoap11Ns) ||
-		xmlSecCheckNodeName(root, xmlSecNodeEnvelope, xmlSecSoap12Ns);
+    return lasso_xml_is_element_node(root, BAD_CAST "Envelope",
+                                     BAD_CAST LASSO_SOAP_ENV_HREF);
+}
+
+/**
+ * lasso_xml_soap11_get_header:
+ * @envelope_node: the pointer to <soap:Envelope> node.
+ *
+ * Gets pointer to the <soap:Header> node.
+ *
+ * Returns: pointer to <soap:Header> node or NULL if an error occurs.
+ */
+xmlNodePtr
+lasso_xml_soap11_get_header(xmlNodePtr envelope_node)
+{
+    xmlNodePtr node;
+
+    if (envelope_node == NULL) {
+        return NULL;
+    }
+
+    /* optional Header node is first */
+    node = lasso_xml_next_element_node(envelope_node->children);
+    if (lasso_xml_is_element_node(node, BAD_CAST "Header",
+                                  BAD_CAST LASSO_SOAP_ENV_HREF)) {
+        return node;
+    }
+
+    return NULL;
+}
+
+/**
+ * lasso_xml_soap11_get_body:
+ * @envelope_node: the pointer to <soap:Envelope> node.
+ *
+ * Gets pointer to the <soap:Body> node.
+ *
+ * Returns: pointer to <soap:Body> node or NULL if an error occurs.
+ */
+xmlNodePtr
+lasso_xml_soap11_get_body(xmlNodePtr envelope_node)
+{
+    xmlNodePtr node;
+
+    if (envelope_node == NULL) {
+        return NULL;
+    }
+
+    /* optional Header node first */
+    node = lasso_xml_next_element_node(envelope_node->children);
+    if (lasso_xml_is_element_node(node, BAD_CAST "Header",
+                                  BAD_CAST LASSO_SOAP_ENV_HREF)) {
+        node = lasso_xml_next_element_node(node->next);
+    }
+
+    /* Body node is next */
+    if (!lasso_xml_is_element_node(node, BAD_CAST "Body",
+                                   BAD_CAST  LASSO_SOAP_ENV_HREF)) {
+        return NULL;
+    }
+
+    return node;
 }
 
 xmlNode*
 lasso_xml_get_soap_content(xmlNode *root)
 {
 	gboolean is_soap11 = FALSE;
-	gboolean is_soap12 = FALSE;
 	xmlNode *content = NULL;
 
-	is_soap11 = xmlSecCheckNodeName(root, xmlSecNodeEnvelope, xmlSecSoap11Ns);
-	is_soap12 = xmlSecCheckNodeName(root, xmlSecNodeEnvelope, xmlSecSoap12Ns);
-
-	if (is_soap11 || is_soap12) {
+	is_soap11 = lasso_xml_is_element_node(root, BAD_CAST "Envelope",
+                                              BAD_CAST LASSO_SOAP_ENV_HREF);
+	if (is_soap11) {
 		xmlNode *body;
 
 		if (is_soap11) {
-			body = xmlSecSoap11GetBody(root);
-		} else {
-			body = xmlSecSoap12GetBody(root);
+			body = lasso_xml_soap11_get_body(root);
 		}
 		if (body) {
 			content = xmlSecGetNextElementNode(body->children);

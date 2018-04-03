@@ -243,7 +243,6 @@ liblassoinclude_HEADERS = \
 	samlp_status_code.h \
 	xml_enc.h \
 	tools.h \
-	xmlsec_soap.h \
 	$(WSF_H_FILES)
 
 lasso_private_h_sources = \
