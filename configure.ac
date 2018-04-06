@@ -229,7 +229,6 @@ if test "x$JAVAC" = "xjavac"; then
         dnl We assume it is a SUN environment.
         SUN=yes
     fi
-    JAVAC_FLAGS="-target 1.4 -source 1.4"
     CLASSPATH_OPT="-classpath"
 fi
 
