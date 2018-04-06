@@ -73,14 +73,13 @@
 	fail_unless(g_strcmp0(__tmp, to) != 0, "%s:%i: " #what " is equal to %s", __func__, __LINE__, to); \
 }
 
-void mute_logger(G_GNUC_UNUSED const gchar *domain,
-		G_GNUC_UNUSED GLogLevelFlags log_level, G_GNUC_UNUSED const gchar *message,
-		G_GNUC_UNUSED gpointer user_data);
+
+void set_mute_logger();
 
 void fail_logger(const gchar *log_domain, GLogLevelFlags log_level,
 		 const gchar *message, G_GNUC_UNUSED gpointer user_data);
 
-#define block_lasso_logs g_log_set_default_handler(mute_logger, NULL);
+#define block_lasso_logs set_mute_logger();
 
 #define unblock_lasso_logs g_log_set_default_handler(fail_logger, NULL);
 
