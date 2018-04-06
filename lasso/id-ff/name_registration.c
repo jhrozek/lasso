@@ -279,18 +279,18 @@ lasso_name_registration_init_request(LassoNameRegistration *name_registration,
 		spNameIdentifier->NameQualifier = g_strdup(profile->remote_providerID);
 		spNameIdentifier->Format = g_strdup(LASSO_LIB_NAME_IDENTIFIER_FORMAT_FEDERATED);
 
-		idpNameIdentifier = g_object_ref(federation->remote_nameIdentifier);
+		idpNameIdentifier = LASSO_SAML_NAME_IDENTIFIER(g_object_ref(federation->remote_nameIdentifier));
 
 		if (federation->local_nameIdentifier) {
 			/* old name identifier is from SP,
 			 * name_registration->oldNameIdentifier must be from SP */
-			oldNameIdentifier = g_object_ref(federation->local_nameIdentifier);
+			oldNameIdentifier = LASSO_SAML_NAME_IDENTIFIER(g_object_ref(federation->local_nameIdentifier));
 		} else {
 			/* oldNameIdentifier is none, no local name identifier at SP, old is IDP */
-			oldNameIdentifier = g_object_ref(idpNameIdentifier);
+			oldNameIdentifier = LASSO_SAML_NAME_IDENTIFIER(g_object_ref(idpNameIdentifier));
 		}
 
-		profile->nameIdentifier = g_object_ref(spNameIdentifier);
+		profile->nameIdentifier = LASSO_NODE(g_object_ref(spNameIdentifier));
 		name_registration->oldNameIdentifier = g_object_ref(oldNameIdentifier);
 	} else { /* if (remote_provider->role == LASSO_PROVIDER_ROLE_SP) { */
 		/* Initiating it, from an IdP */
@@ -298,11 +298,11 @@ lasso_name_registration_init_request(LassoNameRegistration *name_registration,
 			return LASSO_PROFILE_ERROR_NAME_IDENTIFIER_NOT_FOUND;
 		}
 
-		oldNameIdentifier = g_object_ref(federation->local_nameIdentifier);
+		oldNameIdentifier = LASSO_SAML_NAME_IDENTIFIER(g_object_ref(federation->local_nameIdentifier));
 
 		spNameIdentifier = NULL;
 		if (federation->remote_nameIdentifier) {
-			spNameIdentifier = g_object_ref(federation->remote_nameIdentifier);
+			spNameIdentifier = LASSO_SAML_NAME_IDENTIFIER(g_object_ref(federation->remote_nameIdentifier));
 		}
 
 		idpNameIdentifier = lasso_saml_name_identifier_new();
@@ -310,7 +310,7 @@ lasso_name_registration_init_request(LassoNameRegistration *name_registration,
 		idpNameIdentifier->NameQualifier = g_strdup(profile->remote_providerID);
 		idpNameIdentifier->Format = g_strdup(LASSO_LIB_NAME_IDENTIFIER_FORMAT_FEDERATED);
 
-		profile->nameIdentifier = g_object_ref(idpNameIdentifier);
+		profile->nameIdentifier = LASSO_NODE(g_object_ref(idpNameIdentifier));
 		name_registration->oldNameIdentifier = g_object_ref(oldNameIdentifier);
 	}
 
@@ -413,15 +413,15 @@ gint lasso_name_registration_process_request_msg(LassoNameRegistration *name_reg
 	if (remote_provider->role == LASSO_PROVIDER_ROLE_IDP) {
 		/* IdP initiated */
 		if (request->SPProvidedNameIdentifier) {
-			profile->nameIdentifier = g_object_ref(request->SPProvidedNameIdentifier);
+			profile->nameIdentifier = LASSO_NODE(g_object_ref(request->SPProvidedNameIdentifier));
 		} else {
-			profile->nameIdentifier = g_object_ref(request->IDPProvidedNameIdentifier);
+			profile->nameIdentifier = LASSO_NODE(g_object_ref(request->IDPProvidedNameIdentifier));
 			name_registration->oldNameIdentifier = g_object_ref(
 					request->OldProvidedNameIdentifier);
 		}
 	} else if (remote_provider->role == LASSO_PROVIDER_ROLE_SP) {
 		/* SP initiated, profile->name */
-		profile->nameIdentifier = g_object_ref(request->IDPProvidedNameIdentifier);
+		profile->nameIdentifier = LASSO_NODE(g_object_ref(request->IDPProvidedNameIdentifier));
 	}
 
 	return profile->signature_status;
@@ -519,7 +519,7 @@ lasso_name_registration_process_response_msg(LassoNameRegistration *name_registr
 
 	if (federation->local_nameIdentifier)
 		lasso_node_destroy(LASSO_NODE(federation->local_nameIdentifier));
-	federation->local_nameIdentifier = g_object_ref(nameIdentifier);
+	federation->local_nameIdentifier = LASSO_NODE(g_object_ref(nameIdentifier));
 	profile->identity->is_dirty = TRUE;
 
 	/* set the relay state */
@@ -621,7 +621,7 @@ lasso_name_registration_validate_request(LassoNameRegistration *name_registratio
 
 	if (federation->remote_nameIdentifier)
 		lasso_node_destroy(LASSO_NODE(federation->remote_nameIdentifier));
-	federation->remote_nameIdentifier = g_object_ref(providedNameIdentifier);
+	federation->remote_nameIdentifier = LASSO_NODE(g_object_ref(providedNameIdentifier));
 	profile->identity->is_dirty = TRUE;
 
 	return 0;

@@ -360,7 +360,7 @@ lasso_lecp_process_authn_response_envelope_msg(LassoLecp *lecp, const char *resp
 		return critical_error(LASSO_PROFILE_ERROR_INVALID_MSG);
 	}
 
-	profile->response = g_object_ref(lecp->authnResponseEnvelope->AuthnResponse);
+	profile->response = LASSO_NODE(g_object_ref(lecp->authnResponseEnvelope->AuthnResponse));
 	if (profile->response == NULL) {
 		return LASSO_PROFILE_ERROR_MISSING_RESPONSE;
 	}

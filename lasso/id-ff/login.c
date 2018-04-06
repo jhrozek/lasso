@@ -439,7 +439,7 @@ lasso_login_build_assertion(LassoLogin *login,
 
 		ss = LASSO_SAML_SUBJECT_STATEMENT_ABSTRACT(assertion->AuthenticationStatement);
 		ss->Subject = LASSO_SAML_SUBJECT(lasso_saml_subject_new());
-		ss->Subject->NameIdentifier = g_object_ref(profile->nameIdentifier);
+		ss->Subject->NameIdentifier = LASSO_SAML_NAME_IDENTIFIER(g_object_ref(profile->nameIdentifier));
 		ss->Subject->SubjectConfirmation = lasso_saml_subject_confirmation_new();
 		/* liberty-architecture-bindings-profiles-v1.1.pdf, page 24, line 729 */
 		lasso_list_add_string(ss->Subject->SubjectConfirmation->ConfirmationMethod,
@@ -829,10 +829,10 @@ lasso_login_accept_sso(LassoLogin *login)
 	if (ni->Format && strcmp(ni->Format, LASSO_LIB_NAME_IDENTIFIER_FORMAT_FEDERATED) == 0) {
 		federation = lasso_federation_new(LASSO_PROFILE(login)->remote_providerID);
 		if (ni != NULL && idp_ni != NULL) {
-			federation->local_nameIdentifier = g_object_ref(ni);
-			federation->remote_nameIdentifier = g_object_ref(idp_ni);
+			federation->local_nameIdentifier = LASSO_NODE(g_object_ref(ni));
+			federation->remote_nameIdentifier = LASSO_NODE(g_object_ref(idp_ni));
 		} else {
-			federation->remote_nameIdentifier = g_object_ref(ni);
+			federation->remote_nameIdentifier = LASSO_NODE(g_object_ref(ni));
 		}
 		/* add federation in identity */
 		lasso_identity_add_federation(LASSO_PROFILE(login)->identity, federation);
@@ -1020,7 +1020,7 @@ lasso_login_build_artifact_msg(LassoLogin *login, LassoHttpMethod http_method)
 			profile->session = lasso_session_new();
 
 		lasso_session_add_status(profile->session, profile->remote_providerID,
-				g_object_ref(LASSO_SAMLP_RESPONSE(profile->response)->Status));
+				LASSO_NODE(g_object_ref(LASSO_SAMLP_RESPONSE(profile->response)->Status)));
 	} else {
 		lasso_session_remove_status(profile->session, profile->remote_providerID);
 	}

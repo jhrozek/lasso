@@ -386,7 +386,7 @@ lasso_name_id_management_process_response_msg(
 
 		if (federation->local_nameIdentifier)
 			lasso_node_destroy(LASSO_NODE(federation->local_nameIdentifier));
-		federation->local_nameIdentifier = g_object_ref(new_name_id);
+		federation->local_nameIdentifier = LASSO_NODE(g_object_ref(new_name_id));
 		profile->identity->is_dirty = TRUE;
 
 	}
