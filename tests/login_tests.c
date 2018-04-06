@@ -295,10 +295,10 @@ START_TEST(test02_serviceProviderLogin)
 	fail_unless(found != NULL, "We must find an InResponseTo attribute");
 	found[sizeof("InResponseTo=\"")] = '?';
 	lasso_set_flag("no-verify-signature");
-	begin_check_do_log(G_LOG_LEVEL_CRITICAL, " If inResponseTo attribute is present, a matching "
+	begin_check_do_log(NULL, G_LOG_LEVEL_CRITICAL, " If inResponseTo attribute is present, a matching "
 			"request must be present too in the LassoLogin object", TRUE);
 	check_not_equals(lasso_login_process_response_msg(spLoginContext, soapResponseMsg), 0);
-	end_check_do_log();
+	end_check_do_log(NULL);
 	lasso_set_flag("verify-signature");
 	check_good_rc(lasso_login_accept_sso(spLoginContext));
 	fail_unless(rc == 0, "lasso_login_accept_sso must fail");

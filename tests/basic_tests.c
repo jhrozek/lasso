@@ -50,9 +50,9 @@ END_TEST
 START_TEST(test02_server_load_dump_random_string)
 {
 	LassoServer *serverContext;
-	begin_check_do_log(G_LOG_LEVEL_CRITICAL, "libxml2: Start tag expected, '<' not found\\n", FALSE);
+	begin_check_do_log("libxml2", G_LOG_LEVEL_DEBUG, "libxml2: Start tag expected, '<' not found\n", FALSE);
 	serverContext = lasso_server_new_from_dump("foo");
-	end_check_do_log();
+	end_check_do_log("libxml2");
 	fail_unless(serverContext == NULL,
 			"serverContext was created from a fake dump");
 }
@@ -61,9 +61,9 @@ END_TEST
 START_TEST(test03_server_load_dump_random_xml)
 {
 	LassoServer *serverContext;
-	begin_check_do_log(G_LOG_LEVEL_CRITICAL, " Unable to build a LassoNode from a xmlNode", TRUE);
+	begin_check_do_log(NULL, G_LOG_LEVEL_CRITICAL, " Unable to build a LassoNode from a xmlNode", TRUE);
 	serverContext = lasso_server_new_from_dump("<?xml version=\"1.0\"?><foo/>");
-	end_check_do_log();
+	end_check_do_log(NULL);
 	fail_unless(serverContext == NULL,
 			"serverContext was created from fake (but valid XML) dump");
 }
@@ -174,9 +174,9 @@ START_TEST(test08_test_new_from_xmlNode)
 			"LassoTest", &this_info, 0);
 	r = lasso_registry_default_add_direct_mapping("http://example.com", "Test1", LASSO_LASSO_HREF, "LassoTest");
 	fail_unless(r == 0, "no mapping for http://example.com:Test1 should exist");
-	begin_check_do_log(G_LOG_LEVEL_WARNING, "	Class LassoTest has no node_data so no initialization is possible", TRUE);
+	begin_check_do_log(NULL, G_LOG_LEVEL_WARNING, "	Class LassoTest has no node_data so no initialization is possible", TRUE);
 	node = lasso_node_new_from_dump("<Test1 xmlns=\"http://example.com\"></Test1>");
-	end_check_do_log();
+	end_check_do_log(NULL);
 	fail_unless(node != NULL, "parsing <Test1/> should return an object");
 	fail_unless(strcmp(G_OBJECT_TYPE_NAME(node), "LassoTest") == 0, "node classname should be LassoTest");
 	g_object_unref(node);
