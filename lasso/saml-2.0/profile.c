@@ -284,7 +284,7 @@ int
 lasso_saml20_profile_init_artifact_resolve(LassoProfile *profile,
 		LassoProviderRole remote_provider_role, const char *msg, LassoHttpMethod method)
 {
-	char **query_fields;
+	xmlChar **query_fields;
 	char *artifact_b64 = NULL;
 	xmlChar *provider_succinct_id_b64 = NULL;
 	char *provider_succinct_id[21];
@@ -296,14 +296,13 @@ lasso_saml20_profile_init_artifact_resolve(LassoProfile *profile,
 	unsigned short index_endpoint = 0;
 
 	if (method == LASSO_HTTP_METHOD_ARTIFACT_GET) {
-		query_fields = urlencoded_to_strings(msg);
+		query_fields = lasso_urlencoded_to_strings(msg);
 		for (i=0; query_fields[i]; i++) {
 			if (strncmp((char*)query_fields[i], LASSO_SAML2_FIELD_ARTIFACT "=", 8) == 0) {
-				lasso_assign_string(artifact_b64, query_fields[i]+8);
+				lasso_assign_string(artifact_b64, (char*)query_fields[i]+8);
 			}
-			xmlFree(query_fields[i]);
 		}
-		lasso_release(query_fields);
+		lasso_release_array_of_xml_strings(query_fields);
 		if (artifact_b64 == NULL) {
 			return LASSO_PROFILE_ERROR_MISSING_ARTIFACT;
 		}

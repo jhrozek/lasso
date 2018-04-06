@@ -2089,6 +2089,13 @@ START_TEST(test16_test_get_issuer)
 	size_t len = 0;
 	char *issuer = NULL;
 	char *in_response_to = NULL;
+	LassoServer *spServerContext = NULL;
+	LassoServer *idpServerContext = NULL;
+	LassoLogin *spLoginContext = NULL;
+	LassoLogin *idpLoginContext = NULL;
+	LassoSamlp2AuthnRequest *request = NULL;
+	char *authnRequestUrl = NULL;
+	char *qs = NULL;
 
 	g_file_get_contents(TESTSDATADIR "/response-1", &content, &len, NULL);
 	issuer = lasso_profile_get_issuer(content);
@@ -2098,6 +2105,70 @@ START_TEST(test16_test_get_issuer)
 	check_str_equals(in_response_to, "xx");
 	lasso_release_string(in_response_to);
 	lasso_release_string(content);
+
+	spServerContext = lasso_server_new(
+			TESTSDATADIR "/sp5-saml2/metadata.xml",
+			TESTSDATADIR "/sp5-saml2/private-key.pem",
+			NULL, /* Secret key to unlock private key */
+			NULL);
+	lasso_server_add_provider(
+			spServerContext,
+			LASSO_PROVIDER_ROLE_IDP,
+			TESTSDATADIR "/idp5-saml2/metadata.xml",
+			NULL,
+			NULL);
+	idpServerContext = lasso_server_new(
+			TESTSDATADIR "/idp5-saml2/metadata.xml",
+			TESTSDATADIR "/idp5-saml2/private-key.pem",
+			NULL, /* Secret key to unlock private key */
+			NULL);
+	lasso_server_add_provider(
+			idpServerContext,
+			LASSO_PROVIDER_ROLE_SP,
+			TESTSDATADIR "/sp5-saml2/metadata.xml",
+			NULL,
+			NULL);
+	spLoginContext = lasso_login_new(spServerContext);
+	check_good_rc(lasso_login_init_authn_request(spLoginContext, "http://idp5/metadata",
+			LASSO_HTTP_METHOD_REDIRECT));
+	request = LASSO_SAMLP2_AUTHN_REQUEST(LASSO_PROFILE(spLoginContext)->request);
+	request->IsPassive = 0;
+	lasso_assign_string(request->NameIDPolicy->Format, LASSO_SAML2_NAME_IDENTIFIER_FORMAT_PERSISTENT);
+	request->NameIDPolicy->AllowCreate = 1;
+	lasso_assign_string(request->ProtocolBinding, LASSO_SAML2_METADATA_BINDING_POST);
+	check_good_rc(lasso_login_build_authn_request_msg(spLoginContext));
+	authnRequestUrl = LASSO_PROFILE(spLoginContext)->msg_url;
+	qs = index(authnRequestUrl, '?') + 1;
+	issuer = lasso_profile_get_issuer(qs);
+	check_true(lasso_strisequal(issuer, "http://sp5/metadata"));
+	lasso_release_string(issuer);
+
+	idpLoginContext = lasso_login_new(idpServerContext);
+	
+	check_good_rc(lasso_login_process_authn_request_msg(idpLoginContext, qs));
+	check_good_rc(lasso_login_validate_request_msg(idpLoginContext, 1, 0));
+	check_good_rc(lasso_login_build_assertion(idpLoginContext,
+			LASSO_SAML_AUTHENTICATION_METHOD_PASSWORD,
+			"FIXME: authenticationInstant",
+			"FIXME: reauthenticateOnOrAfter",
+			"FIXME: notBefore",
+			"FIXME: notOnOrAfter"));
+	check_good_rc(lasso_login_build_authn_response_msg(idpLoginContext));
+	check_not_null(idpLoginContext->parent.msg_body);
+	check_not_null(idpLoginContext->parent.msg_url);
+
+	issuer = lasso_profile_get_issuer(idpLoginContext->parent.msg_body);
+	in_response_to = lasso_profile_get_in_response_to(idpLoginContext->parent.msg_body);
+	check_not_null(in_response_to);
+	check_str_equals(issuer, "http://idp5/metadata");
+	check_str_equals(in_response_to, request->parent.ID);
+	lasso_release_string(issuer);
+
+	lasso_release_gobject(idpLoginContext);
+	lasso_release_gobject(idpServerContext);
+	lasso_release_gobject(spLoginContext);
+	lasso_release_gobject(spServerContext);
+
 }
 END_TEST
 

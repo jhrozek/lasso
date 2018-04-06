@@ -198,6 +198,18 @@
 		} \
 	}
 
+#define lasso_release_array_of_xml_strings(dest) \
+	{ \
+		xmlChar ***__tmp = &(dest);\
+		if (*__tmp) {\
+			int i = 0;\
+			for (i = 0; (*__tmp)[i]; i++) {\
+				lasso_release_xml_string((*__tmp)[i]);\
+			}\
+			lasso_release((*__tmp));\
+		}\
+	}
+
 /* Assignment and list appending */
 /*
  * lasso_assign_xxx macros ensure that you dot leak previous value of assigned things, they use

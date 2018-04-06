@@ -1654,7 +1654,7 @@ gint
 lasso_login_init_request(LassoLogin *login, gchar *response_msg,
 		LassoHttpMethod response_http_method)
 {
-	char **query_fields;
+	xmlChar **query_fields;
 	gint ret = 0;
 	int i;
 	char *artifact_b64 = NULL, *provider_succinct_id_b64;
@@ -1678,17 +1678,16 @@ lasso_login_init_request(LassoLogin *login, gchar *response_msg,
 
 	/* rebuild response (artifact) */
 	if (response_http_method == LASSO_HTTP_METHOD_REDIRECT) {
-		query_fields = urlencoded_to_strings(response_msg);
+		query_fields = lasso_urlencoded_to_strings(response_msg);
 		for (i=0; query_fields[i]; i++) {
-			if (strncmp(query_fields[i], "SAMLart=", 8) == 0) {
-				lasso_assign_string(artifact_b64, query_fields[i]+8);
+			if (strncmp((char*)query_fields[i], "SAMLart=", 8) == 0) {
+				lasso_assign_string(artifact_b64, (char*)query_fields[i]+8);
 			}
-			if (strncmp(query_fields[i], "RelayState=", 11) == 0) {
-				lasso_assign_string(profile->msg_relayState, query_fields[i]+11);
+			if (strncmp((char*)query_fields[i], "RelayState=", 11) == 0) {
+				lasso_assign_string(profile->msg_relayState, (char*)query_fields[i]+11);
 			}
-			xmlFree(query_fields[i]);
 		}
-		lasso_release_string(query_fields);
+		lasso_release_array_of_xml_strings(query_fields);
 		if (artifact_b64 == NULL) {
 			return LASSO_PROFILE_ERROR_MISSING_ARTIFACT;
 		}

@@ -724,20 +724,20 @@ gboolean
 lasso_node_init_from_query(LassoNode *node, const char *query)
 {
 	LassoNodeClass *class;
-	char **query_fields;
+	xmlChar **query_fields;
 	int i;
 	gboolean rc;
 
 	g_return_val_if_fail(LASSO_IS_NODE(node), FALSE);
 	class = LASSO_NODE_GET_CLASS(node);
 
-	query_fields = urlencoded_to_strings(query);
-	rc = class->init_from_query(node, query_fields);
+	query_fields = lasso_urlencoded_to_strings(query);
+	rc = class->init_from_query(node, (char**)query_fields);
 	for (i = 0; query_fields[i]; i++) {
 		xmlFree(query_fields[i]);
 		query_fields[i] = NULL;
 	}
-	lasso_release(query_fields);
+	lasso_release_array_of_xml_strings(query_fields);
 	return rc;
 }
 

@@ -230,7 +230,7 @@ char* lasso_sha384(const char *str);
 
 char* lasso_sha512(const char *str);
 
-char** urlencoded_to_strings(const char *str);
+xmlChar** lasso_urlencoded_to_strings(const char *str);
 
 int lasso_sign_node(xmlNode *xmlnode, LassoSignatureContext context, const char *id_attr_name, const char *id_value);
 
@@ -335,7 +335,7 @@ void lasso_xmlnode_add_saml2_signature_template(xmlNode *node, LassoSignatureCon
 
 gchar* lasso_xmlnode_build_deflated_query(xmlNode *xmlnode);
 
-xmlTextReader *lasso_xmltextreader_from_message(const char *message, xmlChar **to_free);
+xmlTextReader *lasso_xmltextreader_from_message(const char *message, char **to_free);
 
 #ifdef __cplusplus
 }

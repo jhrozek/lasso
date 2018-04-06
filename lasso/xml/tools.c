@@ -1119,24 +1119,33 @@ lasso_sha512(const char *str)
 	return (char*)SHA512((unsigned char*)str, strlen(str), md);
 }
 
-char**
-urlencoded_to_strings(const char *str)
+
+/**
+ * lasso_urlencoded_to_strings:
+ * @str: a query string
+ *
+ * Parse a query string and separate it into an char* array of its components.
+ *
+ * The returned array must be deallocated.
+ */
+xmlChar**
+lasso_urlencoded_to_strings(const char *str)
 {
 	int i, n=1;
 	char *st, *st2;
-	char **result;
+	xmlChar **result;
 
+	g_assert(str);
 	/* count components */
 	st = (char*)str;
 	while (*st) {
 		if (*st == '&' || *st == ';')
 			n++;
-		n++;
 		st++;
 	}
 
 	/* allocate result array */
-	result = g_new0(char*, n+1);
+	result = g_new0(xmlChar*, n+1);
 	result[n] = NULL;
 
 	/* tokenize */
@@ -1145,15 +1154,17 @@ urlencoded_to_strings(const char *str)
 	while(1) {
 		if (*st == '&' || *st == ';' || *st == '\0') {
 			ptrdiff_t len = st - st2;
+
+			g_assert(i < n+1);
 			if (len) {
-				result[i] = xmlURIUnescapeString(st2, len, NULL);
+				result[i] = (xmlChar*)xmlURIUnescapeString(st2, len, NULL);
 			} else {
 				result[i] = g_malloc0(1);
 			}
 			i++;
-			st2 = st + 1;
 			if (*st == '\0')
 				break;
+			st2 = st + 1;
 		}
 		st++;
 	}
@@ -2900,24 +2911,64 @@ lasso_xmlnode_add_saml2_signature_template(xmlNode *node, LassoSignatureContext 
 	}
 }
 
+
+/**
+ * lasso_get_saml_message:
+ * @query_fields: a NULL terminated array of char* representing a parsed query string.
+ *
+ * Return the first SAMLRequest or SAMLResponse value in the query string array.
+ */
 static char*
-get_saml_message(char **query_fields) {
-	int i;
-	char *field, *t;
+lasso_get_saml_message(xmlChar **query_fields) {
+	int i = 0;
+	char *enc = NULL;
+	char *message = NULL;
+	char *decoded_message = NULL;
+	xmlChar *field = NULL;
+	char *t = NULL;
+	int rc = 0;
+	int len = 0;
 
 	for (i=0; (field=query_fields[i]); i++) {
-		t = strchr(field, '=');
+		t = strchr((char*)field, '=');
 		if (t == NULL)
 			continue;
 		*t = 0;
-		if (strcmp(field, LASSO_SAML2_FIELD_ENCODING) == 0) {
-			return t+1;
+		if (strcmp((char*)field, LASSO_SAML2_FIELD_ENCODING) == 0) {
+			enc = t+1;
+			continue;
 		}
-		if (strcmp(field, LASSO_SAML2_FIELD_REQUEST) == 0 || strcmp(field, LASSO_SAML2_FIELD_RESPONSE) == 0) {
-			return t+1;
+		if (strcmp((char*)field, LASSO_SAML2_FIELD_REQUEST) == 0 || strcmp((char*)field, LASSO_SAML2_FIELD_RESPONSE) == 0) {
+			message = t+1;
+			continue;
 		}
 	}
-	return NULL;
+	if (message == NULL) {
+		return NULL;
+	}
+	if (enc && strcmp(enc, LASSO_SAML2_DEFLATE_ENCODING) != 0) {
+		/* unknown encoding */
+		debug("Unknown URL encoding: %64s", enc);
+		return NULL;
+	}
+	len = strlen(message);
+	decoded_message = g_malloc(len);
+	if (! is_base64(message)) {
+		debug("message is not base64");
+		goto cleanup;
+	}
+	rc = xmlSecBase64Decode((xmlChar*)message, (xmlChar*)decoded_message, len);
+	if (rc < 0) {
+		debug("could not decode redirect SAML message");
+		goto cleanup;
+	}
+	/* rc contains the length of the result */
+	message = (char*)lasso_inflate((unsigned char*) decoded_message, rc);
+cleanup:
+	if (decoded_message) {
+		lasso_release(decoded_message);
+	}
+	return message;
 }
 
 /**
@@ -2927,47 +2978,52 @@ get_saml_message(char **query_fields) {
  * Try to parse the passed message and create an xmlTextReader from it.
  */
 xmlTextReader *
-lasso_xmltextreader_from_message(const char *message, xmlChar **to_free) {
+lasso_xmltextreader_from_message(const char *message, char **to_free) {
 	size_t len = strlen(message);
 	char *needle;
-	char **query_fields = NULL;
+	xmlChar **query_fields = NULL;
 	char *decoded_message = NULL;
 	xmlTextReader *reader = NULL;
 
+	g_assert(to_free);
+	/* Differentiate SOAP from others */
 	if (message[0] != '<') {
 		needle = strchr(message, '=');
-		if (needle) {
-			ptrdiff_t needle_pos = (needle-message);
-			if (len - needle_pos > 2) { // query
-				query_fields = urlencoded_to_strings(needle+1);
-				message = get_saml_message(query_fields);
-				if (! message)
-					goto cleanup;
-				len = strlen(message);
+		/* Differentiate redirect binding from POST */
+		if (needle && message[len-1] != '=') {
+			query_fields = lasso_urlencoded_to_strings(message);
+			message = *to_free = lasso_get_saml_message(query_fields);
+			len = strlen(message);
+			if (! message) {
+				goto cleanup;
 			}
-		}
-		if (is_base64(message)) {
-			int rc;
+		} else { /* POST */
+			int rc = 0;
+
+			if (! is_base64(message)) {
+				debug("POST message is not base64");
+				goto cleanup;
+			}
 			decoded_message = g_malloc(len);
 			rc = xmlSecBase64Decode((xmlChar*)message, (xmlChar*)decoded_message, len);
-			if (rc < 0)
+			if (rc < 0) {
+				debug("could not decode POST SAML message");
 				goto cleanup;
+			}
 			len = rc;
-			message = (char*)lasso_inflate((unsigned char*) decoded_message, rc);
-			lasso_release_string(decoded_message);
-			if (! message)
-				goto cleanup;
+			decoded_message[len] = '\0';
+			message = *to_free = decoded_message;
+			decoded_message = NULL;
 		}
 	}
 
 	if (message[0] == '<') // XML case
-		reader = xmlReaderForMemory(message, len, "", NULL, XML_PARSE_NOENT |
-				XML_PARSE_NONET);
+		reader = xmlReaderForMemory(message, len, "", NULL, XML_PARSE_NONET);
 
 cleanup:
 	if (query_fields)
-		lasso_release(query_fields);
-	if (decoded_message && to_free)
-		*to_free = BAD_CAST decoded_message;
+		lasso_release_array_of_xml_strings(query_fields);
+	if (decoded_message)
+		lasso_release_string(decoded_message);
 	return reader;
 }
