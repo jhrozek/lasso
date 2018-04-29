@@ -674,7 +674,7 @@ set_object_field(GObject **a_gobject_ptr, PyGObjectPtr *a_pygobject) {
 }
 
 
-static PyObject *get_logger_object() {
+static PyObject *get_logger_object(const char *domain) {
 	static PyObject *_logger_object = NULL;
 
 	PyObject *logging_module = PyImport_ImportModule("lasso");
@@ -693,7 +693,7 @@ static PyObject *get_logger_object() {
 	logging_module = PyImport_ImportModule("logging");
 	if (logging_module) {
 		_logger_object = PyObject_CallMethod(logging_module, "getLogger",
-				"s#", "lasso", sizeof("lasso")-1);
+				"s#", domain, strlen(domain));
 		Py_DECREF(logging_module);
 	}
 exit:
@@ -705,10 +705,10 @@ exit:
 }
 
 static void
-lasso_python_log(G_GNUC_UNUSED const char *domain, GLogLevelFlags log_level, const gchar *message,
+lasso_python_log(const char *domain, GLogLevelFlags log_level, const gchar *message,
 		G_GNUC_UNUSED gpointer user_data)
 {
-	PyObject *logger_object = get_logger_object(), *result;
+	PyObject *logger_object = get_logger_object(domain), *result;
 	char *method = NULL;
 
 	if (! logger_object) {
