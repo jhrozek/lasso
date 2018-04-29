@@ -1,2 +1,2 @@
 #!/bin/bash
-make -f Makefile.perl test
+LD_LIBRARY_PATH=../../lasso/.libs make -f Makefile.perl test
