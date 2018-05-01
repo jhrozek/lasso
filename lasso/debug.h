@@ -37,6 +37,7 @@ LASSO_EXPORT extern gboolean lasso_flag_strict_checking;
 LASSO_EXPORT extern gboolean lasso_flag_add_signature;
 LASSO_EXPORT extern gboolean lasso_flag_sign_messages;
 LASSO_EXPORT extern gboolean lasso_flag_thin_sessions;
+LASSO_EXPORT extern gboolean lasso_flag_pem_public_key;
 
 #ifdef __cplusplus
 }

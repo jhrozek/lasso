@@ -61,6 +61,10 @@
  * <entry><literal>no-sign-messages</literal></entry>
  * <entry><para>Disable signatures on messages.</para></entry>
  * </rows>
+ * <rows>
+ * <entry><literal>pem-public-key</literal></entry>
+ * <entry><para>Allow PEM key in ds:KeyValue nodes, it's outside the XMLSig specification.</para></entry>
+ * </rows>
  * </tbody>
  * </tgroup>
  * </informaltable>
@@ -97,6 +101,8 @@ static void lasso_flag_parse_environment_variable();
 gboolean lasso_flag_sign_messages = TRUE;
 /* thin sessions */
 gboolean lasso_flag_thin_sessions = FALSE;
+/* PEM public key */
+gboolean lasso_flag_pem_public_key = FALSE;
 
 #ifndef LASSO_FLAG_ENV_VAR
 #define LASSO_FLAG_ENV_VAR "LASSO_FLAG"
@@ -328,6 +334,9 @@ void lasso_set_flag(char *flag) {
 		}
 		if (lasso_strisequal(flag,"thin-sessions")) {
 			lasso_flag_thin_sessions = value;
+		}
+		if (lasso_strisequal(flag,"pem-public-key")) {
+			lasso_flag_pem_public_key = value;
 		}
 	} while (FALSE);
 }
