@@ -31,6 +31,14 @@
 #include "tests.h"
 #include "../lasso/xml/saml-2.0/saml2_xsd.h"
 
+void setup_lasso_flag_pem_public_key() {
+	lasso_flag_pem_public_key = TRUE;
+}
+
+void teardown_lasso_flag_pem_public_key() {
+	lasso_flag_pem_public_key = FALSE;
+}
+
 START_TEST(test01_metadata_load_der_certificate_from_x509_cert)
 {
 	LassoProvider *provider = lasso_provider_new(LASSO_PROVIDER_ROLE_SP,
@@ -132,6 +140,21 @@ metadata_suite()
 	TCase *tc_metadata_role_descriptors =
 		tcase_create("Lookup different role descriptors datas");
 
+	tcase_add_checked_fixture(tc_metadata_load_pem_certificate_from_x509_cert,
+			setup_lasso_flag_pem_public_key,
+			teardown_lasso_flag_pem_public_key);
+	tcase_add_checked_fixture(tc_metadata_load_pem_public_key_from_keyvalue,
+			setup_lasso_flag_pem_public_key,
+			teardown_lasso_flag_pem_public_key);
+	tcase_add_checked_fixture(tc_metadata_load_der_public_key_from_keyvalue,
+			setup_lasso_flag_pem_public_key,
+			teardown_lasso_flag_pem_public_key);
+	tcase_add_checked_fixture(tc_metadata_load_public_key_from_x509_cert,
+			setup_lasso_flag_pem_public_key,
+			teardown_lasso_flag_pem_public_key);
+	tcase_add_checked_fixture(tc_metadata_load_public_key_from_rsa_keyvalue,
+			setup_lasso_flag_pem_public_key,
+			teardown_lasso_flag_pem_public_key);
 	suite_add_tcase(s, tc_metadata_load_der_certificate_from_x509_cert);
 	suite_add_tcase(s, tc_metadata_load_pem_certificate_from_x509_cert);
 	suite_add_tcase(s, tc_metadata_load_der_public_key_from_keyvalue);

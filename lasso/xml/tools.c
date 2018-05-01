@@ -2566,12 +2566,14 @@ lasso_xmlsec_load_key_info(xmlNode *key_descriptor)
 {
 	xmlSecKeyPtr key, result = NULL;
 	xmlNodePtr key_info = NULL;
-	xmlSecKeyInfoCtx ctx;
-	xmlSecKeysMngr *keys_mngr;
+	xmlSecKeyInfoCtx ctx = {0};
+	xmlSecKeysMngr *keys_mngr = NULL;
 	xmlNodePtr key_value = NULL;
 	int rc = 0;
 	xmlChar *content = NULL;
-	X509 *cert;
+	X509 *cert = NULL;
+	xmlSecKeyDataPtr cert_data = NULL;
+	xmlSecKeyDataPtr cert_key = NULL;
 
 	if (! key_descriptor)
 		return NULL;
@@ -2597,49 +2599,55 @@ lasso_xmlsec_load_key_info(xmlNode *key_descriptor)
 	ctx.certsVerificationDepth = 0;
 
 	key = xmlSecKeyCreate();
-	/* anyway to make this reentrant and thread safe ? */
-	xmlSecErrorsDefaultCallbackEnableOutput(FALSE);
+	if (lasso_flag_pem_public_key) {
+		xmlSecErrorsDefaultCallbackEnableOutput(FALSE);
+	}
 	rc = xmlSecKeyInfoNodeRead(key_info, key, &ctx);
-	xmlSecErrorsDefaultCallbackEnableOutput(TRUE);
+	if (lasso_flag_pem_public_key) {
+		xmlSecErrorsDefaultCallbackEnableOutput(TRUE);
+	}
 	xmlSecKeyInfoCtxFinalize(&ctx);
 
-	if (rc == 0) {
-		xmlSecKeyDataPtr cert_data;
-
-		cert_data = xmlSecKeyGetData(key, xmlSecOpenSSLKeyDataX509Id);
-
-		if (cert_data) {
-			cert = xmlSecOpenSSLKeyDataX509GetCert(cert_data, 0);
-			if (cert) {
-				xmlSecKeyDataPtr cert_key;
-
-				cert_key = xmlSecOpenSSLX509CertGetKey(cert);
-				rc = xmlSecKeySetValue(key, cert_key);
-				if (rc < 0) {
-					xmlSecKeyDataDestroy(cert_key);
-					goto next;
-				}
-			}
-		}
+	if (rc != 0) {
+		goto next;
 	}
+	/* reference, do not free */
+	cert_data = xmlSecKeyGetData(key, xmlSecOpenSSLKeyDataX509Id);
 
-	if (rc == 0 && xmlSecKeyIsValid(key)) {
+	if (! cert_data) {
+		goto next;
+	}
+	/* reference, do not free */
+	cert = xmlSecOpenSSLKeyDataX509GetCert(cert_data, 0);
+	if (! cert) {
+		goto next;
+	}
+	/* new value, free */
+	cert_key = xmlSecOpenSSLX509CertGetKey(cert);
+	rc = xmlSecKeySetValue(key, cert_key);
+	if (rc < 0) {
+		xmlSecKeyDataDestroy(cert_key);
+	}
+next:
+	/* We found a key, exit */
+	if (xmlSecKeyIsValid(key)) {
 		result = key;
 		key = NULL;
 		goto cleanup;
 	}
 	xmlSecKeyDestroy(key);
-next:
-	if (! (key_value = xmlSecFindChild(key_info, xmlSecNodeKeyValue, xmlSecDSigNs)) &&
-		 ! (key_value = xmlSecFindNode(key_info, xmlSecNodeX509Certificate, xmlSecDSigNs)))  {
-		goto cleanup;
-	}
+	if (lasso_flag_pem_public_key) {
+		if (! (key_value = xmlSecFindChild(key_info, xmlSecNodeKeyValue, xmlSecDSigNs)) &&
+			 ! (key_value = xmlSecFindNode(key_info, xmlSecNodeX509Certificate, xmlSecDSigNs)))  {
+			goto cleanup;
+		}
 
-	content = xmlNodeGetContent(key_value);
-	if (content) {
-		result = lasso_xmlsec_load_private_key_from_buffer((char*)content,
-				strlen((char*)content), NULL, LASSO_SIGNATURE_METHOD_RSA_SHA1, NULL);
-		xmlFree(content);
+		content = xmlNodeGetContent(key_value);
+		if (content) {
+			result = lasso_xmlsec_load_private_key_from_buffer((char*)content,
+					strlen((char*)content), NULL, LASSO_SIGNATURE_METHOD_RSA_SHA1, NULL);
+			xmlFree(content);
+		}
 	}
 
 cleanup:
