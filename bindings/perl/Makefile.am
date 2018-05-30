@@ -64,4 +64,6 @@ install-exec-local: Makefile.perl
 uninstall-local:
 	-@rm -rf `find $(DESTDIR)$(prefix) -name Lasso.pm -or -name Lasso.so -or -name Lasso.bs -or -name .packlist -or -name perllocal.pod`
 
+test.sh: Makefile.perl
+
 endif
