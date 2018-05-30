@@ -1,6 +1,42 @@
 NEWS
 ====
 
+2.6.0 - June 1st 2018
+---------------------
+32 commits, 73 files changed, 1920 insertions, 696 deletions
+
+- add inline implementation of lasso_log
+- Choose the Reference transform based on the chosen Signature transform (fixes #10155)
+- add support for C14N 1.1 methods and C14N withComments methods (fixes #4863)
+- remove DGME specific commented out code
+- add docstring on SHA-2 signature method enum
+- tests: silence unused variable warning
+- check node names in lasso_node_impl_init_from_xml() (fixes #47)
+- fix segfault when parsed node has no namespace (#47)
+- do not call xmlSecKeyDuplicate is source key is NULL
+- enable user supplied CFLAGS
+- Fix ecp test validate_idp_list() (fixes #11421)
+- tests: convert log level as string
+- fix definitions of error, critical and warning macros (fixes #12830)
+- jenkins.sh: add V=1
+- add defined for the XML namespace
+- ignore unknown attributes from the xsi: namespace
+- saml-2.0: improve support for free content inside samlp2:Extensions (fixes #18581)
+- debian: initialize stretch packaging with a copy of upstream debian (#21772)
+- replace use of <xmlsec/soap.h> which is deprecated (fixes #18771)
+- fix get_issuer and get_in_response_to
+- route logs from libxml2 and libxmlsec through GLib logging
+- tests: prevent crash in glib caused by abort on recursive logging
+- java: stop setting a bytecode version target
+- add xmlsec_soap.h to Makefile
+- python: route logs for libxml2 and libxmlsec2 to their own logger
+- perl: force use of the in-tree lasso when running tests (fixes #23276)
+- perl: set DESTDIR and PREFIX at Makefile's creation
+- Replace xmlSecSoap functions with lasso implementations
+- add a pem-public-key runtime flag
+- deprecate loading PEM formatted public keys in lasso_xmlsec_load_key_info
+- perl/tests: build Makefile.perl before running the tests
+
 2.5.1 - February 19th 2016
 ---------------------------
 17 commits, 16 files changed, 1096 insertions, 42 deletions
