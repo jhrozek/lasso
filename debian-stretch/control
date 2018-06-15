@@ -2,8 +2,9 @@ Source: lasso
 Priority: optional
 Section: libs
 Maintainer: Frederic Peters <fpeters@debian.org>
-Build-Depends: debhelper (>= 8),
+Build-Depends: debhelper (>= 9),
         dh-python,
+        dh-autoreconf,
         libxml2-dev,
         libxslt1-dev,
         libxmlsec1-dev,
@@ -19,9 +20,9 @@ Build-Depends: debhelper (>= 8),
         python3-six,
         chrpath,
         dh-python
-Standards-Version: 3.9.6
-X-Python-Version: >= 2.6
-X-Python3-Version: >= 3.2
+Standards-Version: 4.1.4
+X-Python-Version: >= 2.7
+X-Python3-Version: >= 3.4
 Homepage: http://lasso.entrouvert.org
 
 Package: liblasso3-dev
@@ -55,7 +56,7 @@ Replaces: liblasso0-python2.3, python2.3-lasso, python2.4-lasso
 Provides: liblasso0-python2.3, ${python:Provides}
 Section: python
 Architecture: any
-Depends: ${python:Depends}, ${shlibs:Depends}, ${misc:depends}
+Depends: ${python:Depends}, ${shlibs:Depends}, ${misc:Depends}
 Description: Library for Liberty Alliance and SAML protocols - Python bindings
  Lasso is an implementation of Liberty Alliance and related protocols, for
  network identity federations, single sign-on and other web services protocols.
@@ -67,7 +68,7 @@ Description: Library for Liberty Alliance and SAML protocols - Python bindings
 Package: python3-lasso
 Section: python
 Architecture: any
-Depends: ${python3:Depends}, ${shlibs:Depends}, ${misc:depends}
+Depends: ${python3:Depends}, ${shlibs:Depends}, ${misc:Depends}
 Description: Library for Liberty Alliance and SAML protocols - Python bindings
  Lasso is an implementation of Liberty Alliance and related protocols, for
  network identity federations, single sign-on and other web services protocols.
@@ -79,7 +80,7 @@ Description: Library for Liberty Alliance and SAML protocols - Python bindings
 #JAVA#Package: liblasso-java
 #JAVA#Section: libs
 #JAVA#Architecture: amd64 armel i386 ia64 mips mipsel powerpc ppc64 s390 sparc kfreebsd-i386 kfreebsd-amd64
-#JAVA#Depends: ${shlibs:Depends}, ${misc:depends}
+#JAVA#Depends: ${shlibs:Depends}, ${misc:Depends}
 #JAVA#Description: Library for Liberty Alliance and SAML protocols - Java bindings
 #JAVA# Lasso is an implementation of Liberty Alliance and related protocols, for
 #JAVA# network identity federations, single sign-on and other web services protocols.
@@ -91,7 +92,8 @@ Description: Library for Liberty Alliance and SAML protocols - Python bindings
 Package: liblasso-perl
 Section: perl
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:depends}, ${perl:Depends}
+Multi-Arch: same
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${perl:Depends}
 Description: Library for Liberty Alliance and SAML protocols - Perl bindings
  Lasso is an implementation of Liberty Alliance and related protocols, for
  network identity federations, single sign-on and other web services protocols.

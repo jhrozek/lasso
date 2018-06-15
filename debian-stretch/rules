@@ -73,7 +73,7 @@ endif
 config.status: configure
 	dh_testdir
 	# Add here commands to configure the package.
-	autoreconf -fi
+	dh_autoreconf
 	CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="$(LDFLAGS)" ./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) $(CONFIGURE_ARGS)
 
 
@@ -131,12 +131,13 @@ endif
 	rm -f config.log
 	rm -f debian/liblasso-perl.install
 
-	dh_clean 
+	dh_autoreconf_clean
+	dh_clean
 
 install: build
 	dh_testdir
 	dh_testroot
-	dh_clean -k 
+	dh_clean -k
 	dh_installdirs
 
 	# Add here commands to install the package into debian/tmp

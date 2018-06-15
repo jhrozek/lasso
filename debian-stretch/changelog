@@ -1,3 +1,35 @@
+lasso (2.6.0-2) unstable; urgency=medium
+
+  * d/compat: bump do debhelper level 9.
+  * d/control, d/rules: add and use dh-autoreconf.
+  * d/watch: add watch file.
+  * d/control: bump Standards-Version to 4.1.4 after those changes.
+  * d/liblasso3.symbols: add symbols file for liblasso3, imported from Ubuntu,
+    thanks to Corey Bryant <corey.bryant@canonical.com> (closes: #894296)
+  * d/liblasso3.symbols: update for 2.6.0.
+  * d/control: add Multi-Arch: same to liblasso-perl.
+  * d/control: use proper capitalization for ${misc:Depends}.
+  * d/control: bump versions in X-Python-Version and X-Python3-Version.
+
+ -- Frederic Peters <fpeters@debian.org>  Fri, 15 Jun 2018 21:33:58 +0200
+
+lasso (2.6.0-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Frederic Peters <fpeters@debian.org>  Thu, 14 Jun 2018 09:10:09 +0200
+
+lasso (2.5.99-1) unstable; urgency=medium
+
+  * New upstream release candidate.
+    - include support for SHA256 signatures (closes: #901411)
+  * debian/patches/0001-perl-remove-quotes-from-PERL-V-ccflags-output.patch
+    - dropped, released upstream
+  * debian/patches/Use-INSTALLDIRS-vendor-for-the-Perl-bindings-as-per-.patch
+    - dropped, released upstream
+
+ -- Frederic Peters <fpeters@debian.org>  Wed, 13 Jun 2018 09:25:08 +0200
+
 lasso (2.5.0-5) unstable; urgency=medium
 
   * d/: disable PHP support for now. (closes: #821547, #821683)
