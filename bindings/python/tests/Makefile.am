@@ -11,5 +11,8 @@ if WSF_ENABLED
 TESTS += idwsf1_tests.py idwsf2_tests.py
 endif
 
+TEST_EXTENSIONS = .py
+PY_LOG_COMPILER = $(PYTHON)
+
 EXTRA_DIST = profiles_tests.py binding_tests.py idwsf1_tests.py idwsf2_tests.py \
 	tests.py XmlTestRunner.py
