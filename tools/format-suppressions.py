@@ -1,4 +1,5 @@
 import re
+from six import print_
 
 valgrind_log = open('log','r').read()
 
@@ -33,11 +34,11 @@ for line in valgrind_log.splitlines():
 i = 43
 for x in keep:
     block = keep[x]
-    print "{"
-    print "   suppression", i
+    print_("{")
+    print_("   suppression", i)
     for x in block[1:]:
-        print x
+        print_(x)
         if re.search(limit_re, x):
             break
-    print '}'
+    print_('}')
     i += 1

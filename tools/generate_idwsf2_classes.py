@@ -5,6 +5,7 @@ import re
 import xml.dom.minidom
 import string
 import sys
+from six import print_
 
 full_constructors = {
     'disco_svc_metadata': (
@@ -232,7 +233,7 @@ extern "C" {
                 elif b_pref == 'tns':
                     includes['wsa:' + self.base_class_name[6:]] = True
                 else:
-                    print b_pref, self.base_prefix, self.base_class_name
+                    print_(b_pref, self.base_prefix, self.base_class_name)
                     raise 'XXX'
 
         s.append('#include <lasso/xml/xml.h>')
@@ -255,9 +256,9 @@ extern "C" {
                     else:
                         s.append('#include "%s.h"' % classes[ns][name].file_name)
                 except KeyError:
-                    print >> sys.stderr, 'W: missing', ns, name
+                    print_('W: missing', ns, name, file=sys.stderr)
                     if self.name == 'DataResponseBase':
-                        print classes[ns].keys()
+                        print_(classes[ns].keys())
                         raise 'toot'
                     pass
             else:
@@ -1418,7 +1419,7 @@ for filename in xsd_filenames:
                 if ns == 'lu':
                     ns = 'util'
                 elif ns not in doms.keys():
-                    print 'ref:', ref
+                    print_('ref:', ref)
                     raise 'NS: %s' % ns
                 typ = [x for x in doms[ns].getElementsByTagName('xs:attribute') \
                         if x.attributes.get('name') and x.attributes['name'].value == name][0]
@@ -1465,7 +1466,7 @@ for filename in xsd_filenames:
                     if ns == 'lu':
                         ns = 'util'
                     elif ns not in doms.keys():
-                        print 'ref:', ref
+                        print_('ref:', ref)
                         raise 'NS: %s' % ns
                     typ = [x for x in doms[ns].getElementsByTagName('xs:attribute') \
                             if x.attributes.get('name') and x.attributes['name'].value == name][0]
@@ -1571,7 +1572,7 @@ for filename in xsd_filenames:
                     refered = get_by_name_and_attribute(dom, 'xs:element', 'name', ref)
                     if refered:
                         if len(refered) >= 1:
-                            print >> sys.stderr, 'W: more than one refered'
+                            print_('W: more than one refered', file=sys.stderr)
                         refered = refered[0]
                         if refered.attributes.has_key('type'):
                             elem_type = refered.attributes['type'].value
@@ -1596,9 +1597,9 @@ for filename in xsd_filenames:
                             klass.has_ds_signature = True
                             elem_type = 'ds:Signature'
                         else:
-                            print >> sys.stderr, 'W: missing xmldsig support for %s' % ref
+                            print_('W: missing xmldsig support for %s' % ref, file=sys.stderr)
                     elif not doms.has_key(ns):
-                        print >> sys.stderr, 'W: missing dom for', ns
+                        print_('W: missing dom for', ns, file=sys.stderr)
                         elem_type = 'XXX'
                         if ns == 'samlp':
                             elem_type = ref
@@ -1664,13 +1665,13 @@ for filename in xsd_filenames:
                     ):
                 klass.elements.append( ('any', 'GList', 'LassoNode'))
             else:
-                print >> sys.stderr, 'W: any occurence for %s (prefix: %s)' % (klass.name, prefix)
+                print_('W: any occurence for %s (prefix: %s)' % (klass.name, prefix), file=sys.stderr)
             # XXX... other occurences of <any>
 
-        print klass.name
+        print_(klass.name)
         for elem in klass.elements:
-            print '  ', elem
-        print '-'*40
+            print_('  ', elem)
+        print_('-'*40)
 
 def get_ordered_classes():
     all_classes = []
@@ -1733,9 +1734,9 @@ def generate_swig_main(prefix):
 
 for klass_p in classes.keys():
     for klass in classes[klass_p].values():
-        #print klass_p, klass.name
+        #print_(klass_p, klass.name)
         if klass.base_class_name != 'Node':
-            #print '  <-', klass.base_prefix, ':', klass.base_class_name
+            #print_('  <-', klass.base_prefix, ':', klass.base_class_name)
             if klass.base_prefix:
                 prefix = klass.base_prefix
             else:

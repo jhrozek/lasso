@@ -5,6 +5,7 @@ import re
 import sys
 import os
 import os.path
+from six import print_
 
 enable_wsf = False
 
@@ -45,17 +46,17 @@ for root, dirs, files in os.walk(srcdir):
                     return x
             if type and macro_type:
                 standard_decl = [ convert(x) for x in [ 'LASSO_%s', 'LASSO_IS_%s', 'LASSO_TYPE_%s', get_type, 'LASSO_%s_CLASS', 'LASSO_IS_%s_CLASS', 'LASSO_%s_GET_CLASS' ] ]
-                print
-                print '<SECTION>'
-                print '<FILE>%s</FILE>' % file_name
-                print '<TITLE>%s</TITLE>' % type
-                print type
+                print_('')
+                print_('<SECTION>')
+                print_('<FILE>%s</FILE>' % file_name)
+                print_('<TITLE>%s</TITLE>' % type)
+                print_(type)
                 for x in types + normal_functions:
-                    print x
-                print '<SUBSECTION Standard>'
+                    print_(x)
+                print_('<SUBSECTION Standard>')
                 for x in standard_decl:
-                    print x
-                print '</SECTION>'
+                    print_(x)
+                print_('</SECTION>')
         except:
             continue
 

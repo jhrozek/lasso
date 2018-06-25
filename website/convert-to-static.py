@@ -4,19 +4,23 @@ import xml.dom.minidom
 import os
 import stat
 import re
-from cStringIO import StringIO
+from six import StringIO
 import sys
 
 import ezt
 
 base_template = ezt.Template()
-base_template.parse(file('templates/base.ezt').read())
+with open('templates/base.ezt') as f:
+    base_template.parse(f.read())
 buildlog_template = ezt.Template()
-buildlog_template.parse(file('templates/buildlog.ezt').read())
+with open('templates/buildlog.ezt') as f:
+    buildlog_template.parse(f.read())
 changelog_template = ezt.Template()
-changelog_template.parse(file('templates/changelog.ezt').read())
+with open('templates/changelog.ezt') as f:
+    changelog_template.parse(f.read())
 tests_template = ezt.Template()
-tests_template.parse(file('templates/tests.ezt').read())
+with open('templates/tests.ezt') as f:
+    tests_template.parse(f.read())
 
 def getText(nodelist):
     if not nodelist:
@@ -114,7 +118,8 @@ class Build:
         if self.changelog:
             self.changelog = self.changelog.replace('.xml', '')
             try:
-                dom_cl = xml.dom.minidom.parse(file('web' + self.changelog + '.xml'))
+                with open('web' + self.changelog + '.xml') as f:
+                    dom_cl = xml.dom.minidom.parse(f)
             except:
                 self.nb_commits = '?'
                 self.last_commit_author = '?'
@@ -161,16 +166,19 @@ for BUILDLOGS_DIR in ('build-logs', 'build-logs-wsf'):
                 continue
             if src_file.endswith('.html'):
                 try:
-                    body = re_body.findall(file(src_file).read())[0][1].strip()
+                    with open(src_file) as f:
+                        body = re_body.findall(f.read())[0][1].strip()
                 except IndexError:
                     raise "no body found"
                 fd = StringIO()
                 base_template.generate(fd, {'body': body, 'title': 'Build Log', 'section': 'buildbox'})
-                open(dst_file, 'w').write(fd.getvalue())
+                with open(dst_file, 'w') as f:
+                    f.write(fd.getvalue())
                 continue
 
             try:
-                dom = xml.dom.minidom.parse(file(src_file))
+                with open(src_file) as f:
+                    dom = xml.dom.minidom.parse(f)
             except:
                 continue
             type = dom.childNodes[0].nodeName
@@ -181,7 +189,8 @@ for BUILDLOGS_DIR in ('build-logs', 'build-logs-wsf'):
                 body = fd.getvalue()
                 fd = StringIO()
                 base_template.generate(fd, {'body': body, 'title': 'ChangeLog', 'section': 'buildbox'})
-                open(dst_file, 'w').write(fd.getvalue())
+                with open(dst_file, 'w') as f:
+                    f.write(fd.getvalue())
 
             if type == 'log':
                 entries = [ChangelogSvnEntry(x) for x in dom.getElementsByTagName('logentry')]
@@ -190,7 +199,8 @@ for BUILDLOGS_DIR in ('build-logs', 'build-logs-wsf'):
                 body = fd.getvalue()
                 fd = StringIO()
                 base_template.generate(fd, {'body': body, 'title': 'ChangeLog', 'section': 'buildbox'})
-                open(dst_file, 'w').write(fd.getvalue())
+                with open(dst_file, 'w') as f:
+                    f.write(fd.getvalue())
 
             if type == 'testsuites':
                 datetime = getText(dom.getElementsByTagName('datetime')[0].childNodes)
@@ -203,7 +213,8 @@ for BUILDLOGS_DIR in ('build-logs', 'build-logs-wsf'):
                 fd = StringIO()
                 base_template.generate(fd, {'body': body,
                         'title': 'Test Suite - %s' % title, 'section': 'buildbox'})
-                open(dst_file, 'w').write(fd.getvalue())
+                with open(dst_file, 'w') as f:
+                    f.write(fd.getvalue())
 
 
     day_dirs = os.listdir('web/%s/' % BUILDLOGS_DIR)
@@ -237,9 +248,11 @@ for BUILDLOGS_DIR in ('build-logs', 'build-logs-wsf'):
     fd = StringIO()
     base_template.generate(fd, {'body': body, 'title': 'Build Box', 'section': 'buildbox'})
     if BUILDLOGS_DIR == 'build-logs':
-        open('web-static/buildbox.html', 'w').write(fd.getvalue())
+        with open('web-static/buildbox.html', 'w') as f:
+            f.write(fd.getvalue())
     elif BUILDLOGS_DIR == 'build-logs-wsf':
-        open('web-static/buildbox-wsf.html', 'w').write(fd.getvalue())
+        with open('web-static/buildbox-wsf.html', 'w') as f:
+            f.write(fd.getvalue())
 
 for base, dirs, files in os.walk('web'):
     if '/build-logs' in base or '/news/' in base:
@@ -276,7 +289,8 @@ for base, dirs, files in os.walk('web'):
 
         type = None
         if ext == '.xml':
-            dom = xml.dom.minidom.parse(file(src_file))
+            with  open(src_file) as f:
+                dom = xml.dom.minidom.parse(f)
             type = dom.childNodes[0].nodeName
             dst_file = dst_file.replace('.xml', '.html')
 
@@ -288,12 +302,14 @@ for base, dirs, files in os.walk('web'):
             news_files = news_files[:2]
             news = []
             for f in news_files:
-                news.append('<div>%s</div>' % re_div.findall(file(os.path.join('web/news/', f)).read())[0][1].strip())
+                with open(os.path.join('web/news/', f)) as f:
+                    news.append('<div>%s</div>' % re_div.findall(f.read())[0][1].strip())
             news = '\n'.join(news)
 
         section = src_file.split('/')[1].replace('.xml', '')
         if ext == '.html' or type == 'html':
-            content = file(src_file).read()
+            with open(src_file) as f:
+                content = f.read()
             try:
                 body = re_body.findall(content)[0][1].strip()
             except IndexError:
@@ -302,6 +318,7 @@ for base, dirs, files in os.walk('web'):
             fd = StringIO()
             base_template.generate(fd, {'body': body, 'title': title, 'section': section,
                     'news': news})
-            open(dst_file, 'w').write(fd.getvalue())
+            with open(dst_file, 'w')as f:
+                f.write(fd.getvalue())
             continue
 

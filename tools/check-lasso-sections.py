@@ -3,9 +3,12 @@
 import sys
 import os.path
 import re
+from six import print_
 
 if len(sys.argv) < 3:
-    print "Usage: check-lasso-sections.py lasso docs/referenrece/lasso/lasso-sections.txt"
+    print_("Usage: check-lasso-sections.py "
+           "lasso docs/referenrece/lasso/lasso-sections.txt",
+           file=sys.stderr)
     sys.exit(1)
 source=sys.argv[1]
 lasso_sections_txt=sys.argv[2]
@@ -15,7 +18,8 @@ methods=[]
 for dirpath, dirnames, filenames in os.walk(source):
     for filename in filenames:
         _, ext = os.path.splitext(filename)
-        lines = list(file(os.path.join(dirpath, filename)))
+        with open(os.path.join(dirpath, filename)) as f:
+            lines = f.readlines()
         while lines:
             line, lines = lines[0], lines[1:]
             line=line.strip()
@@ -30,13 +34,13 @@ for dirpath, dirnames, filenames in os.walk(source):
 
 lasso_sections_txt=file(lasso_sections_txt).read()
 
-print ' = Methods missing from lasso-sections.txt =\n'
+print_(' = Methods missing from lasso-sections.txt =\n')
 for method in methods:
     if not method in lasso_sections_txt:
-        print method
+        print_(method)
 
-print ' = Methods in lasso-sections.txt which does not exist anymore = \n'
+print_(' = Methods in lasso-sections.txt which does not exist anymore = \n')
 for line in lasso_sections_txt.splitlines():
     if line.startswith('lasso_'):
         if line not in methods:
-            print line
+            print_(line)

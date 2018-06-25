@@ -230,7 +230,8 @@ PHP_MSHUTDOWN_FUNCTION(lasso)
 ''', file=self.fd)
             else:
                 if not is_cstring(arg):
-                    print >>sys.stderr, 'W: %s has no explicit string annotation' % (arg,)
+                    six.print_('W: %s has no explicit string annotation' % (arg,),
+                               file=sys.stderr)
                 six.print_('''\
     set_array_from_hashtable_of_strings(return_c_value, &return_value);
 ''', file=self.fd)
@@ -279,7 +280,7 @@ PHP_MSHUTDOWN_FUNCTION(lasso)
             elif is_time_t_pointer(arg):
                 parse_tuple_format.append('l')
                 parse_tuple_args.append('&%s' % (arg_name(arg),))
-                print >>self.fd,  '    time_t %s = 0;' % (arg_name(arg),)
+                six.print_('    time_t %s = 0;' % (arg_name(arg),), file=self.fd)
             elif is_xml_node(arg):
                 parse_tuple_format.append('s!')
                 parse_tuple_args.append('&%s_str, &%s_len' % (arg_name(arg), arg_name(arg)))

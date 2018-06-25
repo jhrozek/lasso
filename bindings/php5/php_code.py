@@ -304,7 +304,7 @@ function lassoRegisterIdWsf2DstService($prefix, $href) {
                     m.name.endswith('_new_full'):
                 continue
             if not m.name.startswith(method_prefix):
-                print >> sys.stderr, 'W:', m.name, 'vs', method_prefix
+                six.print_('W:', m.name, 'vs', method_prefix, file=sys.stderr)
                 continue
 
             if m.rename:
@@ -330,7 +330,7 @@ function lassoRegisterIdWsf2DstService($prefix, $href) {
                         elif defval.startswith('b:'): # boolean
                             php_args.append('%s = %s' % (arg_name, defval[2:]))
                         else:
-                            print >> sys.stderr, "E: don't know what to do with %s" % defval
+                            six.print_("E: don't know what to do with %s" % defval, file=sys.stderr)
                             sys.exit(1)
                     else:
                         php_args.append('%s = null' % arg_name)
@@ -396,7 +396,8 @@ function lassoRegisterIdWsf2DstService($prefix, $href) {
             elif type == '%': # %TRUE, %FALSE
                 if var in ('TRUE', 'FALSE'):
                     return var
-                print >> sys.stderr, 'W: unknown docstring thingie \'%s\' in \'%s\'' % (s.group(1), func.docstring.orig_docstring)
+                six.print_('W: unknown docstring thingie \'%s\' in \'%s\'' % (s.group(1), func.docstring.orig_docstring),
+                           file=sys.stderr)
             elif type == '@':
                 if var == first_arg_name:
                     return '$this'

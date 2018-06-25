@@ -2,7 +2,7 @@ import sys
 import os.path
 sys.path.append(os.path.join(os.path.dirname(__file__),'../bindings'))
 import bindings
-
+from six import print_
 
 
 def main(args):
@@ -27,19 +27,19 @@ def main(args):
         d[x.name] = x
     for x in binding.structs:
         d[x.name] = x
-    l = d.keys()
-    l.sort()
+    l = sorted(d.keys())
     for x in l:
         if isinstance(d[x], bindings.Function):
-            print d[x].return_type, " ",
-            print x,
-            print '(', ', '.join(map(lambda x: x[0] + ' ' + x[1], d[x].args)), ')'
+            print_(d[x].return_type, " ",)
+            print_(x, end='')
+            print_('(', ', '.join(map(lambda x: x[0] + ' ' + x[1], d[x].args)), ')')
         elif isinstance(d[x], bindings.Struct):
-            print 'struct', x, '{ ',
-            print ', '.join(map(lambda x: x[0] + ' ' + x[1], d[x].members)),
-            print ' }'
+            print_('struct', x, '{ ',)
+            print_(', '.join(map(lambda x: x[0] + ' ' + x[1], d[x].members)),
+                   end='')
+            print_(' }')
         else:
-            print x
+            print_(x)
 
 if __name__ == "__main__":
     main(sys.argv)

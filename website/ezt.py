@@ -229,11 +229,7 @@ import re
 from types import StringType, IntType, FloatType, LongType
 import os
 import cgi
-try:
-  import cStringIO
-except ImportError:
-  import StringIO
-  cStringIO = StringIO
+from six import StringIO
 
 #
 # Formatting types
@@ -464,7 +460,8 @@ class Template:
     ### use the same quoting as HTML for now
     self._cmd_print_html(valref, fp, ctx)
 
-  def _cmd_include(self, (valref, reader), fp, ctx):
+  def _cmd_include(self, valref_reader_tuple, fp, ctx):
+    valref, reader = valref_reader_tuple
     fname = _get_value(valref, ctx)
     ### note: we don't have the set of for_names to pass into this parse.
     ### I don't think there is anything to do but document it. we also
@@ -527,7 +524,7 @@ class Template:
 
   def _cmd_define(self, args, fp, ctx):
     ((name,), unused, section) = args
-    valfp = cStringIO.StringIO()
+    valfp = StringIO()
     if section is not None:
       self._execute(section, valfp, ctx)
     ctx.defines[name] = valfp.getvalue()
@@ -587,7 +584,7 @@ def _prepare_ref(refname, for_names, file_args):
 
   return refname, start, rest
 
-def _get_value((refname, start, rest), ctx):
+def _get_value(refname_start_rest_tuple, ctx):
   """(refname, start, rest) -> a prepared `value reference' (see above).
   ctx -> an execution context instance.
 
@@ -595,6 +592,7 @@ def _get_value((refname, start, rest), ctx):
   for blocks take precedence over data dictionary members with the
   same name.
   """
+  refname, start, rest = refname_start_rest_tuple
   if rest is None:
     # it was a string constant
     return start

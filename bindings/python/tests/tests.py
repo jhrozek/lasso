@@ -31,6 +31,7 @@ import os
 import sys
 import time
 import unittest
+from six import print_
 
 from XmlTestRunner import XmlTestRunner
 
@@ -63,10 +64,10 @@ parser.add_option(
 __builtin__.__dict__['dataDir'] = os.path.join(options.srcDir, '../../../tests/data')
 
 if options.xmlMode:
-    print """<?xml version="1.0"?>"""
-    print """<testsuites xmlns="http://check.sourceforge.net/ns">"""
-    print """  <title>Python Bindings</title>"""
-    print """  <datetime>%s</datetime>""" % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+    print_('<?xml version="1.0"?>')
+    print_('<testsuites xmlns="http://check.sourceforge.net/ns">')
+    print_('  <title>Python Bindings</title>')
+    print_('  <datetime>%s</datetime>' % time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
 
 success = True
 for testSuite in testSuites:
@@ -77,7 +78,7 @@ for testSuite in testSuites:
         if fp:
             fp.close()
     if not module:
-        print >> sys.stderr, 'Unable to load test suite:', testSuite
+        print_('Unable to load test suite:', testSuite, file=sys.stderr)
         continue
 
     if module.__doc__:
@@ -90,13 +91,13 @@ for testSuite in testSuites:
     else:
         runner = unittest.TextTestRunner(verbosity=2)
         print
-        print '-' * len(doc)
-        print doc
-        print '-' * len(doc)
+        print_('-' * len(doc))
+        print_(doc)
+        print_('-' * len(doc))
     result = runner.run(module.allTests)
     success = success and result.wasSuccessful()
 
 if options.xmlMode:
-    print """</testsuites>"""
+    print_('</testsuites>')
 
 sys.exit(not success)

@@ -7,6 +7,7 @@ import twill
 import urllib2
 import os.path
 import re
+from six import print_
 
 CONFIG_FILE = os.path.expanduser('~/.config/lasso_integration.conf')
 CONFIG = dict()
@@ -19,7 +20,7 @@ if os.path.exists(CONFIG_FILE):
             m = re.match('(\w*) = (.*)', line)
             CONFIG[m.groups()[0]] = m.groups()[1]
         except:
-            print "Line", i, " of configuration file", CONFIG_FILE, "is invalid:", line
+            print_("Line", i, " of configuration file", CONFIG_FILE, "is invalid:", line)
         i +=1
 
 # Combine default and configuration file
@@ -60,13 +61,15 @@ def waitforport(port, start):
 
 def setup():
     if not os.path.exists(AUTHENTIC_SRCDIR):
-        print >> sys.stderr, 'Authentic source dir (%s) does not exist' % AUTHENTIC_SRCDIR
-        print >> sys.stderr, 'Create it or edit tests/config.py to match your local installation'
+        print_('Authentic source dir (%s) does not exist' % AUTHENTIC_SRCDIR,
+               file=sys.stderr)
+        print_('Create it or edit tests/config.py to match your local installation',
+               file=sys.stderr)
         sys.exit(1)
 
     silent = os.environ.get('NO_SILENT') is None
     twill.commands.reset_browser()
-    twill.set_output(file('/dev/null', 'w'))
+    twill.set_output(open('/dev/null', 'w'))
     base = []
     if os.environ.get('VALGRIND') is '1' and os.path.exists('/usr/bin/valgrind'):
         base = ['./valgrind-wrapper.sh', 'python']
@@ -102,6 +105,7 @@ def teardown():
             # valgrind seems to prefer SIGINT to SIGTERM
             os.kill(pid, signal.SIGINT)
         except OSError:
-            print >> sys.stderr, 'failed to kill pid %s' % pid
+            print_('failed to kill pid %s' % pid,
+                   file=sys.stderr)
     os.system('rm -rf /tmp/.tests/')
 
