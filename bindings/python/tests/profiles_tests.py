@@ -386,6 +386,21 @@ class LogoutTestCase(unittest.TestCase):
         else:
             self.fail('Logout processResponseMsg should have failed.')
 
+    def test05(self):
+        '''Test parsing of a logout request with more than one session index'''
+        content = '''<samlp:LogoutRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" ID="xxxx" Version="2.0" IssueInstant="2010-06-14T22:00:00">
+        <saml:Issuer>me</saml:Issuer>
+        <saml:NameID>coin</saml:NameID>
+        <samlp:SessionIndex>id1</samlp:SessionIndex>
+        <samlp:SessionIndex>id2</samlp:SessionIndex>
+        <samlp:SessionIndex>id3</samlp:SessionIndex>
+        </samlp:LogoutRequest>'''
+
+        node = lasso.Samlp2LogoutRequest.newFromXmlNode(content)
+        assert isinstance(node, lasso.Samlp2LogoutRequest)
+        assert node.sessionIndex == 'id1'
+        assert node.sessionIndexes == ('id1', 'id2', 'id3')
+
 class DefederationTestCase(unittest.TestCase):
     def test01(self):
         """IDP initiated defederation; testing processNotificationMsg with non Liberty query."""
@@ -478,32 +493,15 @@ class AttributeAuthorityTestCase(unittest.TestCase):
         assert aq.response.assertion[0].attributeStatement[0].attribute[0]
         assert aq.response.assertion[0].attributeStatement[0].attribute[0].attributeValue[0]
 
-class LogoutTestCase(unittest.TestCase):
-    def test01(self):
-        '''Test parsing of a logout request with more than one session index'''
-        content = '''<samlp:LogoutRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" ID="xxxx" Version="2.0" IssueInstant="2010-06-14T22:00:00">
-        <saml:Issuer>me</saml:Issuer>
-        <saml:NameID>coin</saml:NameID>
-        <samlp:SessionIndex>id1</samlp:SessionIndex>
-        <samlp:SessionIndex>id2</samlp:SessionIndex>
-        <samlp:SessionIndex>id3</samlp:SessionIndex>
-        </samlp:LogoutRequest>'''
-
-        node = lasso.Samlp2LogoutRequest.newFromXmlNode(content)
-        assert isinstance(node, lasso.Samlp2LogoutRequest)
-        assert node.sessionIndex == 'id1'
-        assert node.sessionIndexes == ('id1', 'id2', 'id3')
-
 serverSuite = unittest.makeSuite(ServerTestCase, 'test')
 loginSuite = unittest.makeSuite(LoginTestCase, 'test')
 logoutSuite = unittest.makeSuite(LogoutTestCase, 'test')
 defederationSuite = unittest.makeSuite(DefederationTestCase, 'test')
 identitySuite = unittest.makeSuite(IdentityTestCase, 'test')
 attributeSuite = unittest.makeSuite(AttributeAuthorityTestCase, 'test')
-logoutSuite = unittest.makeSuite(LogoutTestCase, 'test')
 
 allTests = unittest.TestSuite((serverSuite, loginSuite, logoutSuite, defederationSuite,
-                               identitySuite, attributeSuite, logoutSuite))
+                               identitySuite, attributeSuite))
 
 if __name__ == '__main__':
     sys.exit(not unittest.TextTestRunner(verbosity = 2).run(allTests).wasSuccessful())
