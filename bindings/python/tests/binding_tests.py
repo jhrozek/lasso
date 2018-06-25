@@ -311,8 +311,8 @@ class BindingTestCase(unittest.TestCase):
                    </samlp:Extensions>'''
         node = lasso.Node.newFromXmlNode(content)
         assert 'next_url' in node.any[1]
-        assert 'huhu' in node.attributes.keys()[0]
-        assert node.attributes.values()[0] == 'xxx'
+        assert '{https://www.entrouvert.com/}huhu' in node.attributes.keys()
+        assert 'xxx' in node.attributes.values()
         node.any = ('<zob>coin</zob>',)
         node.attributes = {'michou': 'zozo'}
         assert '<zob>coin</zob>' in node.dump()

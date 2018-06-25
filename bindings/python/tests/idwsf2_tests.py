@@ -27,7 +27,7 @@
 import os
 import unittest
 import sys
-from StringIO import StringIO
+from six import StringIO
 import logging
 
 logging.basicConfig()
@@ -310,11 +310,11 @@ class MetadataTestCase(IdWsf2TestCase):
         self.failUnless(idp_disco.request.svcMD[0].svcMDID is None)
         try:
             idp_disco.checkSecurityMechanism()
-        except lasso.Error, e:
+        except lasso.Error as e:
             self.fail(e)
         try:
             idp_disco.validateRequest()
-        except lasso.Error, e:
+        except lasso.Error as e:
             self.fail(e)
         self.failUnless(idp_disco.response is not None)
         self.failUnlessEqual(len(idp_disco.metadatas), 1)
@@ -391,16 +391,16 @@ class MetadataTestCase(IdWsf2TestCase):
         self.failUnless(idp_disco is not None)
         try:
             idp_disco.processRequestMsg(wsp_disco.msgBody)
-        except lasso.Error, e:
+        except lasso.Error as e:
             self.fail(e)
         self.failUnless(idp_disco.request is not None)
         try:
             idp_disco.checkSecurityMechanism()
-        except lasso.Error, e:
+        except lasso.Error as e:
             self.fail(e)
         try:
             idp_disco.failRequest(lasso.IDWSF2_DISCOVERY_STATUS_CODE_FAILED, lasso.IDWSF2_DISCOVERY_STATUS_CODE_FORBIDDEN)
-        except lasso.Error, e:
+        except lasso.Error as e:
             self.fail(e)
         self.failUnless(idp_disco.response is not None)
         self.failUnless(idp_disco.response.status is not None)
@@ -415,7 +415,7 @@ class MetadataTestCase(IdWsf2TestCase):
             wsp_disco.processResponseMsg(idp_disco.msgBody)
         except lasso.Idwsf2DiscoveryForbiddenError:
             pass
-        except lasso.Error, e:
+        except lasso.Error as e:
             self.fail(e)
 
     def test03(self):
@@ -475,7 +475,7 @@ class MetadataTestCase(IdWsf2TestCase):
         self.failUnless(soap_envelope.getMessageId() is not None)
         try:
             idp_disco.checkSecurityMechanism()
-        except lasso.Error, e:
+        except lasso.Error as e:
             self.fail(e)
         # redirect
         interactionUrl = spInteractionUrl
@@ -488,7 +488,7 @@ class MetadataTestCase(IdWsf2TestCase):
         self.failUnless(response.detail.any[0].redirectURL.startswith(interactionUrl + '?transactionID='))
         try:
             idp_disco.buildResponseMsg()
-        except lasso.Error, e:
+        except lasso.Error as e:
             self.fail(e)
         self.failUnless(idp_disco.msgBody is not None)
 
@@ -500,7 +500,7 @@ class MetadataTestCase(IdWsf2TestCase):
             wsp_disco.processResponseMsg(idp_disco.msgBody)
         except lasso.WsfprofileRedirectRequestError:
             pass
-        except lasso.Error, e:
+        except lasso.Error as e:
             self.fail(e)
         response_envelope = wsp_disco.getSoapEnvelopeResponse()
         self.failUnless(response_envelope.sb2GetRedirectRequestUrl().startswith(interactionUrl + '?transactionID='))
@@ -527,11 +527,11 @@ class MetadataTestCase(IdWsf2TestCase):
         self.failUnless(idp_disco.request.svcMD[0].svcMDID is None)
         try:
             idp_disco.checkSecurityMechanism()
-        except lasso.Error, e:
+        except lasso.Error as e:
             self.fail(e)
         try:
             idp_disco.validateRequest()
-        except lasso.Error, e:
+        except lasso.Error as e:
             self.fail(e)
         self.failUnless(idp_disco.response is not None)
         self.failUnlessEqual(len(idp_disco.metadatas), 1)
