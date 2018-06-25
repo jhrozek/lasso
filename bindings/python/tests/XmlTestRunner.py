@@ -1,4 +1,4 @@
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 #
 # $Id: XmlTestRunner.py 3254 2007-06-05 21:23:57Z fpeters $
 #

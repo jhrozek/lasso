@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 #
 # $Id: idwsf2_tests.py 3254 2007-06-05 21:23:57Z dlaniel $
 #

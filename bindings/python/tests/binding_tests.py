@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 #
 # $Id: binding_tests.py 3283 2007-06-11 09:10:18Z dlaniel $
 #

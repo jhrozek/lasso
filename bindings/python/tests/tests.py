@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 #
 # $Id: tests.py 3425 2007-10-10 09:31:03Z dlaniel $
 #
