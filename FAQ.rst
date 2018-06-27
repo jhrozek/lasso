@@ -243,15 +243,15 @@ the message is sent using the SOAP, HTTP-POST or HTTP-Redirect bindings.
      import lasso
 
      msg = request.POST['SAMLRequest']
-     provider_id = lasso.Profile.getIssuser(msg)
+     provider_id = lasso.profileGetIssuer(msg)
 
      # GET case
      msg = request.META['QUERY_STRING']
-     provider_id = lasso.Profile.getIssuer(msg)
+     provider_id = lasso.profileGetIssuer(msg)
 
      # SOAP case
      msg = request.read()
-     provider_id = lasso.Profile.getIssuer(msg)
+     provider_id = lasso.profileGetIssuer(msg)
 
 The python example is pseudo-code. It assumes there is a request object whom
 you can retrieve a POST parameters, the query string or the POST body.
