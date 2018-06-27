@@ -258,6 +258,11 @@ class %sError(%sError):
     def generate_footer(self, fd):
         print_('''
 
+def _profileGetIssuer(cls, *args, **kwargs):
+    return profileGetIssuer(*args, **kwargs)
+
+Profile.getIssuer = classmethod(_profileGetIssuer)
+
 import lasso
 
 # backward compatibility with the SWIG binding
