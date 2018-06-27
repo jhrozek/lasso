@@ -2082,7 +2082,7 @@ START_TEST(test15_ds_key_info)
 }
 END_TEST
 
-/* test load federation */
+/* test get issuer */
 START_TEST(test16_test_get_issuer)
 {
 	char *content = NULL;
@@ -2169,6 +2169,12 @@ START_TEST(test16_test_get_issuer)
 	lasso_release_gobject(spLoginContext);
 	lasso_release_gobject(spServerContext);
 
+	begin_check_do_log("Lasso", G_LOG_LEVEL_DEBUG, "could not decode POST SAML message", TRUE);
+	check_null(lasso_profile_get_issuer(""));
+	end_check_do_log("Lasso");
+	begin_check_do_log("Lasso", G_LOG_LEVEL_DEBUG, "message is not base64", TRUE);
+	check_null(lasso_profile_get_issuer("SAMLRequest=!!hello!!"));
+	end_check_do_log("Lasso");
 }
 END_TEST
 

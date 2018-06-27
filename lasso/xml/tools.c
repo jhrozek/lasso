@@ -3056,6 +3056,7 @@ lasso_get_saml_message(xmlChar **query_fields) {
 	int i = 0;
 	char *enc = NULL;
 	char *message = NULL;
+	char *saml_message = NULL;
 	char *decoded_message = NULL;
 	xmlChar *field = NULL;
 	char *t = NULL;
@@ -3096,12 +3097,12 @@ lasso_get_saml_message(xmlChar **query_fields) {
 		goto cleanup;
 	}
 	/* rc contains the length of the result */
-	message = (char*)lasso_inflate((unsigned char*) decoded_message, rc);
+	saml_message = (char*)lasso_inflate((unsigned char*) decoded_message, rc);
 cleanup:
 	if (decoded_message) {
 		lasso_release(decoded_message);
 	}
-	return message;
+	return saml_message;
 }
 
 /**
@@ -3126,10 +3127,10 @@ lasso_xmltextreader_from_message(const char *message, char **to_free) {
 		if (needle && message[len-1] != '=') {
 			query_fields = lasso_urlencoded_to_strings(message);
 			message = *to_free = lasso_get_saml_message(query_fields);
-			len = strlen(message);
 			if (! message) {
 				goto cleanup;
 			}
+			len = strlen(message);
 		} else { /* POST */
 			int rc = 0;
 
