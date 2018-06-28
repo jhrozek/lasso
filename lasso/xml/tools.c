@@ -1353,11 +1353,11 @@ lasso_inflate(unsigned char *input, size_t len)
 	zstr.zfree = NULL;
 	zstr.opaque = NULL;
 
-	output = g_malloc(len*10);
+	output = g_malloc(len*20);
 	zstr.avail_in = len;
 	zstr.next_in = (unsigned char*)input;
 	zstr.total_in = 0;
-	zstr.avail_out = len*10;
+	zstr.avail_out = len*20;
 	zstr.total_out = 0;
 	zstr.next_out = output;
 
