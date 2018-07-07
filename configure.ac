@@ -131,7 +131,7 @@ dnl AC_CHECK_PROGS(JAR, fastjar jar)
 AC_CHECK_PROGS(PERL, perl)
 AC_CHECK_PROGS(PHP5, php5 php)
 AC_CHECK_PROGS(PHP5_CONFIG, php-config5 php-config)
-AC_CHECK_PROGS(PYTHON, python)
+AC_CHECK_PROGS(PYTHON, python3 python python2)
 AC_CHECK_PROGS(SWIG, swig)
 
 dnl Make sure we have an ANSI compiler
