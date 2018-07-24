@@ -700,7 +700,7 @@ AC_ARG_ENABLE(debugging,   [  --enable-debugging      enable debuging optimizati
 if test "z$enable_debugging" = "zyes" ; then
     enable_debugging=yes
     LASSO_DEFINES="$LASSO_DEFINES -DLASSO_DEBUG"
-    CFLAGS="$CFLAGS -O0 -g -Wall -Wextra -Werror"
+    CFLAGS="$CFLAGS -O0 -g -Wall -Wextra"
 else
     enable_debugging=no
 fi    
