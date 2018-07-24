@@ -74,7 +74,7 @@
 #include "../lasso_config.h"
 
 /**
- * SECTION:tools
+ * SECTION:saml2_utils
  * @short_description: Misc functions used inside Lasso
  * @stability: Internal
  */

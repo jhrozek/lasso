@@ -1,6 +1,56 @@
 NEWS
 ====
 
+2.6.1 - Aptil 22th 2019
+----------------------
+42 commits, 425 files changed, 3894 insertions, 795 deletions
+
+- Keep order of SessionIndexes
+- Clear SessionIndex when private SessionIndexes is empty (#41950)
+- misc: clear warnings about class_init signature using coccinelle
+- tests: fix compilation with check>0.12 (#39101)
+- Sort input file lists to make build deterministic (#40454)
+- debian: disable php7 (#28608)
+- Modify .gitignore for PHP 7 binding (#28608)
+- Add PHP 7 binding (#28608)
+- Fix tests broken by new DEBUG logs (#12829)
+- Improve error logging during node parsing (#12829)
+- Improve configure compatibility (#32425)
+- Improve compatibility with Solaris (#32425)
+- Fix reference count in lasso_server_add_provider2 (fixes #35061)
+- Fix python multi-version builds on jessie and stretch
+- docs: do not use Internet to fetch DTDs, entities or documents (#35590)
+- fix missing include <strings.h> for index() (fixes #33791)
+- PAOS: Do not populate "Destination" attribute (Dmitrii Shcherbakov)
+- export symbol lasso_log (#33784)
+- Do not ignore WantAuthnRequestSigned value with hint MAYBE (#33354)
+- Use io.open(encoding=utf8) in extract_symbols/sections.py (#33360)
+- xml: adapt schema in saml2:AuthnContext (#29340)
+- Fix ECP signature not found error when only assertion is signed (#26828)
+- autoconf: search python interpreters by versions (John Dennis)
+- python: make tools compatible with Py3 (John Dennis)
+- python: run tests and tools with same interpreter as binding target (John Dennis)
+- improve resiliency of lasso_inflate (#24853)
+- fix segfault in lasso_get_saml_message (#24830)
+- python: add classmethod Profile.getIssuer (#24831)
+- website: add news about 2.6.0 release
+- debian: sync with debian package (#24595)
+- faq: fix references to lasso.profileGetIssuer (#24832)
+- python: add a classmethod for lasso.profileGetIssuer (#24831)
+- tools: fix segfault in lasso_get_saml_message (fixes #24830)
+- jenkins.sh: add a make clean to prevent previous build to break new ones
+- tools: set output buffer size in lasso_inflate to 20 times the input size (fixes #24853)
+- Use python interpreter specified configure script
+- Make Python scripts compatible with both Py2 and Py3
+- fix duplicate definition of LogoutTestCase and logoutSuite
+- Downcase UTF-8 file encoding name
+- Make more Python scripts compatible with both Py2 and Py3
+- Configure should search for versioned Python interpreter.
+- Clean python cache when building python3 binding
+- Move AC_SUBST declaration for AM_CFLAGS with alike (#24771)
+- Remove -Werror from --enable-debugging (fixes #24771)
+- xml: fix parsing of saml:AuthnContext (fixes #25640)
+
 2.6.0 - June 1st 2018
 ---------------------
 32 commits, 73 files changed, 1920 insertions, 696 deletions

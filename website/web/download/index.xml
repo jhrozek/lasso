@@ -9,7 +9,7 @@
 
 	<p>
 		All our <a href="https://dev.entrouvert.org/releases/lasso/">releases</a>
-		are available through HTTP. The latest is the 2.6.0.
+		are available through HTTPs. The latest is the 2.6.1.
 	</p>
 
 	<h1>Binary Downloads</h1>
@@ -17,25 +17,25 @@
 	<h2>Debian Packages</h2>
 
 	<p>
-	  Debian packages are available in the official Debian distribution,
-	  they are included in the current testing and development versions
-	  (<i>wheezy</i> and <i>sid</i>).
+	  Debian packages are available in the official Debian distribution.
 	</p>
 	 
 	<p>
-		Additionnaly there are <i>squeeze</i> and <i>wheezy</i> packages and there may be more
+		Additionnaly there are <i>stretch</i> and <i>jessie</i> packages and there may be more
 	  up-to-date packages available in our local apt repository.  Pick the
 	  one appropriate for your distribution:
 	</p>
 
-	<h3>Squeeze</h3>
+	<h3>Stretch</h3>
 	<pre>
-	deb http://deb.entrouvert.org squeeze main
+	deb http://deb.entrouvert.org stretch main
 	</pre>
-	<h3>Wheezy</h3>
+
+	<h3>Jessie</h3>
 	<pre>
-	deb http://deb.entrouvert.org wheezy main
+	deb http://deb.entrouvert.org jessie main
 	</pre>
+
 
 	<p>Look on <a href="http://deb.entrouvert.org">deb.entrouvert.org</a> to get the GPG key of our repository</p>
 

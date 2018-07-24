@@ -20,4 +20,5 @@ EXTRA_DIST = \
 	sp3-ssl sp4-la sp4-ssl \
 	sp5-saml2 sp6-saml2 sp7-saml2 \
 	sp8-1024-la sp9-1024-saml2 user1-la \
-	user2-la user3-la user4-la
+	user2-la user3-la user4-la \
+	rootCA.crt rootCA.key rootCA.srl
