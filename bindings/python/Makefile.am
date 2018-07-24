@@ -41,3 +41,6 @@ lasso.py _lasso.c: lang.py wrapper_top.c wrapper_bottom.c ../bindings.py
 
 
 endif
+
+distclean-local:
+	rm -rf __pycache__
