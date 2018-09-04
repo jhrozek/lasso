@@ -61,7 +61,7 @@
 static struct XmlSnippet schema_snippets[] = {
 	{ "AuthnContextClassRef", SNIPPET_CONTENT | SNIPPET_OPTIONAL | SNIPPET_JUMP_ON_MISS | SNIPPET_JUMP_3,
 		G_STRUCT_OFFSET(LassoSaml2AuthnContext, AuthnContextClassRef), NULL, NULL, NULL},
-	{ "AuthnContextDecl", SNIPPET_NODE | SNIPPET_OPTIONAL | SNIPPET_JUMP_ON_MISS | SNIPPET_JUMP_4,
+	{ "AuthnContextDecl", SNIPPET_NODE | SNIPPET_OPTIONAL | SNIPPET_JUMP_ON_MATCH | SNIPPET_JUMP_4,
 		G_STRUCT_OFFSET(LassoSaml2AuthnContext, AuthnContextDecl), NULL, NULL, NULL},
 	{ "AuthnContextDeclRef", SNIPPET_CONTENT | SNIPPET_OPTIONAL | SNIPPET_JUMP | SNIPPET_JUMP_3,
 		G_STRUCT_OFFSET(LassoSaml2AuthnContext, AuthnContextDeclRef), NULL, NULL, NULL},
