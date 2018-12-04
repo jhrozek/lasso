@@ -131,6 +131,8 @@ dnl AC_CHECK_PROGS(JAR, fastjar jar)
 AC_CHECK_PROGS(PERL, perl)
 AC_CHECK_PROGS(PHP5, php5 php)
 AC_CHECK_PROGS(PHP5_CONFIG, php-config5 php-config)
+AC_CHECK_PROGS(PHP7, php7.4 php7.3 php7.2 php7.1 php7.0 php7)
+AC_CHECK_PROGS(PHP7_CONFIG, php-config7.4 php-config7.3 php-config7.2 php-config7.1 php-config7.0 php-config7)
 AC_CHECK_PROGS(PYTHON, python3 python python2)
 AC_CHECK_PROGS(SWIG, swig)
 
@@ -431,6 +433,81 @@ fi
 AC_MSG_RESULT($enable_php5)
 AM_CONDITIONAL([PHP5_ENABLED], [test "x$enable_php5" = "xyes"])
 AC_SUBST(PHP5_VERSION)
+
+
+# -----------
+# PHP 7 binding
+# -----------
+
+dnl Check if php is explicitly enabled.
+AC_ARG_ENABLE(php7, [  --enable-php7          enable the PHP 7 binding],,
+              enable_php7="yes")
+
+AC_ARG_WITH(php7-config,
+            [  --with-php7-config=(PHP7_CONFIG)      Specify full path to php-config7.])
+
+AC_ARG_ENABLE(php7-force, [  --enable-php7-force     always enable of the PHP 7 binding (win32)],
+              [ENABLE_PHP7_FORCE="yes"],
+              [ENABLE_PHP7_FORCE="no"])
+
+
+dnl Check if user passed a specific php-config program.
+if test "X$with_php7_config" != "X" ; then
+    PHP7_CONFIG=$with_php7_config
+fi
+
+if test "X$PHP7_CONFIG" != "X" ; then
+  PHP7_INCLUDES=`$PHP7_CONFIG --includes`
+  PHP7_LDFLAGS=`$PHP7_CONFIG --ldflags`
+  PHP7_LIBS=`$PHP7_CONFIG --libs`
+  PHP7_PREFIX=`$PHP7_CONFIG --prefix`
+  PHP7_QUOTED_PREFIX=$(echo $PHP7_PREFIX | $SED 's/\//\\\//g')
+  PHP7_UNPREFIXED_EXTENSION_DIR=$($PHP7_CONFIG --extension-dir | $SED "s/$PHP7_QUOTED_PREFIX//g")
+else
+  # We assume PHP are in /usr/local directory.
+  if test $MINGW -eq 1; then 
+    CFLAGS="$CFLAGS -DZTS -DZEND_WIN32 -DWIN32 -D_MBCS"
+  fi
+  PHP7_INCLUDES="-I/usr/local/include/php7 -I/usr/local/include/php7/main -I/usr/local/include/php7/Zend -I/usr/local/include/php7/TSRM -I/usr/local/include/php7/win32"
+  PHP7_LDFLAGS=
+  PHP7_LIBS="-lphp7ts -lxmlparse -lxmltok"
+  PHP7_UNPREFIXED_EXTENSION_DIR=
+  PHP7_PREFIX=
+fi
+
+AC_ARG_WITH(php7,
+            [  --with-php7=(PHP)      Specify full path to php 7 executable.],
+            [PHP7="$withval"],[PHP7_INCLUDE_DIR=php7])
+
+AC_ARG_WITH(php7-include-dir,
+            [  --with-php7-include-dir=(PHP7_INCLUDE_DIR)      Specify full path to php 7 include dir.],
+            [PHP7_INCLUDE_DIR="$withval"],[PHP7_INCLUDE_DIR=${datadir}/php])
+
+AC_ARG_WITH(php7-config-dir,
+            [  --with-php7-config-dir=(PHP7_CONFIG_DIR)      Specify full path to php 7 config dir.],
+            [PHP7_CONFIG_DIR="$withval"],[PHP7_CONFIG_DIR=${sysconfdir}/php7/conf.d/])
+
+AC_SUBST(PHP7_INCLUDES)
+AC_SUBST(PHP7_LDFLAGS)
+AC_SUBST(PHP7_LIBS)
+AC_SUBST(PHP7_UNPREFIXED_EXTENSION_DIR)
+AC_SUBST(PHP7_EXTENSION_DIR)
+AC_SUBST(PHP7_PREFIX)
+AC_SUBST(PHP7_INCLUDE_DIR)
+AC_SUBST(PHP7_CONFIG_DIR)
+
+AC_MSG_CHECKING(for PHP 7 development files)
+if $PHP7_CONFIG --version | grep -q "^7" || test "x$ENABLE_PHP7_FORCE" = "xyes"
+then
+	PHP7_VERSION=`$PHP7_CONFIG --version 2> /dev/null`
+	languages_available="$languages_available php7($PHP7_VERSION)"
+else
+	enable_php7=no
+fi
+
+AC_MSG_RESULT($enable_php7)
+AM_CONDITIONAL([PHP7_ENABLED], [test "x$enable_php7" = "xyes"])
+AC_SUBST(PHP7_VERSION)
 
 
 ### # ----------
@@ -827,6 +904,9 @@ bindings/python/tests/Makefile
 bindings/php5/Makefile
 bindings/php5/examples/Makefile
 bindings/php5/tests/Makefile
+bindings/php7/Makefile
+bindings/php7/examples/Makefile
+bindings/php7/tests/Makefile
 bindings/perl/Makefile
 ])
 
@@ -854,6 +934,7 @@ Available languages:    ${languages_available}
 Java binding:           ${enable_java}
 Perl binding:           ${enable_perl}
 PHP 5 binding:          ${enable_php5}
+PHP 7 binding:          ${enable_php7}
 Python binding:         ${enable_python}
 
 C API references:       ${enable_gtk_doc}

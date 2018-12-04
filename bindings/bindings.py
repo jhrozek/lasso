@@ -629,6 +629,11 @@ def main():
 
         php5_binding = lang.Binding(binding)
         php5_binding.generate()
+    elif options.language == 'php7':
+        from php7 import lang
+
+        php7_binding = lang.Binding(binding)
+        php7_binding.generate()
     elif options.language == 'java':
         from java import lang
 
