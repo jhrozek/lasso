@@ -22,6 +22,9 @@ bindings/perl/typemap
 bindings/php5/_lasso.c
 bindings/php5/lasso.php
 bindings/php5/php_lasso.h
+bindings/php7/_lasso.c
+bindings/php7/lasso.php
+bindings/php7/php_lasso.h
 bindings/python/_lasso.c
 bindings/python/lasso.py
 /build*
