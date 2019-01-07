@@ -71,6 +71,10 @@ static struct XmlSnippet schema_snippets[] = {
 		G_STRUCT_OFFSET(LassoSaml2AuthnContext, AuthnContextDeclRef), NULL, NULL, NULL},
 	{ "AuthenticatingAuthority", SNIPPET_CONTENT | SNIPPET_OPTIONAL,
 		G_STRUCT_OFFSET(LassoSaml2AuthnContext, AuthenticatingAuthority), NULL, NULL, NULL},
+	/* Other AuthenticatingAuthority are just ignored, it's a work-around to at least accept correct SAML message.
+	 * See https://dev.entrouvert.org/issues/29340  */
+	{ "AuthenticatingAuthority", SNIPPET_LIST_CONTENT | SNIPPET_OPTIONAL,
+		NULL, NULL, NULL, NULL},
 	{NULL, 0, 0, NULL, NULL, NULL}
 };
 
