@@ -398,6 +398,7 @@ lasso_saml20_profile_process_artifact_resolve(LassoProfile *profile, const char 
 
 	switch (lasso_profile_get_signature_verify_hint(profile)) {
 		case LASSO_PROFILE_SIGNATURE_VERIFY_HINT_MAYBE:
+		case LASSO_PROFILE_SIGNATURE_VERIFY_HINT_FORCE:
 			rc = profile->signature_status;
 			break;
 		case LASSO_PROFILE_SIGNATURE_VERIFY_HINT_IGNORE:
@@ -1559,6 +1560,7 @@ lasso_saml20_profile_process_soap_response_with_headers(LassoProfile *profile,
 			remote_provider, response_msg, "ID", LASSO_MESSAGE_FORMAT_SOAP);
 	switch (lasso_profile_get_signature_verify_hint(profile)) {
 		case LASSO_PROFILE_SIGNATURE_VERIFY_HINT_MAYBE:
+		case LASSO_PROFILE_SIGNATURE_VERIFY_HINT_FORCE:
 			rc = profile->signature_status;
 			break;
 		case LASSO_PROFILE_SIGNATURE_VERIFY_HINT_IGNORE:

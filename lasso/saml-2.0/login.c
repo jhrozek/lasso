@@ -1107,18 +1107,31 @@ lasso_saml20_login_process_paos_response_msg(LassoLogin *login, gchar *msg)
 {
 	LassoSoapHeader *header = NULL;
 	LassoProfile *profile;
-	int rc1, rc2;
+	int rc;
 
 	lasso_null_param(msg);
 
 	profile = LASSO_PROFILE(login);
 
-	rc1 = lasso_saml20_profile_process_soap_response_with_headers(profile, msg, &header);
+        /*
+         * lasso_saml20_profile_process_soap_response_with_headers()
+         * performs a signature check on the SAML message. A signature
+         * can also appear on the assertion which is checked by
+         * lasso_saml20_login_process_response_status_and_assertion()
+         * (below). Therefore if the error is SIGNATURE_NOT_FOUND we
+         * proceed because
+         * lasso_saml20_login_process_response_status_and_assertion()
+         * will test the signature on the assertion.
+         */
+	rc = lasso_saml20_profile_process_soap_response_with_headers(profile, msg, &header);
+        if (rc != 0 && rc != LASSO_DS_ERROR_SIGNATURE_NOT_FOUND) {
+            return rc;
+        }
 
 	/*
 	 * If the SOAP message contained a header check for the optional
-     * paos:Response and ecp:RelayState elements, if they exist extract their
-     * values into the profile.
+	 * paos:Response and ecp:RelayState elements, if they exist extract their
+	 * values into the profile.
 	 */
 	if (header) {
 		GList *i = NULL;
@@ -1142,12 +1155,8 @@ lasso_saml20_login_process_paos_response_msg(LassoLogin *login, gchar *msg)
 		lasso_release_gobject(header);
 	}
 
-	rc2 = lasso_saml20_login_process_response_status_and_assertion(login);
-	if (rc1) {
-		return rc1;
-	}
-	return rc2;
-
+	rc = lasso_saml20_login_process_response_status_and_assertion(login);
+	return rc;
 }
 
 /**

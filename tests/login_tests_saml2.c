@@ -1090,42 +1090,42 @@ START_TEST(test08_test_authnrequest_flags)
 	make_context(sp_context, "sp5-saml2", "", LASSO_PROVIDER_ROLE_IDP, "idp5-saml2", "")
 
 	block_lasso_logs;
-	sso_initiated_by_sp2(idp_context, sp_context, 
-			(SsoSettings) { 
+	sso_initiated_by_sp2(idp_context, sp_context,
+			(SsoSettings) {
 				.use_assertion_consumer_service_idx = 1,
 				.assertion_consumer_service_idx = 0,
 				.stop_after_build_assertion = 1,
 			});
-	sso_initiated_by_sp2(idp_context, sp_context, 
-			(SsoSettings) { 
+	sso_initiated_by_sp2(idp_context, sp_context,
+			(SsoSettings) {
 				.assertion_consumer_service_url = "http://sp5/singleSignOnPost",
 				.stop_after_build_assertion = 1,
 			});
-	sso_initiated_by_sp2(idp_context, sp_context, 
-			(SsoSettings) { 
+	sso_initiated_by_sp2(idp_context, sp_context,
+			(SsoSettings) {
 				.protocol_binding = LASSO_SAML2_METADATA_BINDING_ARTIFACT,
 				.stop_after_build_assertion = 1,
 			});
-	sso_initiated_by_sp2(idp_context, sp_context, 
-			(SsoSettings) { 
+	sso_initiated_by_sp2(idp_context, sp_context,
+			(SsoSettings) {
 				.assertion_consumer_service_url = "http://sp5/singleSignOnPost",
 				.protocol_binding = LASSO_SAML2_METADATA_BINDING_POST,
 				.stop_after_build_assertion = 1,
 			});
-	sso_initiated_by_sp2(idp_context, sp_context, 
-			(SsoSettings) { 
+	sso_initiated_by_sp2(idp_context, sp_context,
+			(SsoSettings) {
 				.assertion_consumer_service_url = "http://sp5/singleSignOnArtifact",
 				.protocol_binding = LASSO_SAML2_METADATA_BINDING_ARTIFACT,
 				.stop_after_build_assertion = 1,
 			});
-	sso_initiated_by_sp2(idp_context, sp_context, 
-			(SsoSettings) { 
+	sso_initiated_by_sp2(idp_context, sp_context,
+			(SsoSettings) {
 				.assertion_consumer_service_url = "http://sp5/singleSignOnPostAndArtifact",
 				.protocol_binding = LASSO_SAML2_METADATA_BINDING_ARTIFACT,
 				.stop_after_build_assertion = 1,
 			});
-	sso_initiated_by_sp2(idp_context, sp_context, 
-			(SsoSettings) { 
+	sso_initiated_by_sp2(idp_context, sp_context,
+			(SsoSettings) {
 				.assertion_consumer_service_url = "http://sp5/singleSignOnPostAndArtifact",
 				.protocol_binding = LASSO_SAML2_METADATA_BINDING_POST,
 				.stop_after_build_assertion = 1,
@@ -1278,7 +1278,9 @@ static void validate_idp_list(LassoEcp *ecp, EcpIdpListVariant ecpIDPListVariant
 	check_str_equals((char*)g_list_nth(ecp->known_idp_entity_ids_supporting_ecp, 0)->data, "http://idp5/metadata");
 }
 
-void test_ecp(EcpIdpListVariant ecpIDPListVariant)
+void test_ecp(EcpIdpListVariant ecpIDPListVariant,
+              LassoProfileSignatureHint signature_hint,
+              LassoProfileSignatureVerifyHint signature_verify_hint)
 {
 	char *serviceProviderContextDump = NULL, *identityProviderContextDump = NULL;
 	LassoServer *spContext = NULL, *ecpContext=NULL, *idpContext = NULL;
@@ -1286,7 +1288,7 @@ void test_ecp(EcpIdpListVariant ecpIDPListVariant)
 	LassoEcp *ecp = NULL;
 	LassoSamlp2AuthnRequest *request = NULL;
 	gboolean is_passive = FALSE;
-    char *provider_name = NULL;
+	char *provider_name = NULL;
 	char *relayState = NULL;
 	char *messageID = NULL;
 	char *extracted_messageID = NULL;
@@ -1296,7 +1298,7 @@ void test_ecp(EcpIdpListVariant ecpIDPListVariant)
 	char *ecpPaosResponseMsg = NULL;
 	char *spLoginDump = NULL;
 	LassoSaml2Assertion *assertion;
-    LassoSamlp2IDPList *idp_list = NULL;
+	LassoSamlp2IDPList *idp_list = NULL;
 
 	/*
 	 * SAML2 Profile for ECP (Section 4.2) defines these steps for an ECP
@@ -1322,6 +1324,8 @@ void test_ecp(EcpIdpListVariant ecpIDPListVariant)
 	spContext = lasso_server_new_from_dump(serviceProviderContextDump);
 	spLoginContext = lasso_login_new(spContext);
 	check_not_null(spLoginContext);
+	lasso_profile_set_signature_hint(LASSO_PROFILE(spLoginContext), signature_hint);
+	lasso_profile_set_signature_verify_hint(LASSO_PROFILE(spLoginContext), signature_verify_hint);
 
 	check_good_rc(lasso_login_init_authn_request(spLoginContext, "http://idp5/metadata",
 												 LASSO_HTTP_METHOD_PAOS));
@@ -1419,6 +1423,8 @@ void test_ecp(EcpIdpListVariant ecpIDPListVariant)
 	idpContext = lasso_server_new_from_dump(identityProviderContextDump);
 	idpLoginContext = lasso_login_new(idpContext);
 	check_not_null(idpLoginContext);
+	lasso_profile_set_signature_hint(LASSO_PROFILE(idpLoginContext), signature_hint);
+	lasso_profile_set_signature_verify_hint(LASSO_PROFILE(idpLoginContext), signature_verify_hint);
 
 	/* Parse the ecpSoapRequestMsg */
 	check_good_rc(lasso_login_process_authn_request_msg(idpLoginContext, ecpSoapRequestMsg));
@@ -1465,7 +1471,7 @@ void test_ecp(EcpIdpListVariant ecpIDPListVariant)
 	check_str_equals(ecp->relaystate, relayState);
 	check_str_equals(ecp->issuer->content, "http://sp5/metadata");
 	check_str_equals(ecp->provider_name, provider_name);
-    check_equals(ecp->is_passive, is_passive);
+	check_equals(ecp->is_passive, is_passive);
 
 	/* Validate ECP IdP list info */
 	validate_idp_list(ecp, ecpIDPListVariant, idp_list);
@@ -1480,6 +1486,8 @@ void test_ecp(EcpIdpListVariant ecpIDPListVariant)
 	spContext = lasso_server_new_from_dump(serviceProviderContextDump);
 	spLoginContext = lasso_login_new(spContext);
 	check_not_null(spLoginContext);
+	lasso_profile_set_signature_hint(LASSO_PROFILE(spLoginContext), signature_hint);
+	lasso_profile_set_signature_verify_hint(LASSO_PROFILE(spLoginContext), signature_verify_hint);
 
 	/* Parse the ecpPaosResponseMsg */
 	check_good_rc(lasso_login_process_paos_response_msg(spLoginContext, ecpPaosResponseMsg));
@@ -1515,19 +1523,61 @@ void test_ecp(EcpIdpListVariant ecpIDPListVariant)
 
 START_TEST(test09_ecp)
 {
-	test_ecp(ECP_IDP_LIST_NONE);
+	test_ecp(ECP_IDP_LIST_NONE,
+		 LASSO_PROFILE_SIGNATURE_HINT_MAYBE,
+		 LASSO_PROFILE_SIGNATURE_VERIFY_HINT_MAYBE);
 }
 END_TEST
 
 START_TEST(test10_ecp)
 {
-	test_ecp(ECP_IDP_LIST_ECP);
+	test_ecp(ECP_IDP_LIST_ECP,
+		 LASSO_PROFILE_SIGNATURE_HINT_MAYBE,
+		 LASSO_PROFILE_SIGNATURE_VERIFY_HINT_MAYBE);
 }
 END_TEST
 
 START_TEST(test11_ecp)
 {
-	test_ecp(ECP_IDP_LIST_BOGUS);
+	test_ecp(ECP_IDP_LIST_BOGUS,
+		 LASSO_PROFILE_SIGNATURE_HINT_MAYBE,
+		 LASSO_PROFILE_SIGNATURE_VERIFY_HINT_MAYBE);
+}
+END_TEST
+
+START_TEST(test12_ecp)
+{
+	/* Maybe Sign */
+	test_ecp(ECP_IDP_LIST_NONE,
+		 LASSO_PROFILE_SIGNATURE_HINT_MAYBE,
+		 LASSO_PROFILE_SIGNATURE_VERIFY_HINT_MAYBE);
+
+	test_ecp(ECP_IDP_LIST_NONE,
+		 LASSO_PROFILE_SIGNATURE_HINT_MAYBE,
+		 LASSO_PROFILE_SIGNATURE_VERIFY_HINT_FORCE);
+
+	test_ecp(ECP_IDP_LIST_NONE,
+		 LASSO_PROFILE_SIGNATURE_HINT_MAYBE,
+		 LASSO_PROFILE_SIGNATURE_VERIFY_HINT_IGNORE);
+
+	/* Force Sign */
+	test_ecp(ECP_IDP_LIST_NONE,
+		 LASSO_PROFILE_SIGNATURE_HINT_FORCE,
+		 LASSO_PROFILE_SIGNATURE_VERIFY_HINT_MAYBE);
+
+	test_ecp(ECP_IDP_LIST_NONE,
+		 LASSO_PROFILE_SIGNATURE_HINT_FORCE,
+		 LASSO_PROFILE_SIGNATURE_VERIFY_HINT_FORCE);
+
+	test_ecp(ECP_IDP_LIST_NONE,
+		 LASSO_PROFILE_SIGNATURE_HINT_FORCE,
+		 LASSO_PROFILE_SIGNATURE_VERIFY_HINT_IGNORE);
+
+	/* Forbid Sign */
+	test_ecp(ECP_IDP_LIST_NONE,
+		 LASSO_PROFILE_SIGNATURE_HINT_FORBID,
+		 LASSO_PROFILE_SIGNATURE_VERIFY_HINT_IGNORE);
+
 }
 END_TEST
 
@@ -1538,7 +1588,7 @@ void check_digest_method(G_GNUC_UNUSED LassoLogin *idp_login_context, LassoLogin
 	lasso_release_string(dump)
 }
 
-START_TEST(test12_sso_sp_with_rsa_sha256_signatures)
+START_TEST(test13_sso_sp_with_rsa_sha256_signatures)
 {
 	LassoServer *idp_context = NULL;
 	LassoServer *sp_context = NULL;
@@ -1595,7 +1645,8 @@ login_saml2_suite()
 	tcase_add_test(tc_ecp, test09_ecp);
 	tcase_add_test(tc_ecp, test10_ecp);
 	tcase_add_test(tc_ecp, test11_ecp);
-	tcase_add_test(tc_spLogin, test12_sso_sp_with_rsa_sha256_signatures);
+	tcase_add_test(tc_ecp, test12_ecp);
+	tcase_add_test(tc_spLogin, test13_sso_sp_with_rsa_sha256_signatures);
 	return s;
 }
 
