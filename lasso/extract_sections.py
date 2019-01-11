@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-import glob
+import io
 import re
 import sys
 import os
@@ -24,8 +24,8 @@ for root, dirs, files in os.walk(srcdir):
             prefixes.append(os.path.splitext(file)[0])
     for prefix in prefixes:
         try:
-            header = open(os.path.join(root, prefix + '.h')).read()
-            implementation = open(os.path.join(root, prefix + '.c')).read()
+            header = io.open(os.path.join(root, prefix + '.h'), encoding='utf-8').read()
+            implementation = io.open(os.path.join(root, prefix + '.c'), encoding='utf-8').read()
             exported_functions = re.findall('LASSO_EXPORT.*(lasso_\w*)', header)
             normal_functions = sorted ([ x for x in exported_functions if not x.endswith('get_type') ])
             get_type = [ x for x in exported_functions if x.endswith('get_type') ][0]

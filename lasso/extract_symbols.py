@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 
+import io
 import glob
 import re
 import sys
@@ -22,7 +23,7 @@ for header_file in glob.glob('%s/*/*.h' % srcdir) + glob.glob('%s/*.h' % srcdir)
         glob.glob('%s/*/*/*.h' % srcdir):
     if ('/id-wsf/' in header_file or '/id-wsf-2.0' in header_file) and not enable_wsf:
         continue
-    symbols.extend(regex.findall(open(header_file).read().replace('\\\n', '')))
+    symbols.extend(regex.findall(io.open(header_file, encoding='utf-8').read().replace('\\\n', '')))
 
 wsf = ['lasso_disco_', 'lasso_dst_', 'lasso_is_', 'lasso_profile_service_',
         'lasso_discovery', 'lasso_wsf', 'lasso_interaction_', 'lasso_utility_',
