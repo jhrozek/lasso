@@ -115,8 +115,8 @@ static gboolean want_authn_request_signed(LassoProvider *provider) {
 
 	s = lasso_provider_get_metadata_one_for_role(provider, LASSO_PROVIDER_ROLE_IDP,
 			LASSO_SAML2_METADATA_ATTRIBUTE_WANT_AUTHN_REQUEST_SIGNED);
-	if (lasso_strisequal(s,"false")) {
-		rc = FALSE;
+	if (lasso_strisequal(s, "true")) {
+		rc = TRUE;
 	}
 	lasso_release_string(s);
 	return rc;
