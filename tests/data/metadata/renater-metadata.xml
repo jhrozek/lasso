@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><EntitiesDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="https://federation.renater.fr/" validUntil="2011-05-23T14:24:02Z" xsi:schemaLocation="urn:oasis:names:tc:SAML:2.0:metadata saml-schema-metadata-2.0.xsd urn:mace:shibboleth:metadata:1.0 shibboleth-metadata-1.0.xsd http://www.w3.org/2000/09/xmldsig# xmldsig-core-schema.xsd"><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<?xml version="1.0" encoding="UTF-8"?>
+<EntitiesDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="https://federation.renater.fr/" validUntil="2011-05-23T14:24:02Z" xsi:schemaLocation="urn:oasis:names:tc:SAML:2.0:metadata saml-schema-metadata-2.0.xsd urn:mace:shibboleth:metadata:1.0 shibboleth-metadata-1.0.xsd http://www.w3.org/2000/09/xmldsig# xmldsig-core-schema.xsd"><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
 <ds:SignedInfo>
 <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
 <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
@@ -11,36 +12,50 @@
 <ds:DigestValue>AIDrFyG3G6IpXdapls2LeP2Awt8=</ds:DigestValue>
 </ds:Reference>
 </ds:SignedInfo>
-<ds:SignatureValue>
-Mb7C8CsvA6UNnLN+LHCoOG7+c1CYQtUMm+o3p31niDfRcDcCDtuZ521FGM6p6ki6fS8HlncK0Q+h
-7rpXNeD2dY12FU94vI5wfF6m89pRs6QYE4O13HPDDZvhRZY+BX4+fqg6tsRz8NRaFS/xvxSzzPzO
-dsOrE6R2/QhrcaF1PnA=
-</ds:SignatureValue>
+<ds:SignatureValue>a47ZynaE+fXQFr2QkjjNsPoWhG0Lbed36MZ2/1jNygD2Ck3zYNSBxFTNI0bhZSi+
+sYefYhnYDqpz785/90Ym3hVL+olMZ8z7NLlkeDKCScNCi1436j/W4voR0jez3BkA
+IrMW2p4eUtSwfTHRazMtRacQrwTk3JAbShXuWU7fVnRI4t8oa8t43rf2hz+rRG8F
+SizMOyyHMak13jaVCmX5qoaO4OWmqs2GhXsx8hRfzJ8o6w417InTLWcuIRNw1/zm
+6O6H1as6nmKv34SppCiwdGrTpT6i3/zB3j9Hw7iyuvTF5bbaF+7MMsW/pjw5VOF8
+lmNqhsCFdu+JsaTFBIB2Fg==</ds:SignatureValue>
 <ds:KeyInfo>
 <ds:KeyValue>
 <ds:RSAKeyValue>
 <ds:Modulus>
-kFdwsiC6iQaLK1hI6uCZTp837UNcrh5qq68UYxqzC6FxE8Pi1e1KzwIbE8/z9UUylyvLTiV88Dea
-nAOKzjuGy+YuoYlWZ9K6+QOw/H4jfbmHhaobMRXyR+22QlKLwPRAsqT3Cx4D4EfOgGlTp7m5aYap
-9YmBtmVxS5goIgTacv8=
+4hL9YBMYwmy/s6+CuOliYBbdGaiNWnhweLTXsd6VZVnlp1ffNKWN5yalvVRBwE3M
+QNvXm06c07vTw73h8UtaJZF+NhZrVBg4uRnqQcBHbIlOSEE1CXfboroGcmRagKwS
+uRdrXrTz7r6tdH70pyEH+UtJjcOqHwvo3uyoT7HIPVnwczeYez0IzhysikI9pnzT
+/I18E+o8DZm/i4gGvBIXfas+eHVyIm4gpCCOcJA5ooLaP5WzK2C2GuIjQ9VHMLtY
+8AlF5Brrk3+LvbWMbqs95zBVwJL0bpyYb6ymroYRFR7ucVV01nmxHM2wa4OkR2Z4
+JLWkI+1baG5+by+q+3D1mQ==
 </ds:Modulus>
-<ds:Exponent>AQAB</ds:Exponent>
+<ds:Exponent>
+AQAB
+</ds:Exponent>
 </ds:RSAKeyValue>
 </ds:KeyValue>
 <ds:X509Data>
-<ds:X509Certificate>
-MIICZTCCAc6gAwIBAgIEScn+qTANBgkqhkiG9w0BAQUFADB3MQswCQYDVQQGEwJGUjEQMA4GA1UE
-ChMHUkVOQVRFUjFWMFQGA1UEAxNNQ2VydGlmaWNhdCBkZSBzaWduYXR1cmUgZGVzIG1ldGEgZG9u
-bmVlcyBkZSBsYSBmZWRlcmF0aW9uIEVkdWNhdGlvbi1SZWNoZXJjaGUwHhcNMDkwMzI1MDk1MTM3
-WhcNMTkwMzIzMDk1MTM3WjB3MQswCQYDVQQGEwJGUjEQMA4GA1UEChMHUkVOQVRFUjFWMFQGA1UE
-AxNNQ2VydGlmaWNhdCBkZSBzaWduYXR1cmUgZGVzIG1ldGEgZG9ubmVlcyBkZSBsYSBmZWRlcmF0
-aW9uIEVkdWNhdGlvbi1SZWNoZXJjaGUwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAJBXcLIg
-uokGiytYSOrgmU6fN+1DXK4eaquvFGMaswuhcRPD4tXtSs8CGxPP8/VFMpcry04lfPA3mpwDis47
-hsvmLqGJVmfSuvkDsPx+I325h4WqGzEV8kfttkJSi8D0QLKk9wseA+BHzoBpU6e5uWmGqfWJgbZl
-cUuYKCIE2nL/AgMBAAEwDQYJKoZIhvcNAQEFBQADgYEAT0rUS5GTtqW9a0pAv0PjieSS6bW3KG3M
-tn0jC1dmav6X9fbhhmFL1XSC9WnCU2UD3986EWWYKhN2INHghHE/fQGveVwdcVSSt601OpAsUF18
-tx0vHqkfShcj7mteq59Gv4hOE8U1Urd/pSRaIO3G42X6/L/AlXeDkicfGZHhq7Q=
-</ds:X509Certificate>
+<ds:X509Certificate>MIID6zCCAdMCFALT+lN2uLJWF7p2xOo65/5KwxixMA0GCSqGSIb3DQEBCwUAMEUx
+CzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRl
+cm5ldCBXaWRnaXRzIFB0eSBMdGQwIBcNMTkwNjExMDc0NTU2WhgPMjI5MzAzMjUw
+NzQ1NTZaMB0xCzAJBgNVBAYTAkZSMQ4wDAYDVQQDDAVMYXNzbzCCASIwDQYJKoZI
+hvcNAQEBBQADggEPADCCAQoCggEBAOIS/WATGMJsv7OvgrjpYmAW3RmojVp4cHi0
+17HelWVZ5adX3zSljecmpb1UQcBNzEDb15tOnNO708O94fFLWiWRfjYWa1QYOLkZ
+6kHAR2yJTkhBNQl326K6BnJkWoCsErkXa1608+6+rXR+9KchB/lLSY3Dqh8L6N7s
+qE+xyD1Z8HM3mHs9CM4crIpCPaZ80/yNfBPqPA2Zv4uIBrwSF32rPnh1ciJuIKQg
+jnCQOaKC2j+VsytgthriI0PVRzC7WPAJReQa65N/i721jG6rPecwVcCS9G6cmG+s
+pq6GERUe7nFVdNZ5sRzNsGuDpEdmeCS1pCPtW2hufm8vqvtw9ZkCAwEAATANBgkq
+hkiG9w0BAQsFAAOCAgEAfbHk+QNvLYDNlqwwlu5+88/3CcEx+s1voXOBTxgyIAR2
+NVKkO7dAW5me51jPPZhy+xC4i+AAeLW5JGwirM5LDgU+9P02JBsZ4OoZI3pBAZ5m
+GrmxrMm6q+9mJ+6bMHolfBNN6hoaWeJiknvc1Id7o0Dh4PbdV7r6ISuXisDb/1je
+tmzxoFuXhmDwwHMTG7eUORVFEgS8V5NNKMv16BeWNDohJVP6icxwoi5JswUl+vfO
+rvIwx2GAJ2EQAbSZv5ADFQ4/vxeopULgLnblc3BwVG4RTT7plNgT2iXP8YwmEGKb
+JDHRVFUo1tX6EKkBUI9AgETrdUnLq6XxP11JmrqNL9oOHw+hGb5vT1wyn6FFxZo2
+BVgfqdiGbjcs1bTKeQAZKuhaW90oV6+yYD6WtWn/LfHnftAJivALkmUk+XaSqqbO
+FxuyRsz9C/yq0azr6IkCWhGwBYoLvf2CrvovSYpPXefeQ+1yXNDW7bvfAQfOO9xk
+SqQi4cYJw9hNqTk2f61x6UX/o8wKVhXEHyaCr9lVLNpCK0Uy07f3zkubx1mW5PST
+ITSnD8sPD7iMyGOJa5tQJ8W5u2NJT6qo52Jubgc8PapkOoYyEhUaTQEb8RN6D3oD
+xc8cCKn4HUtpkJKgxYhQDtsomJp2RK7lzjVPXAlFUmld88WgqdJwp9GSvMEktA0=</ds:X509Certificate>
 </ds:X509Data>
 </ds:KeyInfo>
 </ds:Signature>
@@ -1277,7 +1292,7 @@ Ugr24VE4pUTqq2xGSOazVN0EKSqULXvM9ZHupGDCJmRH4P3H/X4w8Cq5Y6c0pDtJ
           
          <!-- source : http://idpdisc.tge-adonis.fr/exportmetadata.xml -->
 
-            <EntityDescriptor entityID="https://opensso.tge-adonis.fr:8443/opensso" xmlns="urn:oasis:names:tc:SAML:2.0:metadata">
+            <EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" entityID="https://opensso.tge-adonis.fr:8443/opensso">
   <SPSSODescriptor AuthnRequestsSigned="false" WantAssertionsSigned="true" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
     <KeyDescriptor use="signing">
       <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
@@ -8584,7 +8599,7 @@ f6ou5oRTltOZOUJfXI1XMhAUNnU7zQvrFeoGrRzGv3zq8AieXbRyWhXY1Eo1mPpS
     $Id: renater.xml,v 1.4 2011/03/30 13:23:00 rdc Exp $
     generated at Wed Mar 30 14:18:20 2011
     by %Id: shib-config,v 1.6 2010/09/10 15:10:15 pmh Exp %
-  --><EntityDescriptor entityID="https://ticket.iop.org/shibboleth" xmlns="urn:oasis:names:tc:SAML:2.0:metadata">
+  --><EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" entityID="https://ticket.iop.org/shibboleth">
   <SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:oasis:names:tc:SAML:1.0:protocol">
     <KeyDescriptor use="signing">
       <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
@@ -15545,7 +15560,7 @@ oZQx
           
          <!-- source : http://science.thomsonreuters.com/m/xml/SP-Metadata.xml -->
 
-            <!-- Thomson Reuters 23.08.2010 --><!-- *************************************** --><!-- SP https://sp.tshhosting.com/shibboleth --><!-- *************************************** --><EntityDescriptor entityID="https://sp.tshhosting.com/shibboleth" xmlns="urn:oasis:names:tc:SAML:2.0:metadata">
+            <!-- Thomson Reuters 23.08.2010 --><!-- *************************************** --><!-- SP https://sp.tshhosting.com/shibboleth --><!-- *************************************** --><EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" entityID="https://sp.tshhosting.com/shibboleth">
   <SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol">
     <Extensions>
       <idpdisc:DiscoveryResponse xmlns:idpdisc="urn:oasis:names:tc:SAML:profiles:SSO:idp-discovery-protocol" Binding="urn:oasis:names:tc:SAML:profiles:SSO:idp-discovery-protocol" Location="https://www.isiknowledge.com/" index="1"/>
