@@ -222,7 +222,7 @@ _lasso_login_must_verify_signature(LassoProfile *profile) {
 gint
 lasso_saml20_login_build_authn_request_msg(LassoLogin *login)
 {
-	char *url = NULL;
+	char *assertionConsumerServiceURL = NULL;
 	gboolean must_sign = TRUE;
 	LassoProfile *profile;
 	LassoSamlp2AuthnRequest *authn_request;
@@ -247,29 +247,29 @@ lasso_saml20_login_build_authn_request_msg(LassoLogin *login)
 	}
 
 	if (login->http_method == LASSO_HTTP_METHOD_PAOS) {
-
 		/*
 		 * PAOS is special, the url passed to build_request is the
 		 * AssertionConsumerServiceURL of this SP, not the
-		 * destination.
+		 * destination IdP URL. This is done to fill paos:responseConsumerURL
+		 * appropriately down the line in build_request_msg.
+		 * See https://dev.entrouvert.org/issues/34409 for more information.
 		 */
 		if (authn_request->AssertionConsumerServiceURL) {
-			url = authn_request->AssertionConsumerServiceURL;
+			assertionConsumerServiceURL = authn_request->AssertionConsumerServiceURL;
 			if (!lasso_saml20_provider_check_assertion_consumer_service_url(
-					LASSO_PROVIDER(profile->server), url, LASSO_SAML2_METADATA_BINDING_PAOS)) {
+					LASSO_PROVIDER(profile->server), assertionConsumerServiceURL, LASSO_SAML2_METADATA_BINDING_PAOS)) {
 				rc = LASSO_PROFILE_ERROR_INVALID_REQUEST;
 				goto cleanup;
 			}
 		} else {
-			url = lasso_saml20_provider_get_assertion_consumer_service_url_by_binding(
+			assertionConsumerServiceURL = lasso_saml20_provider_get_assertion_consumer_service_url_by_binding(
 					LASSO_PROVIDER(profile->server), LASSO_SAML2_METADATA_BINDING_PAOS);
-			lasso_assign_new_string(authn_request->AssertionConsumerServiceURL, url);
+			lasso_assign_new_string(authn_request->AssertionConsumerServiceURL, assertionConsumerServiceURL);
 		}
 	}
 
-
 	lasso_check_good_rc(lasso_saml20_profile_build_request_msg(profile, "SingleSignOnService",
-				login->http_method, url));
+				login->http_method, assertionConsumerServiceURL));
 
 cleanup:
 	return rc;

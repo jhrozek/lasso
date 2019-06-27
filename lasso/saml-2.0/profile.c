@@ -968,7 +968,15 @@ lasso_saml20_profile_build_request_msg(LassoProfile *profile, const char *servic
 		made_url = url = get_url(provider, service, http_method_to_binding(method));
 	}
 
-	if (url) {
+
+	// Usage of the Destination attribute on a request is mandated only
+	// in "3.4.5.2" and "3.5.5.2" in saml-bindings-2.0-os for signed requests
+	// and is marked as optional in the XSD schema otherwise.
+	// PAOS is a special case because an SP does not select an IdP - ECP does
+	// it instead. Therefore, this attribute needs to be left unpopulated.
+	if (method == LASSO_HTTP_METHOD_PAOS) {
+		lasso_release_string(((LassoSamlp2RequestAbstract*)profile->request)->Destination);
+	} else if (url) {
 		lasso_assign_string(((LassoSamlp2RequestAbstract*)profile->request)->Destination,
 				url);
 	} else {
