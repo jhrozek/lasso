@@ -28,8 +28,8 @@
 #include "errors.h"
 
 #ifndef lasso_log
-void lasso_log(GLogLevelFlags level, const char *filename, int line,
-		const char *function, const char *format, ...);
+LASSO_EXPORT void lasso_log(GLogLevelFlags level, const char *filename,
+		int line, const char *function, const char *format, ...);
 #endif
 
 int lasso_log_error_code(GLogLevelFlags level, int error, ...);
