@@ -24,7 +24,7 @@ figures_DATA = $(FIGURES_PNG_FILES)
 CLEANFILES = $(FIGURES_PNG_FILES) $(GENERATED_FIGURES_SVG_FILES)
 
 %.svg:
-	$(XSLTPROC) --stringparam stepno `echo $@ | sed -e 's/[^0-9]//g'` \
+	$(XSLTPROC) --nonet --stringparam stepno `echo $@ | sed -e 's/[^0-9]//g'` \
 		$(srcdir)/step.xsl $< > $@
 
 %.png: %.svg
