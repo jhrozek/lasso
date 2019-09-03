@@ -23,9 +23,15 @@
 
 import os
 import re
-from six import print_
+from six import print_, PY3
 import sys
 from utils import *
+
+if PY3:
+    do_open = lambda *args, **kwargs: open(*args, encoding='utf-8', **kwargs)
+else:
+    do_open = open
+
 
 from optparse import OptionParser
 
@@ -160,10 +166,10 @@ class BindingData:
             if not 'Makefile.am' in filenames:
                 # not a source dir
                 continue
-            makefile_am = open(os.path.join(base, 'Makefile.am')).read()
+            makefile_am = do_open(os.path.join(base, 'Makefile.am')).read()
             filenames = [x for x in filenames if x.endswith('.c') if x in makefile_am]
             for filename in filenames:
-                s = open(os.path.join(base, filename)).read()
+                s = do_open(os.path.join(base, filename)).read()
                 docstrings = regex.findall(s)
                 for d in docstrings:
                     docstring = '\n'.join([x[3:] for x in d.splitlines()])
@@ -406,7 +412,7 @@ def parse_header(header_file):
     in_struct_private = False
     in_ifdef_zero = False
 
-    lines = open(header_file).readlines()
+    lines = do_open(header_file).readlines()
     i = 0
     while i < len(lines):
         line = lines[i]

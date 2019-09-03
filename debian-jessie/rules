@@ -26,10 +26,8 @@ ifneq ($(DEB_TARGET_ARCH),i386)
  endif
 endif
 
-PYDEF		:= $(shell pyversions -vd)
-PYVERS		:= $(shell pyversions -vr debian/control)
+PYVERS		:= $(shell pyversions -vr)
 PY3VERS		:= $(shell py3versions -vr '>= 3.0')
-OTHERPYVERS	:= $(filter-out $(PYDEF), $(PYVERS))
 
 CFLAGS = `dpkg-buildflags --get CFLAGS`
 CFLAGS += -Wall
@@ -66,7 +64,11 @@ config.status: configure
 	dh_testdir
 	# Add here commands to configure the package.
 	autoreconf -fi
-	CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="$(LDFLAGS)" ./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) $(CONFIGURE_ARGS)
+	for v in $(PYVERS) $(PY3VERS); do \
+	  CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="$(LDFLAGS)" ./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --with-python=/usr/bin/python$$v $(CONFIGURE_ARGS); \
+	  rm -rf bindings/python$$v; \
+	  cp -a bindings/python bindings/python$$v; \
+	done
 
 
 build: build-stamp
@@ -76,19 +78,9 @@ build-stamp:  config.status
 	# Add here commands to compile the package.
 	$(MAKE)
 	set -e; \
-	for v in $(OTHERPYVERS); do \
-	  rm -rf bindings/python$$v; \
-	  cp -a bindings/python bindings/python$$v; \
-	  sed "s/$(PYDEF)/$$v/g" bindings/python/Makefile > bindings/python$$v/Makefile; \
+	for v in $(PYVERS) $(PY3VERS); do \
 	  $(MAKE) -C bindings/python$$v clean; \
-	  $(MAKE) -C bindings/python$$v; \
-	done
-	for v in $(PY3VERS); do \
-	  rm -rf bindings/python$$v; \
-	  cp -a bindings/python bindings/python$$v; \
-	  sed "s/$(PYDEF)/$$v/g" bindings/python/Makefile > bindings/python$$v/Makefile; \
-	  $(MAKE) -C bindings/python$$v clean; \
-	  $(MAKE) -C bindings/python$$v; \
+	  $(MAKE) -C bindings/python$$v V=1; \
 	done
 
 	touch build-stamp
@@ -106,10 +98,7 @@ endif
 
 	[ ! -f Makefile ] || $(MAKE) distclean
 
-	for v in $(OTHERPYVERS); do \
-	  rm -rf bindings/python$$v; \
-	done
-	for v in $(PY3VERS); do \
+	for v in $(PYVERS) $(PY3VERS); do \
 	  rm -rf bindings/python$$v; \
 	done
 
@@ -128,10 +117,7 @@ install: build
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp \
 		GACUTIL="/usr/bin/gacutil -root $(CURDIR)/debian/tmp/usr/lib"
 	set -e; \
-	for v in $(OTHERPYVERS); do \
-	  $(MAKE) -C bindings/python$$v install DESTDIR=$(CURDIR)/debian/tmp; \
-	done
-	for v in $(PY3VERS); do \
+	for v in $(PYVERS) $(PY3VERS); do \
 	  $(MAKE) -C bindings/python$$v install DESTDIR=$(CURDIR)/debian/tmp; \
 	done
 
