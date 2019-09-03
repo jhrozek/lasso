@@ -60,36 +60,37 @@
 /* public methods                                                            */
 /*****************************************************************************/
 
-static gint
+static lasso_error_t
 lasso_server_add_provider_helper(LassoServer *server, LassoProviderRole role,
 		const gchar *metadata, const gchar *public_key, const gchar *ca_cert_chain,
 		LassoProvider *(*provider_constructor)(LassoProviderRole role,
 		const char *metadata, const char *public_key, const char *ca_cert_chain))
 {
 	LassoProvider *provider;
+	lasso_error_t rc = 0;
 
 	g_return_val_if_fail(LASSO_IS_SERVER(server), LASSO_PARAM_ERROR_BAD_TYPE_OR_NULL_OBJ);
 	g_return_val_if_fail(metadata != NULL, LASSO_PARAM_ERROR_INVALID_VALUE);
 
 	provider = provider_constructor(role, metadata, public_key, ca_cert_chain);
-	if (provider == NULL) {
-		return critical_error(LASSO_SERVER_ERROR_ADD_PROVIDER_FAILED);
-	}
+	goto_cleanup_if_fail_with_rc(provider != NULL, critical_error(LASSO_SERVER_ERROR_ADD_PROVIDER_FAILED));
+
 	provider->role = role;
 
-	if (LASSO_PROVIDER(server)->private_data->conformance == LASSO_PROTOCOL_SAML_2_0 &&
-			provider->private_data->conformance != LASSO_PROTOCOL_SAML_2_0) {
-		lasso_node_destroy(LASSO_NODE(provider));
-		return LASSO_SERVER_ERROR_ADD_PROVIDER_PROTOCOL_MISMATCH;
+	if (LASSO_PROVIDER(server)->private_data->conformance == LASSO_PROTOCOL_SAML_2_0 && provider->private_data->conformance != LASSO_PROTOCOL_SAML_2_0) {
+		goto_cleanup_with_rc(LASSO_SERVER_ERROR_ADD_PROVIDER_PROTOCOL_MISMATCH);
 	}
 
-	if (LASSO_PROVIDER(server)->private_data->conformance == LASSO_PROTOCOL_LIBERTY_1_2 &&
-			provider->private_data->conformance > LASSO_PROTOCOL_LIBERTY_1_2) {
-		lasso_node_destroy(LASSO_NODE(provider));
-		return LASSO_SERVER_ERROR_ADD_PROVIDER_PROTOCOL_MISMATCH;
+	if (LASSO_PROVIDER(server)->private_data->conformance == LASSO_PROTOCOL_LIBERTY_1_2
+		&& provider->private_data->conformance > LASSO_PROTOCOL_LIBERTY_1_2) {
+		goto_cleanup_with_rc(LASSO_SERVER_ERROR_ADD_PROVIDER_PROTOCOL_MISMATCH);
 	}
 
-	return lasso_server_add_provider2(server, provider);
+	lasso_server_add_provider2(server, provider);
+
+cleanup:
+	lasso_release_gobject(provider);
+	return rc;
 }
 
 /**
@@ -104,7 +105,7 @@ lasso_server_add_provider_helper(LassoServer *server, LassoProviderRole role,
  *
  * Return value: 0 on success; a negative value if an error occured.
  **/
-gint
+lasso_error_t
 lasso_server_add_provider(LassoServer *server, LassoProviderRole role,
 		const gchar *metadata, const gchar *public_key, const gchar *ca_cert_chain)
 {
@@ -129,7 +130,8 @@ lasso_server_add_provider2(LassoServer *server, LassoProvider *provider)
 	g_return_val_if_fail(provider->ProviderID, LASSO_PARAM_ERROR_NON_INITIALIZED_OBJECT);
 	g_return_val_if_fail(server->providers, LASSO_PARAM_ERROR_NON_INITIALIZED_OBJECT);
 
-	g_hash_table_insert(server->providers, g_strdup(provider->ProviderID), provider);
+	g_object_ref(provider);
+	g_hash_table_insert(server->providers, g_strdup(provider->ProviderID), g_object_ref(provider));
 
 	return 0;
 }
