@@ -285,7 +285,7 @@ else
 fi
 
 dnl Support JNI under MacOsX
-if test  "$DARWIN" == 1; then
+if test  "$DARWIN" = 1; then
     JNI_EXTRA_LDFLAGS="-shrext .jnilib"
 fi
 
