@@ -28,7 +28,9 @@
  */
 #define _DEFAULT_SOURCE
 /* permit importation of strptime for glibc2 */
+#if !defined(__sun)
 #define _XOPEN_SOURCE
+#endif
 /* permit importation of timegm for glibc2, wait for people to complain it does not work on their
  * system. */
 #define _BSD_SOURCE
