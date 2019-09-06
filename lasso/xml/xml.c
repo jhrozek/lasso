@@ -68,6 +68,8 @@
 
 #include "../key.h"
 
+#define LOG_LEVEL_XML_DEBUG G_LOG_LEVEL_DEBUG /* change to G_LOG_LEVEL_WARNING so it shows in Apache log */
+
 static void lasso_node_build_xmlNode_from_snippets(LassoNode *node, LassoNodeClass *class, xmlNode *xmlnode,
 		struct XmlSnippet *snippets, gboolean lasso_dump);
 static struct XmlSnippet* find_xml_snippet_by_name(LassoNode *node, char *name, LassoNodeClass **class_p);
@@ -1440,19 +1442,28 @@ is_snippet_multiple(struct XmlSnippet *snippet)
 static inline gboolean
 node_match_snippet(xmlNode *parent, xmlNode *node, struct XmlSnippet *snippet)
 {
-	gboolean rc = TRUE;
-
 	/* special case of ArtifactResponse */
 	if (snippet->type & SNIPPET_ANY) {
+		message(LOG_LEVEL_XML_DEBUG, "Matching node %s vs SNIPPET_ANY: SUCCESS", node->name);
 		return TRUE;
 	} else {
-		rc = rc && lasso_strisequal(snippet->name, (char*)node->name);
-		rc = rc &&
-		    ((!snippet->ns_uri &&
-			lasso_equal_namespace(parent->ns, node->ns)) ||
-		    (node->ns &&
-		           lasso_strisequal((char*)node->ns->href, snippet->ns_uri)));
-		return rc;
+		if (!lasso_strisequal(snippet->name, (char*)node->name)) {
+			message(LOG_LEVEL_XML_DEBUG, "Matching node %s vs snippet %s: FAILURE names don't match", node->name, snippet->name);
+			return FALSE;
+		}
+
+		if ((snippet->ns_uri == NULL) && lasso_equal_namespace(parent->ns, node->ns)) {
+			message(LOG_LEVEL_XML_DEBUG, "Matching node %s vs snippet %s: SUCCESS namespace prefixes match", node->name, snippet->name);
+			return TRUE;
+		}
+
+		if ((node->ns != NULL) && lasso_strisequal((char*)node->ns->href, snippet->ns_uri)) {
+			message(LOG_LEVEL_XML_DEBUG, "Matching node %s vs snippet %s: SUCCESS namespace URIs match", node->name, snippet->name);
+			return TRUE;
+		}
+
+		message(LOG_LEVEL_XML_DEBUG, "Matching node %s vs snippet %s: FAILURE", node->name, snippet->name);
+		return FALSE;
 	}
 }
 
@@ -1477,6 +1488,8 @@ lasso_node_impl_init_from_xml(LassoNode *node, xmlNode *xmlnode)
 	GType g_type = 0;
 	LassoNodeClass *node_class;
 	gint rc = 0;
+
+	message(LOG_LEVEL_XML_DEBUG, "lasso_node_impl_init_from_xml <%s>", xmlnode->name);
 
 	if (! xmlnode) {
 		rc = 1;
@@ -1549,7 +1562,7 @@ lasso_node_impl_init_from_xml(LassoNode *node, xmlNode *xmlnode)
 						g_type_any = g_type;
 						snippet_any = snippet;
 					} else {
-						critical("Two any node snippet for class %s",
+						message(G_LOG_LEVEL_CRITICAL, "Two 'any' node snippet for class %s",
 								g_type_name(G_TYPE_FROM_INSTANCE(node)));
 					}
 				}
@@ -1693,9 +1706,11 @@ lasso_node_impl_init_from_xml(LassoNode *node, xmlNode *xmlnode)
 				} \
 				next_node_snippet(&class_iter, &snippet);
 #define ERROR \
-				error("Element %s:%s cannot be parsed", \
-						t->ns != NULL ? (char*)t->ns->prefix : "<noprefix>", \
-						t->name); \
+				message(G_LOG_LEVEL_CRITICAL, "Element <%s:%s> was not expected at this location inside element <%s>. " \
+						"Please ensure the XML correctly follows XML schema", \
+						(t->ns == NULL) ? "<noprefix>" : ((t->ns->prefix == NULL)? (char*)t->ns->href : (char*)t->ns->prefix), \
+						t->name, \
+						xmlnode->name); \
 				rc = 1; \
 				goto cleanup;
 			/* Find a matching snippet */
@@ -1733,10 +1748,16 @@ lasso_node_impl_init_from_xml(LassoNode *node, xmlNode *xmlnode)
 					case SNIPPET_NODE:
 						subnode = lasso_node_new_from_xmlNode_with_type(t,
 								matched_snippet->class_name);
-						if (is_snippet_type(matched_snippet, SNIPPET_NODE)) {
-							lasso_assign_new_gobject(*(LassoNode**)value, subnode);
-						} else {
-							lasso_list_add_new_gobject(*list, subnode);
+						if (subnode == NULL) {
+							message(G_LOG_LEVEL_CRITICAL, "Failed to create LassoNode from XML node");
+						}
+						else {
+							if (is_snippet_type(matched_snippet, SNIPPET_NODE)) {
+								lasso_assign_new_gobject(*(LassoNode**)value, subnode);
+							}
+							else {
+								lasso_list_add_new_gobject(*list, subnode);
+							}
 						}
 						break;
 					case SNIPPET_NODE_IN_CHILD:
@@ -1877,6 +1898,7 @@ lasso_node_impl_init_from_xml(LassoNode *node, xmlNode *xmlnode)
 	}
 cleanup:
 	lasso_release_slist(class_list);
+	message(LOG_LEVEL_XML_DEBUG, "lasso_node_impl_init_from_xml </%s> rc=%d", xmlnode->name, rc);
 	return rc;
 }
 #undef trace_snippet
@@ -2552,12 +2574,17 @@ lasso_node_new_from_xmlNode_with_type(xmlNode *xmlnode, char *typename)
 	LassoNode *node;
 	int rc = 0;
 
-	if (typename == NULL)
+	message(LOG_LEVEL_XML_DEBUG, "Processing node '%s' with type '%s'", xmlnode->name, typename);
+
+	if (typename == NULL) {
 		return _lasso_node_new_from_xmlNode(xmlnode); /* will auto-detect */
+	}
 
 	gtype = g_type_from_name(typename);
-	if (gtype == 0)
+	if (gtype == 0) {
+		message(G_LOG_LEVEL_CRITICAL, "Unable to get g_type from name '%s'", typename);
 		return NULL;
+	}
 
 
 	node = g_object_new(gtype, NULL);
@@ -2566,6 +2593,7 @@ lasso_node_new_from_xmlNode_with_type(xmlNode *xmlnode, char *typename)
 	}
 	rc = lasso_node_init_from_xml(node, xmlnode);
 	if (rc) {
+		message(G_LOG_LEVEL_CRITICAL, "Lasso node initialization failed for node '%s', type '%s': error %d", xmlnode->name, typename, rc);
 		lasso_node_destroy(node);
 		return NULL;
 	}
