@@ -51,6 +51,7 @@ CONFIGURE_ARGS := \
 	--disable-gtk-doc \
 	--enable-perl \
 	--with-php5-config-dir=/etc/php5/mods-available/
+	--disable-php7
 
 
 ifeq ($(with_java),yes)

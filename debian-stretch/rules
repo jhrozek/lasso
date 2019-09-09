@@ -61,9 +61,9 @@ else
 endif
 
 ifeq ($(with_php),yes)
-  CONFIGURE_ARGS += --enable-php5 --with-php5-config-dir=/etc/php5/mods-available/
+  CONFIGURE_ARGS += --enable-php5 --with-php5-config-dir=/etc/php5/mods-available/ --enable-php7 --with-php7-config-dir=/etc/php/7.3/mods-available/
 else
-  CONFIGURE_ARGS += --disable-php5
+  CONFIGURE_ARGS += --disable-php5 --disable-php7
 endif
 
 
