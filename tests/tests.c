@@ -103,8 +103,7 @@ fail_logger(const gchar *log_domain G_GNUC_UNUSED, GLogLevelFlags log_level,
 			level_name = "MESSAGE";
 			break;
 		case G_LOG_LEVEL_DEBUG:
-			level_name = "DEBUG";
-			break;
+			return;
 		default:
 			g_assert_not_reached();
 	}
