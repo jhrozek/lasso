@@ -32,7 +32,7 @@ six.print_(u"typedef GType (*type_function) ();", file=fd)
 six.print_(u"", file=fd)
 
 header_files = []
-for header_file in glob.glob('%s/*/*.h' % srcdir) + glob.glob('%s/*/*/*.h' % srcdir):
+for header_file in sorted(glob.glob('%s/*/*.h' % srcdir) + glob.glob('%s/*/*/*.h' % srcdir)):
     if ('/id-wsf/' in header_file or '/id-wsf-2.0' in header_file) and not enable_wsf:
         continue
     header_files.append(header_file)

@@ -571,6 +571,8 @@ def parse_headers(srcdir):
     if not binding.options.idwsf:
         exclusion += ( 'idwsf_strings.h', )
     for base, dirnames, filenames in os.walk(srcdir):
+        dirnames.sort()
+        filenames.sort()
         bname = os.path.basename(base)
         if bname == '.svn':
             # ignore svn directories
