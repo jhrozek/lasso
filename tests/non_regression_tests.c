@@ -233,27 +233,26 @@ START_TEST(malformed_logout_request)
 }
 END_TEST
 
-struct {
-	char *name;
-	void *function;
-} tests[] = {
-	{ "Googleapps error from coudot@ on 27-09-2010", test01_googleapps_27092010},
-	{ "Wrong assertionConsumer ordering on 08-10-2010", indexed_endpoints_20101008},
-	{ "Warning when parsing AttributeValue node containing unknown namespace nodes", remove_warning_when_parssing_unknown_SNIPPET_LIST_NODES_20111007 },
-	{ "Wrong endpoint index in artifacts", wrong_endpoint_index_in_artifacts },
-	{ "Malformed logout request", malformed_logout_request },
-};
-
 Suite*
 non_regression_suite()
 {
+
+	struct {
+		char *name;
+		const void *test;
+	} tests[] = {
+		{ "Googleapps error from coudot@ on 27-09-2010", test01_googleapps_27092010},
+		{ "Wrong assertionConsumer ordering on 08-10-2010", indexed_endpoints_20101008},
+		{ "Warning when parsing AttributeValue node containing unknown namespace nodes", remove_warning_when_parssing_unknown_SNIPPET_LIST_NODES_20111007 },
+		{ "Wrong endpoint index in artifacts", wrong_endpoint_index_in_artifacts },
+		{ "Malformed logout request", malformed_logout_request },
+	};
 	Suite *s = suite_create("Non regression tests");
 	unsigned int i = 0;
 
 	for (i = 0 ; i < G_N_ELEMENTS(tests); i++) {
 		TCase *c = tcase_create(tests[i].name);
-		void *f = tests[i].function;
-		tcase_add_test(c, f);
+		tcase_add_test(c, tests[i].test);
 		suite_add_tcase(s, c);
 	}
 
