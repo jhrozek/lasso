@@ -65,7 +65,7 @@ instance_init(LassoIdWsf2PsRequestAbstract *node)
 }
 
 static void
-class_init(LassoIdWsf2PsRequestAbstractClass *klass)
+class_init(LassoIdWsf2PsRequestAbstractClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

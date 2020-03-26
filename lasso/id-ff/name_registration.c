@@ -670,7 +670,7 @@ instance_init(LassoNameRegistration *name_registration)
 }
 
 static void
-class_init(LassoNameRegistrationClass *klass)
+class_init(LassoNameRegistrationClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

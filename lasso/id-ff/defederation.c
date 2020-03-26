@@ -456,7 +456,7 @@ lasso_defederation_validate_notification(LassoDefederation *defederation)
 /*****************************************************************************/
 
 static void
-class_init(LassoDefederationClass *klass)
+class_init(LassoDefederationClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

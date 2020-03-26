@@ -81,7 +81,7 @@ static LassoNodeClass *parent_class = NULL;
 
 
 static void
-class_init(LassoDstQueryItemClass *klass)
+class_init(LassoDstQueryItemClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nodeClass = LASSO_NODE_CLASS(klass);
 

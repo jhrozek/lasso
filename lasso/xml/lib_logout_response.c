@@ -44,7 +44,7 @@
 /*****************************************************************************/
 
 static void
-class_init(LassoLibLogoutResponseClass *klass)
+class_init(LassoLibLogoutResponseClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

@@ -126,7 +126,7 @@ finalize(GObject *object)
 
 
 static void
-class_init(LassoMiscTextNodeClass *klass)
+class_init(LassoMiscTextNodeClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

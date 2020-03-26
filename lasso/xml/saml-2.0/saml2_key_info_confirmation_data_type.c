@@ -86,7 +86,7 @@ instance_init(LassoSaml2KeyInfoConfirmationDataType *saml2_key_info_confirmation
 }
 
 static void
-class_init(LassoSaml2KeyInfoConfirmationDataTypeClass *klass)
+class_init(LassoSaml2KeyInfoConfirmationDataTypeClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

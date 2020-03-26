@@ -67,7 +67,7 @@ static struct XmlSnippet schema_snippets[] = {
 static LassoNodeClass *parent_class = NULL;
 
 static void
-class_init(LassoSoapBodyClass *klass)
+class_init(LassoSoapBodyClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

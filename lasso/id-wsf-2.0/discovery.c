@@ -1481,7 +1481,7 @@ error:
 }
 
 static void
-class_init(LassoIdWsf2DiscoveryClass *klass)
+class_init(LassoIdWsf2DiscoveryClass *klass, void *unused G_GNUC_UNUSED)
 {
 	parent_class = g_type_class_peek_parent(klass);
 	lasso_node_class_set_nodename(LASSO_NODE_CLASS(klass), "IdWsf2Discovery");

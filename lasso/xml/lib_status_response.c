@@ -110,7 +110,7 @@ init_from_query(LassoNode *node, char **query_fields)
 
 
 static void
-class_init(LassoLibStatusResponseClass *klass)
+class_init(LassoLibStatusResponseClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

@@ -88,7 +88,7 @@ instance_init(LassoSamlpRequestAbstract *node)
 }
 
 static void
-class_init(LassoSamlpRequestAbstractClass *klass)
+class_init(LassoSamlpRequestAbstractClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

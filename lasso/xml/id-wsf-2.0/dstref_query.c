@@ -105,7 +105,7 @@ init_from_xml(LassoNode *node, xmlNode *xmlnode)
 
 
 static void
-class_init(LassoIdWsf2DstRefQueryClass *klass)
+class_init(LassoIdWsf2DstRefQueryClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

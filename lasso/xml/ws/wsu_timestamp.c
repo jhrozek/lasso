@@ -77,7 +77,7 @@ instance_init(LassoWsUtil1Timestamp *node)
 }
 
 static void
-class_init(LassoWsUtil1TimestampClass *klass)
+class_init(LassoWsUtil1TimestampClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

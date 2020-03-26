@@ -530,7 +530,7 @@ lasso_name_identifier_mapping_validate_request(LassoNameIdentifierMapping *mappi
 /*****************************************************************************/
 
 static void
-class_init(LassoNameIdentifierMappingClass *klass)
+class_init(LassoNameIdentifierMappingClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

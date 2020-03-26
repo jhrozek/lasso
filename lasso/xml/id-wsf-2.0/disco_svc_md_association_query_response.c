@@ -74,7 +74,8 @@ instance_init(LassoIdWsf2DiscoSvcMDAssociationQueryResponse *node)
 }
 
 static void
-class_init(LassoIdWsf2DiscoSvcMDAssociationQueryResponseClass *klass)
+class_init(LassoIdWsf2DiscoSvcMDAssociationQueryResponseClass *klass,
+	   void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

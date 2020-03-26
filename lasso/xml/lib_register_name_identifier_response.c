@@ -45,7 +45,7 @@
 /*****************************************************************************/
 
 static void
-class_init(LassoLibRegisterNameIdentifierResponseClass *klass)
+class_init(LassoLibRegisterNameIdentifierResponseClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

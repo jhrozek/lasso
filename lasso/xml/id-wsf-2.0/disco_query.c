@@ -75,7 +75,7 @@ instance_init(LassoIdWsf2DiscoQuery *node)
 }
 
 static void
-class_init(LassoIdWsf2DiscoQueryClass *klass)
+class_init(LassoIdWsf2DiscoQueryClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

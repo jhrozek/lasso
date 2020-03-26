@@ -128,7 +128,7 @@ static LassoInteractionProfileServiceClass *parent_class = NULL;
 /*****************************************************************************/
 
 static void
-class_init(LassoInteractionProfileServiceClass *klass)
+class_init(LassoInteractionProfileServiceClass *klass, void *unused G_GNUC_UNUSED)
 {
 	parent_class = g_type_class_peek_parent(klass);
 

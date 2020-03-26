@@ -77,7 +77,7 @@ instance_init(LassoIsUserInteraction *node)
 }
 
 static void
-class_init(LassoIsUserInteractionClass *klass)
+class_init(LassoIsUserInteractionClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

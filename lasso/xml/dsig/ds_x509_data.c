@@ -65,7 +65,7 @@ instance_init(LassoDsX509Data *x509_data)
 }
 
 static void
-class_init(LassoDsX509DataClass *klass)
+class_init(LassoDsX509DataClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

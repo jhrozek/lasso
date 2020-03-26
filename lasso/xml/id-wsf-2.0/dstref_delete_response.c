@@ -58,7 +58,7 @@ static LassoNodeClass *parent_class = NULL;
 /*****************************************************************************/
 
 static void
-class_init(LassoIdWsf2DstRefDeleteResponseClass *klass)
+class_init(LassoIdWsf2DstRefDeleteResponseClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

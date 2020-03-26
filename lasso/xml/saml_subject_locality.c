@@ -56,7 +56,7 @@ static struct XmlSnippet schema_snippets[] = {
 
 
 static void
-class_init(LassoSamlSubjectLocalityClass *klass)
+class_init(LassoSamlSubjectLocalityClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

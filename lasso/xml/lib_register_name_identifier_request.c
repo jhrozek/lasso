@@ -140,7 +140,7 @@ init_from_query(LassoNode *node, char **query_fields)
 
 
 static void
-class_init(LassoLibRegisterNameIdentifierRequestClass *klass)
+class_init(LassoLibRegisterNameIdentifierRequestClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

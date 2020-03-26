@@ -80,7 +80,7 @@ instance_init(LassoIdWsf2PsQueryObjectsRequest *node)
 }
 
 static void
-class_init(LassoIdWsf2PsQueryObjectsRequestClass *klass)
+class_init(LassoIdWsf2PsQueryObjectsRequestClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

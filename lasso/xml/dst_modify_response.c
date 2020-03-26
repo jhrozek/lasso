@@ -113,7 +113,7 @@ init_from_xml(LassoNode *node, xmlNode *xmlnode)
 
 
 static void
-class_init(LassoDstModifyResponseClass *klass)
+class_init(LassoDstModifyResponseClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

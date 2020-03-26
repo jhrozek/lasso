@@ -128,7 +128,7 @@
 	{ \
 		GList **__tmp = &(dest); \
 		if (*__tmp) { \
-			g_list_foreach(*__tmp, (GFunc)free_function, NULL); \
+			g_list_foreach(*__tmp, (GFunc)(void*)free_function, NULL); \
 			lasso_release_list(*__tmp); \
 		} \
 	}

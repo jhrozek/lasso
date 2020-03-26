@@ -65,7 +65,7 @@ static LassoNodeClass *parent_class = NULL;
 
 
 static void
-class_init(LassoIdWsf2PsNotificationClass *klass)
+class_init(LassoIdWsf2PsNotificationClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

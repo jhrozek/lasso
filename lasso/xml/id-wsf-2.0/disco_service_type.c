@@ -57,7 +57,7 @@ static LassoNodeClass *parent_class = NULL;
 
 
 static void
-class_init(LassoIdWsf2DiscoServiceTypeClass *klass)
+class_init(LassoIdWsf2DiscoServiceTypeClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

@@ -1270,7 +1270,7 @@ instance_init(LassoDiscovery *discovery)
 }
 
 static void
-class_init(LassoDiscoveryClass *klass)
+class_init(LassoDiscoveryClass *klass, void *unused G_GNUC_UNUSED)
 {
 	parent_class = g_type_class_peek_parent(klass);
 

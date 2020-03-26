@@ -69,7 +69,7 @@ instance_init(LassoWsAddrRelatesTo *node)
 }
 
 static void
-class_init(LassoWsAddrRelatesToClass *klass)
+class_init(LassoWsAddrRelatesToClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

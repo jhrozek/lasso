@@ -712,7 +712,7 @@ instance_init(LassoAuthentication *authentication)
 }
 
 static void
-class_init(LassoAuthenticationClass *klass)
+class_init(LassoAuthenticationClass *klass, void *unused G_GNUC_UNUSED)
 {
 	parent_class = g_type_class_peek_parent(klass);
 

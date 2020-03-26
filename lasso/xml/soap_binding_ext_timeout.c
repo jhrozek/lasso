@@ -64,7 +64,7 @@ static struct XmlSnippet schema_snippets[] = {
 
 
 static void
-class_init(LassoSoapBindingExtTimeoutClass *klass)
+class_init(LassoSoapBindingExtTimeoutClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

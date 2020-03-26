@@ -75,7 +75,7 @@ dispose(GObject *g_object)
 }
 
 static void
-class_init(LassoKeyClass *klass)
+class_init(LassoKeyClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

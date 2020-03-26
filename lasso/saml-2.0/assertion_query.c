@@ -543,7 +543,7 @@ instance_init(LassoAssertionQuery *assertion_query)
 }
 
 static void
-class_init(LassoAssertionQueryClass *klass)
+class_init(LassoAssertionQueryClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

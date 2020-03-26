@@ -106,7 +106,7 @@ instance_init(LassoSamlp2AuthnRequest *node)
 }
 
 static void
-class_init(LassoSamlp2AuthnRequestClass *klass)
+class_init(LassoSamlp2AuthnRequestClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

@@ -69,7 +69,7 @@ instance_init(LassoWsSec1Reference *node)
 }
 
 static void
-class_init(LassoWsSec1ReferenceClass *klass)
+class_init(LassoWsSec1ReferenceClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

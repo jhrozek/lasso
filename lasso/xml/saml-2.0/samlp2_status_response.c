@@ -128,7 +128,7 @@ instance_init(LassoSamlp2StatusResponse *node)
 }
 
 static void
-class_init(LassoSamlp2StatusResponseClass *klass)
+class_init(LassoSamlp2StatusResponseClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

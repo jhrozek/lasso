@@ -151,7 +151,7 @@ instance_init(LassoSaml2Assertion *node)
 }
 
 static void
-class_init(LassoSaml2AssertionClass *klass)
+class_init(LassoSaml2AssertionClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

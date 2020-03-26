@@ -72,7 +72,7 @@ instance_init(LassoIdWsf2Sb2UsageDirective *node)
 }
 
 static void
-class_init(LassoIdWsf2Sb2UsageDirectiveClass *klass)
+class_init(LassoIdWsf2Sb2UsageDirectiveClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

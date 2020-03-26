@@ -124,7 +124,7 @@ instance_init(LassoWsseUsernameToken *wsse_username_token)
 }
 
 static void
-class_init(LassoWsseUsernameTokenClass *klass)
+class_init(LassoWsseUsernameTokenClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

@@ -82,7 +82,7 @@ instance_init(LassoIdWsf2SecTokenPolicy *node)
 }
 
 static void
-class_init(LassoIdWsf2SecTokenPolicyClass *klass)
+class_init(LassoIdWsf2SecTokenPolicyClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

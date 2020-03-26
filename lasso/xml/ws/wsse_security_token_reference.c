@@ -71,7 +71,7 @@ instance_init(LassoWsSec1SecurityTokenReference *node)
 }
 
 static void
-class_init(LassoWsSec1SecurityTokenReferenceClass *klass)
+class_init(LassoWsSec1SecurityTokenReferenceClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

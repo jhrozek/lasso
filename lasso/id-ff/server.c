@@ -691,7 +691,7 @@ instance_init(LassoServer *server)
 }
 
 static void
-class_init(LassoServerClass *klass)
+class_init(LassoServerClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

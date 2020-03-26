@@ -80,7 +80,7 @@ instance_init(LassoIdWsf2DiscoSvcMDRegisterResponse *node)
 }
 
 static void
-class_init(LassoIdWsf2DiscoSvcMDRegisterResponseClass *klass)
+class_init(LassoIdWsf2DiscoSvcMDRegisterResponseClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

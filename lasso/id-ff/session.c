@@ -1019,7 +1019,7 @@ instance_init(LassoSession *session)
 }
 
 static void
-class_init(LassoSessionClass *klass)
+class_init(LassoSessionClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 	parent_class = g_type_class_peek_parent(klass);

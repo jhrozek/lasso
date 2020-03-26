@@ -74,7 +74,7 @@ instance_init(LassoIdWsf2ImsIdentityMappingResponse *node)
 }
 
 static void
-class_init(LassoIdWsf2ImsIdentityMappingResponseClass *klass)
+class_init(LassoIdWsf2ImsIdentityMappingResponseClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

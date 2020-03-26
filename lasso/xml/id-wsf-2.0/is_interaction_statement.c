@@ -83,7 +83,7 @@ instance_init(LassoIdWsf2IsInteractionStatement *node)
 }
 
 static void
-class_init(LassoIdWsf2IsInteractionStatementClass *klass)
+class_init(LassoIdWsf2IsInteractionStatementClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

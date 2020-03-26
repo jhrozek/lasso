@@ -72,7 +72,7 @@ instance_init(LassoWsSec1TransformationParameters *node)
 }
 
 static void
-class_init(LassoWsSec1TransformationParametersClass *klass)
+class_init(LassoWsSec1TransformationParametersClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

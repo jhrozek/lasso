@@ -67,7 +67,7 @@ static struct XmlSnippet schema_snippets[] = {
 
 
 static void
-class_init(LassoSoapBindingConsentClass *klass)
+class_init(LassoSoapBindingConsentClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

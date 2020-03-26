@@ -70,7 +70,7 @@ instance_init(LassoIdWsf2ImsIdentityMappingRequest *node)
 }
 
 static void
-class_init(LassoIdWsf2ImsIdentityMappingRequestClass *klass)
+class_init(LassoIdWsf2ImsIdentityMappingRequestClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

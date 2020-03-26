@@ -74,7 +74,7 @@ instance_init(LassoWsSec1SecurityHeader *node)
 }
 
 static void
-class_init(LassoWsSec1SecurityHeaderClass *klass)
+class_init(LassoWsSec1SecurityHeaderClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 	guint i;

@@ -67,7 +67,7 @@ static struct XmlSnippet schema_snippets[] = {
 
 
 static void
-class_init(LassoIsInteractionResponseClass *klass)
+class_init(LassoIsInteractionResponseClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

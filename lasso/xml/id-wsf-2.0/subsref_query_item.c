@@ -75,7 +75,7 @@ instance_init(LassoIdWsf2SubsRefQueryItem *node)
 }
 
 static void
-class_init(LassoIdWsf2SubsRefQueryItemClass *klass)
+class_init(LassoIdWsf2SubsRefQueryItemClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

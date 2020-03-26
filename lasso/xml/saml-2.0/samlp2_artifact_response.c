@@ -64,7 +64,7 @@ static LassoNodeClass *parent_class = NULL;
 
 
 static void
-class_init(LassoSamlp2ArtifactResponseClass *klass)
+class_init(LassoSamlp2ArtifactResponseClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

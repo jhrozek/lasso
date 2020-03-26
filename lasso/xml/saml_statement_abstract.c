@@ -46,7 +46,7 @@
 /*****************************************************************************/
 
 static void
-class_init(LassoSamlStatementAbstractClass *klass)
+class_init(LassoSamlStatementAbstractClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

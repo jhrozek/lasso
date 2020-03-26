@@ -980,7 +980,7 @@ instance_init(LassoProfile *profile)
 }
 
 static void
-class_init(LassoProfileClass *klass)
+class_init(LassoProfileClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

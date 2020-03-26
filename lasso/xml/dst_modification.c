@@ -77,7 +77,7 @@ static LassoNodeClass *parent_class = NULL;
 
 
 static void
-class_init(LassoDstModificationClass *klass)
+class_init(LassoDstModificationClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nodeClass = LASSO_NODE_CLASS(klass);
 

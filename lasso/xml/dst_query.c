@@ -126,7 +126,7 @@ init_from_xml(LassoNode *node, xmlNode *xmlnode)
 
 
 static void
-class_init(LassoDstQueryClass *klass)
+class_init(LassoDstQueryClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

@@ -2181,7 +2181,7 @@ init_from_query(LassoNode *node, char **query_fields)
 }
 
 static void
-class_init(LassoNodeClass *class)
+class_init(LassoNodeClass *class, void *unused G_GNUC_UNUSED)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS(class);
 

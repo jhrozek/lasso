@@ -39,7 +39,7 @@ The schema fragment (oasis-sstc-saml-schema-assertion-1.0.xsd):
 /*****************************************************************************/
 
 static void
-class_init(LassoSamlSubjectStatementClass *klass)
+class_init(LassoSamlSubjectStatementClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

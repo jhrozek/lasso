@@ -74,7 +74,7 @@ static LassoNodeClass *parent_class = NULL;
 
 
 static void
-class_init(LassoSaml2NameIDClass *klass)
+class_init(LassoSaml2NameIDClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

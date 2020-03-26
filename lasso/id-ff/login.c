@@ -2469,7 +2469,7 @@ instance_init(LassoLogin *login)
 }
 
 static void
-class_init(LassoLoginClass *klass)
+class_init(LassoLoginClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

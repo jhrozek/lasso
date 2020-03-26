@@ -134,7 +134,7 @@ cleanup:
 
 
 static void
-class_init(LassoLibLogoutRequestClass *klass)
+class_init(LassoLibLogoutRequestClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

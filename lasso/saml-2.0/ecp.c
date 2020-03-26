@@ -440,7 +440,7 @@ instance_init(LassoEcp *ecp)
 }
 
 static void
-class_init(LassoEcpClass *klass)
+class_init(LassoEcpClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 	parent_class = g_type_class_peek_parent(klass);

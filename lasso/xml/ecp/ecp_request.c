@@ -137,7 +137,7 @@ instance_init(LassoEcpRequest *node)
 }
 
 static void
-class_init(LassoEcpRequestClass *klass)
+class_init(LassoEcpRequestClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

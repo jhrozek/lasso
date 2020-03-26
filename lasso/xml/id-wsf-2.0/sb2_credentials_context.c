@@ -74,7 +74,7 @@ instance_init(LassoIdWsf2Sb2CredentialsContext *node)
 }
 
 static void
-class_init(LassoIdWsf2Sb2CredentialsContextClass *klass)
+class_init(LassoIdWsf2Sb2CredentialsContextClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

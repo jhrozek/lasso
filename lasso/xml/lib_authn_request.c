@@ -170,7 +170,7 @@ instance_init(LassoLibAuthnRequest *node)
 }
 
 static void
-class_init(LassoLibAuthnRequestClass *klass)
+class_init(LassoLibAuthnRequestClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

@@ -182,7 +182,7 @@ init_from_xml(LassoNode *node, xmlNode *xmlnode)
 }
 
 static void
-class_init(LassoSamlp2LogoutRequestClass *klass)
+class_init(LassoSamlp2LogoutRequestClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

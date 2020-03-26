@@ -1006,7 +1006,7 @@ instance_init(LassoIdWsf2DataService *service)
 }
 
 static void
-class_init(LassoIdWsf2DataServiceClass *klass)
+class_init(LassoIdWsf2DataServiceClass *klass, void *unused G_GNUC_UNUSED)
 {
 	parent_class = g_type_class_peek_parent(klass);
 

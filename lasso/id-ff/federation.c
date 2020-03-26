@@ -229,7 +229,7 @@ instance_init(LassoFederation *federation)
 }
 
 static void
-class_init(LassoFederationClass *klass)
+class_init(LassoFederationClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

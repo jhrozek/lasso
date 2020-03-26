@@ -123,7 +123,7 @@ init_from_xml(LassoNode *node, xmlNode *xmlnode)
 
 
 static void
-class_init(LassoEcpResponseClass *klass)
+class_init(LassoEcpResponseClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

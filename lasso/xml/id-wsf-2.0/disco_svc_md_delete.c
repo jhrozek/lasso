@@ -70,7 +70,7 @@ instance_init(LassoIdWsf2DiscoSvcMDDelete *node)
 }
 
 static void
-class_init(LassoIdWsf2DiscoSvcMDDeleteClass *klass)
+class_init(LassoIdWsf2DiscoSvcMDDeleteClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nclass = LASSO_NODE_CLASS(klass);
 

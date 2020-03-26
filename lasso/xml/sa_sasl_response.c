@@ -117,7 +117,7 @@ get_xmlNode(LassoNode *node, gboolean lasso_dump)
 
 
 static void
-class_init(LassoSaSASLResponseClass *klass)
+class_init(LassoSaSASLResponseClass *klass, void *unused G_GNUC_UNUSED)
 {
 	LassoNodeClass *nodeClass = LASSO_NODE_CLASS(klass);
 
