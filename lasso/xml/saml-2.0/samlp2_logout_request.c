@@ -274,6 +274,8 @@ lasso_samlp2_logout_request_set_session_indexes(LassoSamlp2LogoutRequest *logout
 		GList *last = g_list_last(pv->SessionIndex);
 		lasso_assign_new_string(logout_request->SessionIndex, (char*) last->data);
 		pv->SessionIndex = g_list_delete_link(pv->SessionIndex, last);
+	} else {
+		lasso_release_string(logout_request->SessionIndex);
 	}
 }
 
