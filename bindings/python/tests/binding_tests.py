@@ -322,6 +322,15 @@ class BindingTestCase(unittest.TestCase):
         # on reparse non namespaces attributes are ignore, they should not exist
         assert node.attributes == {}
 
+    def test13(self):
+        node = lasso.Samlp2LogoutRequest()
+        node.sessionIndexes = ('1', '2')
+        assert node.sessionIndexes == ('1', '2'), node.sessionIndexes
+        node.sessionIndexes = ()
+        assert node.sessionIndexes == (), node.sessionIndexes
+
+
+
 
 bindingSuite = unittest.makeSuite(BindingTestCase, 'test')
 
