@@ -262,8 +262,9 @@ set_hashtable_of_pygobject(GHashTable *a_hash, PyObject *dict) {
 	g_hash_table_remove_all (a_hash);
 	i = 0;
 	while (PyDict_Next(dict, &i, &key, &value)) {
-		char *ckey = PyString_AsString(key);
-		g_hash_table_replace (a_hash, ckey, ((PyGObjectPtr*)value)->obj);
+		const char *ckey = PyString_AsString(key);
+		g_hash_table_replace (a_hash, g_strdup(ckey), ((PyGObjectPtr*)value)->obj);
+		PyStringFree(ckey);
 	}
 	return;
 failure:
@@ -305,9 +306,11 @@ set_hashtable_of_strings(GHashTable *a_hash, PyObject *dict)
 	g_hash_table_remove_all (a_hash);
 	i = 0;
 	while (PyDict_Next(dict, &i, &key, &value)) {
-		char *ckey = PyString_AsString(key);
-		char *cvalue = PyString_AsString(value);
+		const char *ckey = PyString_AsString(key);
+		const char *cvalue = PyString_AsString(value);
 		g_hash_table_insert (a_hash, g_strdup(ckey), g_strdup(cvalue));
+		PyStringFree(ckey);
+		PyStringFree(cvalue);
 	}
 failure:
 	return;
@@ -403,7 +406,7 @@ failure:
 
 static xmlNode*
 get_xml_node_from_pystring(PyObject *string) {
-	char *utf8 = NULL;
+	const char *utf8 = NULL;
 	Py_ssize_t size;
 	xmlNode *xml_node;
 	utf8 = get_pystring(string, &size);
