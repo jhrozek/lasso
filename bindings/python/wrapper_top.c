@@ -28,14 +28,6 @@ typedef int Py_ssize_t;
 #define PyString_FromFormat PyUnicode_FromFormat
 #define PyString_FromString PyUnicode_FromString
 #define PyString_AsString PyUnicode_AsUTF8
-static Py_ssize_t PyString_Size(PyObject *string) {
-	Py_ssize_t size;
-	char *ret = PyUnicode_AsUTF8AndSize(string, &size);
-	if (! ret) {
-		return -1;
-	}
-	return size;
-}
 #define get_pystring PyUnicode_AsUTF8AndSize
 #define PyStringFree(string) ;
 #elif PY_MAJOR_VERSION >= 3
