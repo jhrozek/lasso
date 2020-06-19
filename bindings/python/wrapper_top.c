@@ -676,27 +676,27 @@ set_object_field(GObject **a_gobject_ptr, PyGObjectPtr *a_pygobject) {
 
 static PyObject *get_logger_object(const char *domain) {
 	static PyObject *_logger_object = NULL;
+	PyObject *lasso_module = NULL;
+	PyObject *logging_module = NULL;
 
-	PyObject *logging_module = PyImport_ImportModule("lasso");
-
-	if (logging_module) {
-		_logger_object = PyObject_GetAttrString(logging_module, "logger");
-		Py_DECREF(logging_module);
+	lasso_module = PyImport_ImportModule("lasso");
+	if (lasso_module && PyObject_HasAttrString(lasso_module, "logger")) {
+		_logger_object = PyObject_GetAttrString(lasso_module, "logger");
 		if (_logger_object)
 			goto exit;
 	}
-	/* XXX: needed so that PyImport_ImportModule("logging") always works */
-	logging_module = PyImport_ImportModule("sys");
-	if (logging_module) {
-		Py_DECREF(logging_module);
-	}
+
 	logging_module = PyImport_ImportModule("logging");
 	if (logging_module) {
-		_logger_object = PyObject_CallMethod(logging_module, "getLogger",
-				"s#", domain, strlen(domain));
-		Py_DECREF(logging_module);
+		_logger_object = PyObject_CallMethod(logging_module, "getLogger", "s", domain);
 	}
 exit:
+	if (lasso_module) {
+		Py_DECREF(lasso_module);
+	}
+	if (logging_module) {
+		Py_DECREF(logging_module);
+	}
 	if (_logger_object == Py_None) {
 		Py_DECREF(_logger_object);
 		_logger_object = NULL;
