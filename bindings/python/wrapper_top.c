@@ -61,6 +61,16 @@ static char *get_pystring(PyObject *string, Py_ssize_t *size) {
 	return ret;
 }
 #define PyStringFree(string) ;
+void PyErr_WarnFormat(PyObject *category, int stacklevel, const char *format, ...) {
+
+	va_list ap;
+	char s[1024];
+
+	va_start(ap, format);
+	g_vsnprintf(s, 1024, format, ap);
+	va_end(ap);
+	PyErr_WarnEx(category, s, stacklevel);
+}
 #endif
 
 GQuark lasso_wrapper_key;
@@ -120,7 +130,7 @@ get_dict_from_hashtable_of_objects(GHashTable *value)
 			PyDict_SetItemString(dict, (char*)keys->data, item);
 			Py_DECREF(item);
 		} else {
-			PyErr_Warn(PyExc_RuntimeWarning, "hashtable contains a null value");
+			PyErr_WarnFormat(PyExc_RuntimeWarning, 1, "hashtable contains a null value");
 		}
 	}
 	g_list_free(begin);
@@ -149,7 +159,7 @@ get_dict_from_hashtable_of_strings(GHashTable *value)
 				PyDict_SetItemString(dict, (char*)keys->data, item);
 				Py_DECREF(item);
 			} else {
-				PyErr_Warn(PyExc_RuntimeWarning, "hashtable contains a null value");
+				PyErr_WarnFormat(PyExc_RuntimeWarning, 1, "hashtable contains a null value");
 			}
 		}
 		g_list_free(begin);
@@ -424,8 +434,7 @@ get_list_of_strings(const GList *a_list) {
 			PyTuple_SetItem(a_tuple, i, str);
 			i++;
 		} else {
-			PyErr_Warn(PyExc_RuntimeWarning,
-				"list contains a NULL value");
+			PyErr_WarnFormat(PyExc_RuntimeWarning, 1, "list contains a NULL value");
 		}
 		a_list = a_list->next;
 	}
@@ -457,12 +466,10 @@ get_list_of_xml_nodes(const GList *a_list) {
 				PyTuple_SetItem(a_tuple, i, str);
 				i++;
 			} else {
-				PyErr_Warn(PyExc_RuntimeWarning,
-					"could not convert an xmlNode to a string");
+				PyErr_WarnFormat(PyExc_RuntimeWarning, 1, "could not convert an xmlNode to a string");
 			}
 		} else {
-			PyErr_Warn(PyExc_RuntimeWarning,
-				"list contains a NULL value");
+			PyErr_WarnFormat(PyExc_RuntimeWarning, 1, "list contains a NULL value");
 		}
 		a_list = a_list->next;
 	}
@@ -495,12 +502,10 @@ get_list_of_pygobject(const GList *a_list) {
 				PyTuple_SetItem(a_tuple, i, pygobject);
 				i++;
 			} else {
-				PyErr_Warn(PyExc_RuntimeWarning,
-					"could not convert a GObject to a PyGobject");
+				PyErr_WarnFormat(PyExc_RuntimeWarning, 1, "could not convert a GObject to a PyGobject");
 			}
 		} else {
-			PyErr_Warn(PyExc_RuntimeWarning,
-				"list contains a NULL value");
+			PyErr_WarnFormat(PyExc_RuntimeWarning, 1, "list contains a NULL value");
 		}
 		a_list = a_list->next;
 	}
