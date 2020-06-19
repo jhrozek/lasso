@@ -709,8 +709,8 @@ lasso_python_log(const char *domain, GLogLevelFlags log_level, const gchar *mess
 	char *method = NULL;
 
 	if (! logger_object) {
-		PyErr_SetString(PyExc_RuntimeError, "neither lasso.logger nor "
-				"logging.getLogger('lasso') did return a logger");
+		PyErr_WarnFormat(PyExc_RuntimeWarning, 1, "neither lasso.logger nor "
+				 "logging.getLogger('lasso') did return a logger", 1);
 		return;
 	}
 	switch (log_level) {
@@ -738,7 +738,6 @@ lasso_python_log(const char *domain, GLogLevelFlags log_level, const gchar *mess
 	if (result) {
 		Py_DECREF(result);
 	} else {
-		PyErr_Format(PyExc_RuntimeError, "lasso could not call method %s on its logger",
-				method);
+		PyErr_WarnFormat(PyExc_RuntimeWarning, 1, "lasso could not call method %s on its logger", method);
 	}
 }
