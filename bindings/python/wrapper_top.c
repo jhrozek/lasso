@@ -733,7 +733,7 @@ lasso_python_log(const char *domain, GLogLevelFlags log_level, const gchar *mess
 		default:
 			return;
 	}
-	result = PyObject_CallMethod(logger_object, method, "s#s", "%s", 2, message);
+	result = PyObject_CallMethod(logger_object, method, "ss", "%s", message);
 	Py_DECREF(logger_object);
 	if (result) {
 		Py_DECREF(result);
