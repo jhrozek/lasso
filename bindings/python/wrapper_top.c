@@ -90,7 +90,7 @@ G_GNUC_UNUSED static PyObject* get_dict_from_hashtable_of_objects(GHashTable *va
 G_GNUC_UNUSED static PyObject* get_dict_from_hashtable_of_strings(GHashTable *value);
 G_GNUC_UNUSED static PyObject* PyGObjectPtr_New(GObject *obj);
 G_GNUC_UNUSED static int set_hashtable_of_pygobject(GHashTable *a_hash, PyObject *dict);
-G_GNUC_UNUSED static void set_hashtable_of_strings(GHashTable *a_hash, PyObject *dict);
+G_GNUC_UNUSED static int set_hashtable_of_strings(GHashTable *a_hash, PyObject *dict);
 G_GNUC_UNUSED static void set_list_of_strings(GList **a_list, PyObject *seq);
 G_GNUC_UNUSED static void set_list_of_xml_nodes(GList **a_list, PyObject *seq);
 G_GNUC_UNUSED static void set_list_of_pygobject(GList **a_list, PyObject *seq);
@@ -280,7 +280,7 @@ failure:
 	return 0;
 }
 
-static void 
+static int
 set_hashtable_of_strings(GHashTable *a_hash, PyObject *dict)
 {
 	PyObject *key, *value;
@@ -288,11 +288,11 @@ set_hashtable_of_strings(GHashTable *a_hash, PyObject *dict)
 
 	if (! a_hash) {
 		 PyErr_SetString(PyExc_TypeError, "hashtable does not exist");
-		 return;
+		 return 0;
 	}
 	if (dict != Py_None && ! PyDict_Check(dict)) {
 		 PyErr_SetString(PyExc_TypeError, "value should be a frozen dict");
-		 return;
+		 return 0;
 	}
 	i = 0;
 	// Increase ref count of common object between old and new
@@ -316,8 +316,9 @@ set_hashtable_of_strings(GHashTable *a_hash, PyObject *dict)
 		PyStringFree(ckey);
 		PyStringFree(cvalue);
 	}
+	return 1;
 failure:
-	return;
+	return 0;
 }
 
 /** Set the GList* pointer, pointed by a_list, to a pointer on a new GList

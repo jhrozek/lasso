@@ -833,7 +833,7 @@ register_constants(PyObject *d)
                 if is_object(el_type):
                     print_('    RETURN_IF_FAIL(set_hashtable_of_pygobject(this->%s, cvt_value));' % name, file=fd)
                 else:
-                    print_('    set_hashtable_of_strings(this->%s, cvt_value);' % name, file=fd)
+                    print_('    RETURN_IF_FAIL(set_hashtable_of_strings(this->%s, cvt_value));' % name, file=fd)
             elif is_object(m):
                 print_('    set_object_field((GObject**)&this->%s, cvt_value);' % name, file=fd)
             else:
@@ -1002,7 +1002,7 @@ register_constants(PyObject *d)
                 if is_cstring(el_type) or (is_cstring(k_type) and is_cstring(v_type)):
 
                     print_('    %s = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_free);' % arg[1], file=fd)
-                    print_('    set_hashtable_of_strings(%s, cvt_%s);' % (arg[1], arg[1]), file=fd)
+                    print_('    EXIT_IF_FAIL(set_hashtable_of_strings(%s, cvt_%s));' % (arg[1], arg[1]), file=fd)
             elif f == 'O':
                 if is_optional(arg):
                     print_('    if (PyObject_TypeCheck((PyObject*)cvt_%s, &PyGObjectPtrType)) {' % arg[1], file=fd)
