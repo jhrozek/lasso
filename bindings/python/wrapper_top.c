@@ -93,7 +93,7 @@ G_GNUC_UNUSED static int set_hashtable_of_pygobject(GHashTable *a_hash, PyObject
 G_GNUC_UNUSED static int set_hashtable_of_strings(GHashTable *a_hash, PyObject *dict);
 G_GNUC_UNUSED static int set_list_of_strings(GList **a_list, PyObject *seq);
 G_GNUC_UNUSED static int set_list_of_xml_nodes(GList **a_list, PyObject *seq);
-G_GNUC_UNUSED static void set_list_of_pygobject(GList **a_list, PyObject *seq);
+G_GNUC_UNUSED static int set_list_of_pygobject(GList **a_list, PyObject *seq);
 G_GNUC_UNUSED static PyObject *get_list_of_strings(const GList *a_list);
 G_GNUC_UNUSED static PyObject *get_list_of_xml_nodes(const GList *a_list);
 G_GNUC_UNUSED static PyObject *get_list_of_pygobject(const GList *a_list);
@@ -401,12 +401,16 @@ failure:
 /** Set the GList* pointer, pointed by a_list, to a pointer on a new GList
  * created by converting the python seq into a GList of GObject*.
  */
-static void
+static int
 set_list_of_pygobject(GList **a_list, PyObject *seq) {
 	GList *list = NULL;
 	int l = 0,i;
 
-	lasso_return_if_fail(valid_seq(seq));
+	if (!valid_seq(seq)) {
+		PyErr_SetString(PyExc_TypeError,
+				"value should be a tuple of PyGobject");
+		return 0;
+	}
 	if (seq != Py_None) {
 		l = PySequence_Length(seq);
 	}
@@ -423,9 +427,10 @@ set_list_of_pygobject(GList **a_list, PyObject *seq) {
 	}
 	free_list(a_list, (GFunc)g_object_unref);
 	*a_list = list;
-	return;
+	return 1;
 failure:
 	free_list(&list, (GFunc)g_object_unref);
+	return 0;
 }
 
 static xmlNode*

@@ -344,6 +344,15 @@ class BindingTestCase(unittest.TestCase):
         with self.assertRaises(TypeError, msg='value should be a tuple of strings'):
             node.authnContextClassRef = [None]
 
+    def test_set_list_of_pygobject(self):
+        node = lasso.Saml2Attribute()
+
+        class A:
+            _cptr = None
+        value = [A()]
+        with self.assertRaises(TypeError, msg='value should be a tuple of PyGobject'):
+            node.attributeValue = value
+
 bindingSuite = unittest.makeSuite(BindingTestCase, 'test')
 
 allTests = unittest.TestSuite((bindingSuite, ))

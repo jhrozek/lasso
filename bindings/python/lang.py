@@ -825,7 +825,7 @@ register_constants(PyObject *d)
                 elif is_xml_node(el_type):
                     print_('    RETURN_IF_FAIL(set_list_of_xml_nodes(&this->%s, cvt_value));' % name, file=fd)
                 elif is_object(el_type):
-                    print_('    set_list_of_pygobject(&this->%s, cvt_value);' % name, file=fd)
+                    print_('    RETURN_IF_FAIL(set_list_of_pygobject(&this->%s, cvt_value));' % name, file=fd)
                 else:
                     raise Exception('Unsupported setter for %s' % (m,))
             elif is_hashtable(m):
@@ -988,7 +988,7 @@ register_constants(PyObject *d)
                 elif is_xml_node(qualifier):
                     print_('    EXIT_IF_FAIL(set_list_of_xml_nodes(&%s, cvt_%s));' % (arg[1], arg[1]), file=fd)
                 elif isinstance(qualifier, str) and qualifier.startswith('Lasso'):
-                    print_('    set_list_of_pygobject(&%s, cvt_%s);' % (arg[1], arg[1]), file=fd)
+                    print_('    EXIT_IF_FAIL(set_list_of_pygobject(&%s, cvt_%s));' % (arg[1], arg[1]), file=fd)
                 else:
                     print_('E: unqualified GList argument in', name, qualifier, arg, file=sys.stderr)
             elif is_xml_node(arg):
