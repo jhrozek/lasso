@@ -89,7 +89,7 @@ G_GNUC_UNUSED static xmlNode*  get_xml_node_from_pystring(PyObject *string);
 G_GNUC_UNUSED static PyObject* get_dict_from_hashtable_of_objects(GHashTable *value);
 G_GNUC_UNUSED static PyObject* get_dict_from_hashtable_of_strings(GHashTable *value);
 G_GNUC_UNUSED static PyObject* PyGObjectPtr_New(GObject *obj);
-G_GNUC_UNUSED static void set_hashtable_of_pygobject(GHashTable *a_hash, PyObject *dict);
+G_GNUC_UNUSED static int set_hashtable_of_pygobject(GHashTable *a_hash, PyObject *dict);
 G_GNUC_UNUSED static void set_hashtable_of_strings(GHashTable *a_hash, PyObject *dict);
 G_GNUC_UNUSED static void set_list_of_strings(GList **a_list, PyObject *seq);
 G_GNUC_UNUSED static void set_list_of_xml_nodes(GList **a_list, PyObject *seq);
@@ -235,18 +235,18 @@ free_list(GList **a_list, GFunc free_help) {
  * values from the hash, so if there are somme common
  * values with RefCoun = 1 they won't be deallocated.
  * */
-static void
+static int
 set_hashtable_of_pygobject(GHashTable *a_hash, PyObject *dict) {
 	PyObject *key, *value;
 	Py_ssize_t i;
 
 	if (! a_hash) {
 		 PyErr_SetString(PyExc_TypeError, "hashtable does not exist");
-		 return;
+		 return 0;
 	}
 	if (dict != Py_None && ! PyDict_Check(dict)) {
 		 PyErr_SetString(PyExc_TypeError, "value should be a frozen dict");
-		 return;
+		 return 0;
 	}
 	i = 0;
 	// Increase ref count of common object between old and new
@@ -269,7 +269,7 @@ set_hashtable_of_pygobject(GHashTable *a_hash, PyObject *dict) {
 		g_hash_table_replace (a_hash, g_strdup(ckey), ((PyGObjectPtr*)value)->obj);
 		PyStringFree(ckey);
 	}
-	return;
+	return 1;
 failure:
 	i = 0;
 	while (PyDict_Next(dict, &i, &key, &value)) {
@@ -277,6 +277,7 @@ failure:
 			break;
 		g_object_unref((PyGObjectPtr*)value);
 	}
+	return 0;
 }
 
 static void 

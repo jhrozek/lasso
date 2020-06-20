@@ -831,7 +831,7 @@ register_constants(PyObject *d)
             elif is_hashtable(m):
                 el_type = element_type(m)
                 if is_object(el_type):
-                    print_('    set_hashtable_of_pygobject(this->%s, cvt_value);' % name, file=fd)
+                    print_('    RETURN_IF_FAIL(set_hashtable_of_pygobject(this->%s, cvt_value));' % name, file=fd)
                 else:
                     print_('    set_hashtable_of_strings(this->%s, cvt_value);' % name, file=fd)
             elif is_object(m):
