@@ -911,7 +911,8 @@ register_constants(PyObject *d)
         self.wrapper_list.append(name)
         print_('''static PyObject*
 %s(G_GNUC_UNUSED PyObject *self, PyObject *args)
-{''' % name, file=fd)
+{
+    int ok = 1;''' % name, file=fd)
         parse_tuple_format = []
         parse_tuple_args = []
         for arg in m.args:
@@ -1037,6 +1038,7 @@ register_constants(PyObject *d)
 
             if is_transfer_full(m.return_arg, default=True):
                 self.free_value(fd, m.return_arg, name = 'return_value')
+
         for f, arg in zip(parse_tuple_format, m.args):
             if is_out(arg):
                 self.return_value(fd, arg, return_var_name = arg[1], return_pyvar_name = 'out_pyvalue')
@@ -1056,10 +1058,19 @@ register_constants(PyObject *d)
             elif not is_transfer_full(arg) and is_xml_node(arg):
                 self.free_value(fd, arg)
 
+        print_('failure:', file=fd)
+
         if not m.return_type:
-            print_('    return noneRef();', file=fd)
+            print_('    if (ok) {', file=fd)
+            print_('        return noneRef();', file=fd)
         else:
-            print_('    return return_pyvalue;', file=fd)
+            print_('    if (ok && return_pyvalue) {', file=fd)
+            print_('        return return_pyvalue;', file=fd)
+        print_('    } else {', file=fd)
+        if m.return_type:
+            print_('        Py_XDECREF(return_pyvalue);', file=fd)
+        print_('        return NULL;', file=fd)
+        print_('    }', file=fd)
         print_('}', file=fd)
         print_('', file=fd)
 
