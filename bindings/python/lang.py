@@ -91,7 +91,7 @@ class Binding:
             k_type = key_type(type)
             v_type = value_type(type)
             if is_cstring(el_type) or (is_cstring(k_type) and is_cstring(v_type)):
-                print_('    g_hash_table_destroy(%s);' % name, file=fd)
+                print_('    if (%s) { g_hash_table_destroy(%s); }' % (name, name), file=fd)
             else:
                 raise Exception('Unsupported free value of type GHashTable: %s' % type)
         elif is_object(type):
