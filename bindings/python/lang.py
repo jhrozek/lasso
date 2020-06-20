@@ -1042,7 +1042,12 @@ register_constants(PyObject *d)
         for f, arg in zip(parse_tuple_format, m.args):
             if is_out(arg):
                 self.return_value(fd, arg, return_var_name = arg[1], return_pyvar_name = 'out_pyvalue')
-                print_('    PyList_SetItem(cvt_%s_out, 0, out_pyvalue);' % arg[1], file=fd)
+
+                print_('    EXIT_IF_FAIL(%s);' % arg[1], file=fd)
+                print_('    if (PyList_SetItem(cvt_%s_out, 0, out_pyvalue) == -1) {' % arg[1], file=fd)
+                print_('        ok = 0;', file=fd)
+                print_('        Py_XDECREF(out_pyvalue);', file=fd)
+                print_('    }', file=fd)
             elif arg[0] == 'GList*':
                 qualifier = arg[2].get('element-type')
                 if is_cstring(qualifier):
