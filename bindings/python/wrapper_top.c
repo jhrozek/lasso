@@ -332,13 +332,17 @@ set_list_of_strings(GList **a_list, PyObject *seq) {
 		l = PySequence_Length(seq);
 	}
 	for (i=0; i<l; i++) {
+		const char *astr = NULL;
+
 		PyObject *pystr = PySequence_Fast_GET_ITEM(seq, i);
 		if (! PyString_Check(pystr)) {
 			PyErr_SetString(PyExc_TypeError,
 					"value should be a tuple of strings");
 			goto failure;
 		}
-		list = g_list_append(list, g_strdup(PyString_AsString(pystr)));
+		astr = PyString_AsString(pystr);
+		list = g_list_append(list, g_strdup(astr));
+		PyStringFree(astr);
 	}
 	free_list(a_list, (GFunc)g_free);
 	*a_list = list;
