@@ -821,7 +821,7 @@ register_constants(PyObject *d)
             elif is_glist(m):
                 el_type = element_type(m)
                 if is_cstring(el_type):
-                    print_('    set_list_of_strings(&this->%s, cvt_value);' % name, file=fd)
+                    print_('    RETURN_IF_FAIL(set_list_of_strings(&this->%s, cvt_value));' % name, file=fd)
                 elif is_xml_node(el_type):
                     print_('    set_list_of_xml_nodes(&this->%s, cvt_value);' % name, file=fd)
                 elif is_object(el_type):
@@ -984,7 +984,7 @@ register_constants(PyObject *d)
             if is_list(arg):
                 qualifier = element_type(arg)
                 if is_cstring(qualifier):
-                    print_('    set_list_of_strings(&%s, cvt_%s);' % (arg[1], arg[1]), file=fd)
+                    print_('    EXIT_IF_FAIL(set_list_of_strings(&%s, cvt_%s));' % (arg[1], arg[1]), file=fd)
                 elif is_xml_node(qualifier):
                     print_('    set_list_of_xml_nodes(&%s, cvt_%s);' % (arg[1], arg[1]), file=fd)
                 elif isinstance(qualifier, str) and qualifier.startswith('Lasso'):
