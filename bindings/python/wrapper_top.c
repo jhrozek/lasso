@@ -215,7 +215,6 @@ get_pystring_from_xml_node(xmlNode *xmlnode)
 static gboolean
 valid_seq(PyObject *seq) {
 	if (! seq || ( seq != Py_None && ! PyTuple_Check(seq))) {
-		 PyErr_SetString(PyExc_TypeError, "value should be tuple");
 		 return 0;
 	}
 	return 1;
