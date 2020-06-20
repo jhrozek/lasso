@@ -1019,11 +1019,11 @@ register_constants(PyObject *d)
 
 
         if m.return_type:
-            print_('    return_value =', file=fd)
+            print_('    return_value = ', file=fd, end='')
             if 'new' in m.name:
                 print_('(%s)' % m.return_type, file=fd)
         else:
-            print_('   ', file=fd)
+            print_('    ', file=fd, end='')
         print_('%s(%s);' % (m.name, ', '.join([ref_name(x) for x in m.args])), file=fd)
 
         if m.return_type:
