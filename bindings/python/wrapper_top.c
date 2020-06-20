@@ -73,6 +73,8 @@ void PyErr_WarnFormat(PyObject *category, int stacklevel, const char *format, ..
 }
 #endif
 
+#define RETURN_IF_FAIL(op) do { if (! (op)) { return NULL; } } while(0)
+
 GQuark lasso_wrapper_key;
 
 
