@@ -476,7 +476,7 @@ get_list_of_strings(const GList *a_list) {
 failure:
 	PyErr_SetString(PyExc_TypeError, "Allocation problem in get_list_of_strings");
 	Py_XDECREF(a_tuple);
-	return noneRef();
+	return NULL;
 }
 
 static PyObject *
