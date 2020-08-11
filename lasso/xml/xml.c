@@ -3120,7 +3120,7 @@ get_value_by_path(LassoNode *node, char *path, struct XmlSnippet *xml_snippet)
 				s = xmlGetProp(t, a->name);
 				g_string_append(result, a->name);
 				g_string_append(result, "=");
-				s2 = xmlURIEscapeStr(s, NULL);
+				s2 = lasso_xmlURIEscapeStr(s, NULL);
 				g_string_append(result, s2);
 				xmlFree(s2);
 				xmlFree(s);
@@ -3140,7 +3140,7 @@ get_value_by_path(LassoNode *node, char *path, struct XmlSnippet *xml_snippet)
 				g_string_append(result, (char*)c->name);
 				g_string_append(result, "=");
 				s = xmlNodeGetContent(c);
-				s2 = xmlURIEscapeStr(s, NULL);
+				s2 = lasso_xmlURIEscapeStr(s, NULL);
 				g_string_append(result, (char*)s2);
 				xmlFree(s2);
 				xmlFree(s);
@@ -3263,7 +3263,7 @@ lasso_node_build_query_from_snippets(LassoNode *node)
 				g_string_append(s, "&");
 			g_string_append(s, field_name);
 			g_string_append(s, "=");
-			t = xmlURIEscapeStr((xmlChar*)v, NULL);
+			t = lasso_xmlURIEscapeStr((xmlChar*)v, NULL);
 			g_string_append(s, (char*)t);
 			xmlFree(t);
 		}
@@ -3634,7 +3634,7 @@ lasso_node_export_to_saml2_query(LassoNode *node, const char *param_name, const 
 	value = lasso_node_build_deflated_query(node);
 	if (! value)
 		goto cleanup;
-	encoded_param = xmlURIEscapeStr(BAD_CAST param_name, NULL);
+	encoded_param = lasso_xmlURIEscapeStr(BAD_CAST param_name, NULL);
 	if (! encoded_param)
 		goto cleanup;
 	query = g_strdup_printf("%s=%s", encoded_param, value);

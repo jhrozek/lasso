@@ -988,11 +988,11 @@ lasso_login_build_artifact_msg(LassoLogin *login, LassoHttpMethod http_method)
 	}
 
 	b64_samlArt = xmlStrdup((xmlChar*)login->assertionArtifact);
-	relayState = xmlURIEscapeStr(
+	relayState = lasso_xmlURIEscapeStr(
 			(xmlChar*)LASSO_LIB_AUTHN_REQUEST(profile->request)->RelayState, NULL);
 
 	if (http_method == LASSO_HTTP_METHOD_REDIRECT) {
-		xmlChar *escaped_artifact = xmlURIEscapeStr(b64_samlArt, NULL);
+		xmlChar *escaped_artifact = lasso_xmlURIEscapeStr(b64_samlArt, NULL);
 		gchar *query = NULL;
 
 		if (relayState == NULL) {

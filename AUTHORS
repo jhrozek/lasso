@@ -21,6 +21,7 @@ Core
 	contributed under MIT license by XCG consulting
 - Simo Sorce <simo@redhat.com>, code review using Coverity and related
 	bugfixes, contributed under MIT license by Redhat Inc.
+- Emmanuel Dreyfus <manu@netbsd.org>, bug fixes, contributed under MIT license.
 
 Unit Tests
 ==========

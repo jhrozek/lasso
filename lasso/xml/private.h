@@ -287,6 +287,7 @@ gboolean lasso_eval_xpath_expression(xmlXPathContextPtr xpath_ctx, const char *e
 
 char * lasso_get_relaystate_from_query(const char *query);
 char * lasso_url_add_parameters(char *url, gboolean free, ...);
+xmlChar * lasso_xmlURIEscapeStr(const xmlChar *from, const xmlChar *list);
 xmlSecKey* lasso_xmlsec_load_private_key_from_buffer(const char *buffer, size_t length, const char *password, LassoSignatureMethod signature_method, const char *certificate);
 xmlSecKey* lasso_xmlsec_load_private_key(const char *filename_or_buffer, const char *password,
 		LassoSignatureMethod signature_method, const char *certificate);

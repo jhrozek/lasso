@@ -36,6 +36,7 @@
 #define _BSD_SOURCE
 #include "private.h"
 #include <string.h>
+#include <strings.h>
 #include <time.h>
 #include <ctype.h>
 #include <stdarg.h>
@@ -540,7 +541,7 @@ lasso_query_sign(char *query, LassoSignatureContext context)
 	}
 
 	{
-		const char *t = (char*)xmlURIEscapeStr(algo_href, NULL);
+		const char *t = (char*)lasso_xmlURIEscapeStr(algo_href, NULL);
 		new_query = g_strdup_printf("%s&SigAlg=%s", query, t);
 		xmlFree(BAD_CAST t);
 	}
@@ -662,7 +663,7 @@ lasso_query_sign(char *query, LassoSignatureContext context)
 	/* Base64 encode the signature value */
 	b64_sigret = xmlSecBase64Encode(sigret, sigret_size, 0);
 	/* escape b64_sigret */
-	e_b64_sigret = xmlURIEscapeStr((xmlChar*)b64_sigret, NULL);
+	e_b64_sigret = lasso_xmlURIEscapeStr((xmlChar*)b64_sigret, NULL);
 
 	/* add signature */
 	switch (sign_method) {
@@ -1307,7 +1308,7 @@ lasso_xmlnode_build_deflated_query(xmlNode *xmlnode)
 	b64_ret = xmlSecBase64Encode(ret, stream.total_out, 0);
 	lasso_release(ret);
 
-	ret = xmlURIEscapeStr(b64_ret, NULL);
+	ret = lasso_xmlURIEscapeStr(b64_ret, NULL);
 	rret = g_strdup((char*)ret);
 	xmlFree(b64_ret);
 	xmlFree(ret);
@@ -2329,7 +2330,7 @@ lasso_url_add_parameters(char *url,
 		if (! key) {
 			break;
 		}
-		encoded_key = xmlURIEscapeStr((xmlChar*)key, NULL);
+		encoded_key = lasso_xmlURIEscapeStr((xmlChar*)key, NULL);
 		goto_cleanup_if_fail(encoded_key);
 
 		value = va_arg(ap, char*);
@@ -2337,7 +2338,7 @@ lasso_url_add_parameters(char *url,
 			message(G_LOG_LEVEL_CRITICAL, "lasso_url_add_parameter: key without a value !!");
 			break;
 		}
-		encoded_value = xmlURIEscapeStr((xmlChar*)value, NULL);
+		encoded_value = lasso_xmlURIEscapeStr((xmlChar*)value, NULL);
 		goto_cleanup_if_fail(encoded_value);
 
 		if (old_url) {
@@ -2478,6 +2479,56 @@ lasso_base64_decode(const char *from, char **buffer, int *buffer_len)
 	}
 	*buffer_len = ret;
 	return TRUE;
+}
+
+/**
+ * lasso_xmlURIEscapeStr:
+ * @from: the source URI string
+ * @list: optional list of characters not to escape
+ *
+ * Drop-in replacement for libxml2 xmlURIEscapeStr(), but encoding
+ * everything but [A-Za-z0-9._~-] which are the unreserved chartacters
+ * for RFC3986 section 2.3
+ *
+ * Return value: a buffer containing the URL-encoded string or NULL on error
+ */
+xmlChar *
+lasso_xmlURIEscapeStr(const xmlChar *from, const xmlChar *list)
+{
+	size_t len = 0;
+	const xmlChar *fp;
+	xmlChar *result;
+	int ri;
+
+	if (list == NULL)
+		list = "";
+
+	for (fp = from; *fp; fp++) {
+		if (isalnum(*fp) || index("._~-", *fp) || index(list, *fp))
+			len++;
+		else
+			len += 3;
+	}
+
+	result = g_malloc0(len + 1);
+	ri = 0;
+
+	for (fp = from; *fp; fp++) {
+		if (isalnum(*fp) || index("._~-", *fp) || index(list, *fp)) {
+			result[ri++] = *fp;
+		} else {
+			int msb = (*fp & 0xf0) >> 4;
+			int lsb = *fp & 0x0f;
+
+			result[ri++] = '%';
+			result[ri++] = (msb > 9) ? 'A' + msb - 10 : '0' + msb;
+			result[ri++] = (lsb > 9) ? 'A' + lsb - 10 : '0' + lsb;
+		}
+	}
+
+	result[ri++] = '\0';
+
+	return result;
 }
 
 /**
