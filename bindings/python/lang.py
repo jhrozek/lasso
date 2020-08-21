@@ -188,7 +188,10 @@ class Error(Exception):
         if self.code:
             return '<lasso.%s(%s): %s>' % (self.__class__.__name__, self.code, _lasso.strError(self.code))
         else:
-            return '<lasso.%s: %s>' % (self.__class__.__name__, self.message)
+            if sys.version_info >= (3,):
+                return '<lasso.%s: %s>' % (self.__class__.__name__, self)
+            else:
+                return '<lasso.%s: %s>' % (self.__class__.__name__, self.message)
 
     def __getitem__(self, i):
         # compatibility with SWIG bindings
