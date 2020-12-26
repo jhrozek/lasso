@@ -1,4 +1,4 @@
-@Library('eo-jenkins-lib@master') import eo.Utils
+@Library('eo-jenkins-lib@main') import eo.Utils
 
 pipeline {
     agent any
