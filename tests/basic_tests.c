@@ -22,7 +22,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <strings.h>
 
 #include <check.h>
 
@@ -2128,7 +2127,7 @@ START_TEST(test16_test_get_issuer)
 	lasso_assign_string(request->ProtocolBinding, LASSO_SAML2_METADATA_BINDING_POST);
 	check_good_rc(lasso_login_build_authn_request_msg(spLoginContext));
 	authnRequestUrl = LASSO_PROFILE(spLoginContext)->msg_url;
-	qs = index(authnRequestUrl, '?') + 1;
+	qs = strchr(authnRequestUrl, '?') + 1;
 	issuer = lasso_profile_get_issuer(qs);
 	check_true(lasso_strisequal(issuer, "http://sp5/metadata"));
 	lasso_release_string(issuer);
