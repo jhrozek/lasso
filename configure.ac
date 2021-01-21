@@ -206,8 +206,8 @@ languages_available=
 # ------------
 
 dnl Check if java is explicitly disabled.
-AC_ARG_ENABLE(java, [  --disable-java          disable the Java binding],,
-              enable_java="yes")
+AC_ARG_ENABLE(java, [  --enable-java          enable the Java binding],,
+              enable_java="no")
 AC_ARG_WITH(java-home,
             [  --with-java-home=(JAVA_HOME)  set the full path to the java home directory.])
 SUN=no
