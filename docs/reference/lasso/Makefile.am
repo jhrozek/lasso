@@ -1,8 +1,28 @@
-## Process this file with automake to produce Makefile.in
-
-
-# We require automake 1.6 at least.
-AUTOMAKE_OPTIONS = 1.6
+# -*- mode: makefile -*-
+#
+# Makefile.am - template makefile for gtk-doc module
+# Copyright (C) 2007-2017  Stefan Sauer
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# As a special exception, the above copyright owner gives unlimited
+# permission to copy, distribute and modify this Makefile.am template.
+# You need not follow the terms of the GNU General Public License when
+# using or distributing such Makefile.am files, even though portions of
+# the text of the Makefile.am appear in them. The GNU General Public
+# License (GPL) does govern all other use of the material that constitutes
+# the Makefile.am template.
 
 # This is a blank Makefile.am for using gtk-doc.
 # Copy this to your project's API docs directory and modify the variables to
@@ -15,9 +35,9 @@ DOC_MODULE=lasso
 # Uncomment for versioned docs and specify the version of the module, e.g. '2'.
 #DOC_MODULE_VERSION=2
 
+# The top-level XML file.
+DOC_MAIN_SGML_FILE=$(DOC_MODULE)-docs.xml
 
-# The top-level SGML file. You can change this if you want to.
-DOC_MAIN_SGML_FILE=$(DOC_MODULE)-docs.sgml
 
 # The directory containing the source code. Relative to $(srcdir).
 # gtk-doc will search all .c & .h files beneath here for inline comments
@@ -32,13 +52,13 @@ SCANGOBJ_OPTIONS=
 # e.g. SCAN_OPTIONS=--deprecated-guards="GTK_DISABLE_DEPRECATED"
 SCAN_OPTIONS=--ignore-decorators=LASSO_EXPORT
 
-# Extra options to supply to gtkdoc-mkdb.
-# e.g. MKDB_OPTIONS=--sgml-mode --output-format=xml
-MKDB_OPTIONS=--sgml-mode --output-format=xml
 
+# Extra options to supply to gtkdoc-mkdb
 # Extra options to supply to gtkdoc-mktmpl
 # e.g. MKTMPL_OPTIONS=--only-section-tmpl
 MKTMPL_OPTIONS=
+# e.g. MKDB_OPTIONS=--xml-mode --output-format=xml
+MKDB_OPTIONS=--xml-mode --output-format=xml
 
 # Extra options to supply to gtkdoc-mkhtml
 MKHTML_OPTIONS=--path=$(shell pwd)
@@ -95,7 +115,7 @@ include $(top_srcdir)/gtk-doc.make
 
 # Other files to distribute
 # e.g. EXTRA_DIST += version.xml.in
-EXTRA_DIST += lasso-sections.txt lasso-docs.sgml version.xml.in lasso.types.in style.css
+EXTRA_DIST += lasso-sections.txt lasso-docs.xml version.xml.in lasso.types.in style.css
 
 # Files not to distribute
 # for --rebuild-types in $(SCAN_OPTIONS), e.g. $(DOC_MODULE).types
