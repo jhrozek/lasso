@@ -189,7 +189,7 @@ class Error(Exception):
             return '<lasso.%s(%s): %s>' % (self.__class__.__name__, self.code, _lasso.strError(self.code))
         else:
             if sys.version_info >= (3,):
-                return '<lasso.%s: %s>' % (self.__class__.__name__, self)
+                return '<lasso.%s: %s>' % (self.__class__.__name__, super().__str__())
             else:
                 return '<lasso.%s: %s>' % (self.__class__.__name__, self.message)
 
