@@ -1,6 +1,12 @@
 .NOTPARALLEL:
 
 MAINTAINERCLEANFILES = Makefile.in
+MOSTLYCLEANFILES =  com_entrouvert_lasso_LassoJNI.c  com_entrouvert_lasso_LassoJNI.h \
+	com/entrouvert/lasso/* lasso.jar *.class $(TESTS) \
+	__init__.pyc lang.pyc
+
+if JAVA_ENABLED
+
 AM_CPPFLAGS = \
 	-I$(top_builddir) \
 	-I$(top_srcdir) \
@@ -73,9 +79,6 @@ doc-publish: doc
 	ssh bdauvergne@perso.entrouvert.org tar czf -C public_html/java-binding-doc doc.tgz
 	rm doc.tgz
 
-MOSTLYCLEANFILES =  com_entrouvert_lasso_LassoJNI.c  com_entrouvert_lasso_LassoJNI.h \
-		    com/entrouvert/lasso/* lasso.jar *.class $(TESTS) \
-		    __init__.pyc lang.pyc
 
 
 
@@ -88,9 +91,6 @@ EXTRA_DIST = \
 	__init__.py \
 	wrapper_bottom.c \
 	wrapper_top.c 
-
-clean-local:
-	-rm -rf com
 
 # Some of the following classes are built only if junit is available
 if JUNIT_ENABLED
@@ -110,4 +110,8 @@ AllJunitTests: $(test_source_files:.java=.class)
 	chmod +x $@
 endif
 
+endif
+
+clean-local:
+	-rm -rf com
 
