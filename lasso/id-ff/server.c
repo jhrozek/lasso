@@ -130,7 +130,6 @@ lasso_server_add_provider2(LassoServer *server, LassoProvider *provider)
 	g_return_val_if_fail(provider->ProviderID, LASSO_PARAM_ERROR_NON_INITIALIZED_OBJECT);
 	g_return_val_if_fail(server->providers, LASSO_PARAM_ERROR_NON_INITIALIZED_OBJECT);
 
-	g_object_ref(provider);
 	g_hash_table_insert(server->providers, g_strdup(provider->ProviderID), g_object_ref(provider));
 
 	return 0;
