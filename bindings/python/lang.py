@@ -34,7 +34,7 @@ def remove_bad_optional(args):
         if not '=' in x:
             non_opt = True
         elif non_opt:
-            print_('W: changed', x, file=sys.stderr)
+            print_('W: changed', x, file=sys.stderr, end=' ')
             x = re.sub(' *=.*', '', x)
             print_('to', x, file=sys.stderr)
         new_args.append(x)
