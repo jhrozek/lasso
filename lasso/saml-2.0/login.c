@@ -1257,7 +1257,11 @@ lasso_saml20_login_check_assertion_signature(LassoLogin *login,
 	original_node = lasso_node_get_original_xmlnode(LASSO_NODE(assertion));
 	goto_cleanup_if_fail_with_rc(original_node, LASSO_PROFILE_ERROR_CANNOT_VERIFY_SIGNATURE);
 
-	rc = profile->signature_status = lasso_provider_verify_saml_signature(remote_provider, original_node, NULL);
+	/* Shouldn't set the profile->signature_status here as we're only
+	 * checking the assertion signature.
+	 * Instead, we'll set the status after all the assertions are iterated.
+	 */
+	rc = lasso_provider_verify_saml_signature(remote_provider, original_node, NULL);
 
 #define log_verify_assertion_signature_error(msg) \
 			message(G_LOG_LEVEL_WARNING, "Could not verify signature of assertion" \
@@ -1280,18 +1284,6 @@ cleanup:
 	}
 #undef log_verify_assertion_signature_error
 	return rc;
-}
-
-static gboolean
-_lasso_check_assertion_issuer(LassoSaml2Assertion *assertion, const gchar *provider_id)
-{
-	if (! LASSO_SAML2_ASSERTION(assertion) || ! provider_id)
-		return FALSE;
-
-	if (! assertion->Issuer || ! assertion->Issuer->content)
-		return FALSE;
-
-	return lasso_strisequal(assertion->Issuer->content,provider_id);
 }
 
 static gint
@@ -1358,11 +1350,23 @@ _lasso_saml20_login_decrypt_assertion(LassoLogin *login, LassoSamlp2Response *sa
 	return 0;
 }
 
+/* Verify that an assertion comes from a designated Issuer */
+static gboolean
+_lasso_check_assertion_issuer(LassoSaml2Assertion *assertion, const gchar *provider_id)
+{
+	if (! LASSO_SAML2_ASSERTION(assertion) || ! provider_id)
+		return FALSE;
+	if (! assertion->Issuer || ! assertion->Issuer->content)
+		return FALSE;
+	return lasso_strisequal(assertion->Issuer->content,provider_id);
+}
+
 static gint
 lasso_saml20_login_process_response_status_and_assertion(LassoLogin *login)
 {
 	LassoSamlp2StatusResponse *response;
 	LassoSamlp2Response *samlp2_response = NULL;
+	LassoSaml2Assertion *last_assertion = NULL;
 	LassoProfile *profile;
 	char *status_value;
 	lasso_error_t rc = 0;
@@ -1404,34 +1408,62 @@ lasso_saml20_login_process_response_status_and_assertion(LassoLogin *login)
 
 	/* Decrypt all EncryptedAssertions */
 	_lasso_saml20_login_decrypt_assertion(login, samlp2_response);
-	/* traverse all assertions */
-	goto_cleanup_if_fail_with_rc (samlp2_response->Assertion != NULL,
-			LASSO_PROFILE_ERROR_MISSING_ASSERTION);
 
+	/* Check there is at least one assertion */
+	goto_cleanup_if_fail_with_rc (samlp2_response->Assertion != NULL, LASSO_PROFILE_ERROR_MISSING_ASSERTION);
+
+	/* In case of verify_hint as 'FORCE', if there's no response signature,
+	 * we reject.
+	 * In case of 'MAYBE', if response signature is present and valid, or
+	 * not present, then we proceed with checking assertion signature(s).
+	 * In any case, if there's a response signature and it's not valid,
+	 * we reject.
+	*/
 	verify_hint = lasso_profile_get_signature_verify_hint(profile);
+	if (profile->signature_status == LASSO_DS_ERROR_SIGNATURE_NOT_FOUND) {
+		if (verify_hint == LASSO_PROFILE_SIGNATURE_VERIFY_HINT_FORCE) {
+			goto_cleanup_with_rc(profile->signature_status);
+		}
+	} else if (profile->signature_status != 0) {
+		goto_cleanup_with_rc(profile->signature_status);
+	}
 
 	lasso_foreach_full_begin(LassoSaml2Assertion*, assertion, it, samlp2_response->Assertion);
 		LassoSaml2Subject *subject = NULL;
 
-		lasso_assign_gobject (login->private_data->saml2_assertion, assertion);
-
-		/* If signature has already been verified on the message, and assertion has the same
-		 * issuer as the message, the assertion is covered. So no need to verify a second
-		 * time */
-		if (profile->signature_status != 0 
-			|| ! _lasso_check_assertion_issuer(assertion,
-				profile->remote_providerID)
-			|| verify_hint == LASSO_PROFILE_SIGNATURE_VERIFY_HINT_FORCE) {
-			assertion_signature_status = lasso_saml20_login_check_assertion_signature(login,
-					assertion);
-			/* If signature validation fails, it is the return code for this function */
-			if (assertion_signature_status) {
-				rc = LASSO_PROFILE_ERROR_CANNOT_VERIFY_SIGNATURE;
-			}
+		/* All Assertions MUST come from the same issuer as the Response. */
+		if (! _lasso_check_assertion_issuer(assertion, profile->remote_providerID)) {
+			goto_cleanup_with_rc(LASSO_PROFILE_ERROR_INVALID_ISSUER);
 		}
 
+		if (profile->signature_status != 0) {
+			/* When response signature is not present */
+			if (verify_hint == LASSO_PROFILE_SIGNATURE_VERIFY_HINT_MAYBE) {
+				assertion_signature_status =
+					lasso_saml20_login_check_assertion_signature(login, assertion);
+				if (assertion_signature_status) {
+					goto_cleanup_with_rc(assertion_signature_status);
+				}
+			}
+		} else {
+			/* response signature is present and valid */
+			assertion_signature_status = lasso_saml20_login_check_assertion_signature(login,
+							assertion);
+			if (assertion_signature_status) {
+				/* assertion signature is not valid or not present */
+				if (verify_hint == LASSO_PROFILE_SIGNATURE_VERIFY_HINT_FORCE) {
+					/* In case of FORCE, we reject right away */
+					goto_cleanup_with_rc(assertion_signature_status);
+				} else if (verify_hint == LASSO_PROFILE_SIGNATURE_VERIFY_HINT_MAYBE) {
+					/* In case of MAYBE, if assertion signature is present and invalid, then we reject */
+					if (assertion_signature_status != LASSO_DS_ERROR_SIGNATURE_NOT_FOUND) {
+						goto_cleanup_with_rc(assertion_signature_status);
+					}
+				}
+			}
+		}
 		lasso_extract_node_or_fail(subject, assertion->Subject, SAML2_SUBJECT,
-				LASSO_PROFILE_ERROR_MISSING_SUBJECT);
+			LASSO_PROFILE_ERROR_MISSING_SUBJECT);
 
 		/* Verify Subject->SubjectConfirmationData->InResponseTo */
 		if (login->private_data->request_id) {
@@ -1446,7 +1478,19 @@ lasso_saml20_login_process_response_status_and_assertion(LassoLogin *login)
 		/** Handle nameid */
 		lasso_check_good_rc(lasso_saml20_profile_process_name_identifier_decryption(profile,
 					&subject->NameID, &subject->EncryptedID));
+
+		last_assertion = assertion;
 	lasso_foreach_full_end();
+
+	/* set the profile signature status only after all the signatures are
+	 * verified.
+	 */
+	profile->signature_status = rc;
+
+	/* set the default assertion to the last one */
+	if (last_assertion) {
+		lasso_assign_gobject (login->private_data->saml2_assertion, last_assertion);
+	}
 
 	switch (verify_hint) {
 		case LASSO_PROFILE_SIGNATURE_VERIFY_HINT_FORCE:
