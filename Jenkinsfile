@@ -15,7 +15,7 @@ pipeline {
                 }
                 anyOf {
                    tag 'v*'
-                   branch 'master'
+                   branch 'main'
                 }
             }
             steps {
