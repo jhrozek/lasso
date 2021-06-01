@@ -1,7 +1,61 @@
 NEWS
 ====
 
-2.6.1 - Aptil 22th 2019
+2.7.0 - June 1st 2021
+----------------------
+36 commits, 45 files changed, 1945 insertions, 177 deletions
+
+* CVE-2021-28091: Fix signature checking on unsigned response with multiple assertions
+
+  https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-28091
+
+  When AuthnResponse messages are not signed (which is
+  permitted by the specifiation), all assertion's signatures should be
+  checked, but currently after the first signed assertion is checked all
+  following assertions are accepted without checking their signature, and
+  the last one is considered the main assertion.
+
+  This patch :
+  * check signatures from all assertions if the message is not signed,
+  * refuse messages with assertion from different issuers than the one on
+    the message, to prevent assertion bundling event if they are signed.
+
+* Python: improve display of warnings in the binding generator
+* replace deprecated index() by strchr() (#51385)
+* Fix: new provider reference count is incremented one time too many (#51420)
+* docs: update gtk-doc-tools integration (#50441)
+* bindings: disable java tests when java is disabled
+* Fix: python3 bindings (#51249)
+* configure.ac: disable java bindings
+* build: update to use origin/main
+* debian: add packaging for debian-buster
+* jenkins.sh: build against all available python versions (#44287)
+* python: do not leak out_pyvalue if method call protocol is not respected (#44287)
+* python: do not raise in valid_seq() (#44287)
+* python: return NULL if get_list_of_strings() fails (#44287)
+* python: return NULL if get_list_of_pygobject fails (#44287)
+* python: return NULL if get_list_of_xml_nodes fails (#44287)
+* python: return NULL if set_list_of_pygobject fails (#44287)
+* python: return NULL if set_list_of_xml_nodes fails (#44287)
+* python: return NULL if set_list_of_strings fails (#44287)
+* python: return NULL if set_hashtable_of_strings fails (#44287)
+* python: return NULL if set_hashtable_of_pygobject fails (#44287)
+* python: free internal string buffer if needed in set_list_of_strings (#44287)
+* python: check if hashtable is NULL before deallocatio (#44287)n
+* python: add a failure label to method wrappers (#44287)
+* python: add macro for early return (#44287)
+* python: remove newline before method call (#44287)
+* python: simplify get_logger_object (#44287)
+* python: fix warning about discarded const modifier (#44287)
+* python: replace exception by warning on logging path (#44287)
+* python: use simpler call format to prevent warning about PY_SSIZE_T_CLEAN (#44287)
+* python: remove deprecated PyErr_Warn (#44287)
+* python: remove unused PyString_Size (#44287)
+* python: Exception.message was removed in python3 (#45995)
+* tools: reimplement xmlURIEscapeStr to respect RFC3986 (#45581)
+* configure.ac: support php7 interpreter on CentOS 8 (#42299)
+
+2.6.1 - April 22th 2020
 ----------------------
 42 commits, 425 files changed, 3894 insertions, 795 deletions
 

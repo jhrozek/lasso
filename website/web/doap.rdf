@@ -56,6 +56,10 @@
     </repository>
     <release>
       <Version>
+        <created>2021-06-01</created>
+        <revision>2.7.0</revision>
+      </Version>
+      <Version>
         <created>2020-04-22</created>
         <revision>2.6.1</revision>
       </Version>
