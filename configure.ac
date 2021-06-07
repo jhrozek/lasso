@@ -795,6 +795,43 @@ else
     AC_MSG_RESULT(no)
 fi 
 
+AC_ARG_WITH([default-sign-algo],
+            [AS_HELP_STRING([--with-default-sign-algo=[rsa-sha1|rsa-sha256]],
+                            [Default signing algorithm (rsa-sha1)]
+                           )
+            ]
+)
+
+SIGNING_ALGO=rsa-sha1
+if test x"$with_default_sign_algo" != x; then
+    if test ! "$with_default_sign_algo" = "rsa-sha1" -a ! "$with_default_sign_algo" = "rsa-sha256"; then
+	AC_MSG_ERROR("Default signing algorithm must be either rsa-sha1 or rsa-sha256")
+    else
+	SIGNING_ALGO=$with_default_sign_algo
+    fi
+fi
+
+AC_DEFINE_UNQUOTED(DEFAULT_SIGNING_ALGO, "$SIGNING_ALGO", ["The default signing algorithm"])
+
+AC_ARG_WITH([min-hash-algo],
+            [AS_HELP_STRING([--with-min-hash-algo=[sha1|sha256|sha384|sha512]],
+                            [Minimal allowed hash algorithm (rsa-sha1)]
+                           )
+            ]
+)
+
+MIN_HASH_ALGO=sha1
+if test x"$with_min_hash_algo" != x; then
+    if test ! "$with_min_hash_algo" = "sha1" -a ! "$with_min_hash_algo" = "sha256" -a ! "$with_min_hash_algo" = "sha384" -a ! "$with_min_hash_algo" = "sha512"; then
+	AC_MSG_ERROR("Minimal allowed hash algorithm must be one of sha1, sha256, sha384 or sha512)
+    else
+	MIN_HASH_ALGO=$with_min_hash_algo
+    fi
+fi
+
+AC_DEFINE_UNQUOTED(MIN_HASH_ALGO, "$MIN_HASH_ALGO", ["The minimal hash algorithm"])
+
+
 dnl ==========================================================================
 dnl Pedantic compilation
 dnl ==========================================================================
@@ -939,4 +976,9 @@ Python binding:         ${enable_python}
 
 C API references:       ${enable_gtk_doc}
 Tests suite:            ${enable_tests}
+
+Crypto settings
+---------------
+Default signature:      ${SIGNING_ALGO}
+Minimal accepted hash:  ${MIN_HASH_ALGO}
 )
