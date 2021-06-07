@@ -91,6 +91,10 @@ GHashTable *dst_services_by_prefix = NULL; /* ID-WSF 1 extra DST services, index
 GHashTable *idwsf2_dst_services_by_href = NULL; /* ID-WSF 2 DST services, indexed on href */
 GHashTable *idwsf2_dst_services_by_prefix = NULL; /* ID-WSF 2 DST services, indexed on prefix */
 
+
+static LassoSignatureMethod default_signature_method = LASSO_SIGNATURE_METHOD_RSA_SHA1;
+static LassoSignatureMethod min_signature_method = LASSO_SIGNATURE_METHOD_RSA_SHA1;
+
 /*****************************************************************************/
 /* global methods                                                            */
 /*****************************************************************************/
@@ -3688,4 +3692,24 @@ lasso_node_new_from_saml2_query(const char *url_or_qs, const char *param_name, L
 	}
 cleanup:
 	return result;
+}
+
+LassoSignatureMethod
+lasso_get_default_signature_method() {
+	return default_signature_method;
+}
+
+void
+lasso_set_default_signature_method(LassoSignatureMethod meth) {
+	default_signature_method = meth;
+}
+
+LassoSignatureMethod
+lasso_get_min_signature_method() {
+	return min_signature_method;
+}
+
+void
+lasso_set_min_signature_method(LassoSignatureMethod meth) {
+	min_signature_method = meth;
 }

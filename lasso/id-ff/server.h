@@ -133,6 +133,8 @@ LASSO_EXPORT gchar *lasso_server_get_endpoint_url_by_id(const LassoServer *serve
 LASSO_EXPORT GList *lasso_server_get_filtered_provider_list(const LassoServer *server,
 	LassoProviderRole role, LassoMdProtocolType protocol_type, LassoHttpMethod http_method);
 
+LASSO_EXPORT LassoSignatureMethod lasso_get_default_signature_method();
+void lasso_set_default_signature_method(LassoSignatureMethod meth);
 
 #ifdef __cplusplus
 }

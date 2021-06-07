@@ -149,6 +149,44 @@ lasso_xmlsec_errors_callback(const char *file G_GNUC_UNUSED, int line G_GNUC_UNU
 	g_log("libxmlsec", G_LOG_LEVEL_DEBUG, "libxmlsec: %s:%d:%s:%s:%s:%s:%s", file, line, func, errorObject, errorSubject, xmlSecErrorsGetMsg(reason), msg);
 }
 
+static int
+set_default_signature_method()
+{
+	int rv = LASSO_ERROR_UNDEFINED;
+
+	if (lasso_strisequal(DEFAULT_SIGNING_ALGO, "rsa-sha256")) {
+		lasso_set_default_signature_method(LASSO_SIGNATURE_METHOD_RSA_SHA256);
+		rv = 0;
+	} else if (lasso_strisequal(DEFAULT_SIGNING_ALGO, "rsa-sha1")) {
+		lasso_set_default_signature_method(LASSO_SIGNATURE_METHOD_RSA_SHA1);
+		rv = 0;
+	}
+
+	return rv;
+}
+
+static int
+set_min_allowed_hash_algo()
+{
+	int rv = LASSO_ERROR_UNDEFINED;
+
+	if (lasso_strisequal(MIN_HASH_ALGO, "sha1")) {
+		lasso_set_min_signature_method(LASSO_SIGNATURE_METHOD_RSA_SHA1);
+		rv = 0;
+	} else if (lasso_strisequal(MIN_HASH_ALGO, "sha256")) {
+		lasso_set_min_signature_method(LASSO_SIGNATURE_METHOD_RSA_SHA256);
+		rv = 0;
+	} else if (lasso_strisequal(MIN_HASH_ALGO, "sha384")) {
+		lasso_set_min_signature_method(LASSO_SIGNATURE_METHOD_RSA_SHA384);
+		rv = 0;
+	} else if (lasso_strisequal(MIN_HASH_ALGO, "sha512")) {
+		lasso_set_min_signature_method(LASSO_SIGNATURE_METHOD_RSA_SHA512);
+		rv = 0;
+	}
+
+	return rv;
+}
+
 /**
  * lasso_init:
  *
@@ -163,6 +201,19 @@ int lasso_init()
 #ifndef GLIB_VERSION_2_36
 	g_type_init();
 #endif
+
+	/* Set the default hash algo */
+	if (set_default_signature_method() != 0) {
+		message(G_LOG_LEVEL_CRITICAL, "Unsupported signature "
+			"algorithm "DEFAULT_SIGNING_ALGO" configured");
+		return LASSO_ERROR_UNDEFINED;
+	}
+	if (set_min_allowed_hash_algo() != 0) {
+		message(G_LOG_LEVEL_CRITICAL, "Unsupported hash algorithm "
+			"algorithm "MIN_HASH_ALGO" configured");
+		return LASSO_ERROR_UNDEFINED;
+	}
+
 
 	/* Init Lasso classes */
 	for (i=0; functions[i]; i++)

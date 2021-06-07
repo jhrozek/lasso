@@ -682,7 +682,7 @@ instance_init(LassoServer *server)
 	server->private_key = NULL;
 	server->private_key_password = NULL;
 	server->certificate = NULL;
-	server->signature_method = LASSO_SIGNATURE_METHOD_RSA_SHA1;
+	server->signature_method = lasso_get_default_signature_method();
 
 	server->services = g_hash_table_new_full(g_str_hash, g_str_equal,
 			(GDestroyNotify)g_free,

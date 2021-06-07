@@ -116,6 +116,15 @@ typedef enum {
 	LASSO_SIGNATURE_METHOD_LAST
 } LassoSignatureMethod;
 
+/* signature method and hash strength */
+LassoSignatureMethod lasso_get_default_signature_method();
+
+void lasso_set_default_signature_method(LassoSignatureMethod meth);
+
+LassoSignatureMethod lasso_get_min_signature_method();
+
+void lasso_set_min_signature_method(LassoSignatureMethod meth);
+
 static inline gboolean
 lasso_validate_signature_method(LassoSignatureMethod signature_method)
 {

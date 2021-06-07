@@ -97,7 +97,7 @@ START_TEST(test01_server_new)
 	fail_unless(server->private_key != NULL);
 	fail_unless(server->private_key_password == NULL);
 	fail_unless(server->certificate != NULL);
-	fail_unless(server->signature_method == LASSO_SIGNATURE_METHOD_RSA_SHA1);
+	fail_unless(server->signature_method == lasso_get_default_signature_method());
 	fail_unless(provider->ProviderID != NULL);
 	fail_unless(provider->role == 0);
 	fail_unless(g_file_get_contents(TESTSDATADIR "/idp1-la/metadata.xml", &content, &len, NULL));
@@ -115,7 +115,7 @@ START_TEST(test01_server_new)
 	fail_unless(server->private_key != NULL);
 	fail_unless(server->private_key_password == NULL);
 	fail_unless(server->certificate != NULL);
-	fail_unless(server->signature_method == LASSO_SIGNATURE_METHOD_RSA_SHA1);
+	fail_unless(server->signature_method == lasso_get_default_signature_method());
 	fail_unless(server->providers != NULL);
 	fail_unless(provider->ProviderID != NULL);
 	fail_unless(provider->role == 0, "provider->role != 0 => provider :=  %d", provider->role);
@@ -143,7 +143,7 @@ START_TEST(test02_server_add_provider)
 	fail_unless(server->private_key != NULL);
 	fail_unless(! server->private_key_password);
 	fail_unless(server->certificate != NULL);
-	fail_unless(server->signature_method == LASSO_SIGNATURE_METHOD_RSA_SHA1);
+	fail_unless(server->signature_method == lasso_get_default_signature_method());
 	fail_unless(server->providers != NULL);
 	lasso_server_add_provider(
 			server,
