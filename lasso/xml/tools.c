@@ -2709,7 +2709,7 @@ next:
 		content = xmlNodeGetContent(key_value);
 		if (content) {
 			result = lasso_xmlsec_load_private_key_from_buffer((char*)content,
-					strlen((char*)content), NULL, LASSO_SIGNATURE_METHOD_RSA_SHA1, NULL);
+					strlen((char*)content), NULL, lasso_get_default_signature_method(), NULL);
 			xmlFree(content);
 		}
 	}

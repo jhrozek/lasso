@@ -339,7 +339,7 @@ lasso_name_registration_init_request(LassoNameRegistration *name_registration,
 			idpNameIdentifier, spNameIdentifier, oldNameIdentifier,
 			profile->server->certificate ?
 				LASSO_SIGNATURE_TYPE_WITHX509 : LASSO_SIGNATURE_TYPE_SIMPLE,
-			LASSO_SIGNATURE_METHOD_RSA_SHA1);
+			lasso_get_default_signature_method());
 	if (profile->request == NULL) {
 		return critical_error(LASSO_PROFILE_ERROR_BUILDING_REQUEST_FAILED);
 	}
@@ -575,7 +575,7 @@ lasso_name_registration_validate_request(LassoNameRegistration *name_registratio
 			LASSO_LIB_REGISTER_NAME_IDENTIFIER_REQUEST(profile->request),
 			profile->server->certificate ?
 				LASSO_SIGNATURE_TYPE_WITHX509 : LASSO_SIGNATURE_TYPE_SIMPLE,
-			LASSO_SIGNATURE_METHOD_RSA_SHA1);
+			lasso_get_default_signature_method());
 	if (LASSO_IS_LIB_REGISTER_NAME_IDENTIFIER_RESPONSE(profile->response) == FALSE) {
 		return critical_error(LASSO_PROFILE_ERROR_BUILDING_RESPONSE_FAILED);
 	}

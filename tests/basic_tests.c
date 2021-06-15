@@ -2008,16 +2008,16 @@ START_TEST(test14_lasso_key)
 
 	check_true(g_file_get_contents(TESTSDATADIR "sp1-la/private-key-raw.pem", &buffer, &length, NULL));
 	check_not_null(key = lasso_key_new_for_signature_from_memory(buffer,
-				length, NULL, LASSO_SIGNATURE_METHOD_RSA_SHA1,
+				length, NULL, lasso_get_default_signature_method(),
 				NULL));
 	lasso_release_gobject(key);
 	check_not_null(key = lasso_key_new_for_signature_from_file(TESTSDATADIR
-				"sp1-la/private-key-raw.pem", NULL, LASSO_SIGNATURE_METHOD_RSA_SHA1,
+				"sp1-la/private-key-raw.pem", NULL, lasso_get_default_signature_method(),
 				NULL));
 	lasso_release_gobject(key);
 	base64_encoded = g_base64_encode(BAD_CAST buffer, length);
 	check_not_null(key = lasso_key_new_for_signature_from_base64_string(base64_encoded, NULL,
-				LASSO_SIGNATURE_METHOD_RSA_SHA1, NULL));
+				lasso_get_default_signature_method(), NULL));
 	lasso_release_string(base64_encoded);
 	lasso_release_string(buffer);
 	lasso_release_gobject(key);

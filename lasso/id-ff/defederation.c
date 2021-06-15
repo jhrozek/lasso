@@ -251,7 +251,7 @@ lasso_defederation_init_notification(LassoDefederation *defederation, gchar *rem
 				nameIdentifier,
 				profile->server->certificate ?
 					LASSO_SIGNATURE_TYPE_WITHX509 : LASSO_SIGNATURE_TYPE_SIMPLE,
-				LASSO_SIGNATURE_METHOD_RSA_SHA1);
+				lasso_get_default_signature_method());
 		if (profile->msg_relayState) {
 			message(G_LOG_LEVEL_WARNING,
 					"RelayState was defined but can't be used "\

@@ -1274,7 +1274,7 @@ lasso_provider_load_public_key(LassoProvider *provider, LassoPublicKeyType publi
 
 	if (public_key != NULL) {
 		xmlSecKey *key = lasso_xmlsec_load_private_key(public_key, NULL,
-				LASSO_SIGNATURE_METHOD_RSA_SHA1, NULL);
+				lasso_get_default_signature_method(), NULL);
 		if (key) {
 			lasso_list_add_new_sec_key(keys, key);
 		} else {
