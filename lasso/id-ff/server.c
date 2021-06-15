@@ -909,7 +909,7 @@ lasso_server_get_signature_context_for_provider(LassoServer *server,
 		private_context = &provider->private_data->signature_context;
 	}
 
-	if (private_context && lasso_validate_signature_method(private_context->signature_method)) {
+	if (private_context && lasso_ok_signature_method(private_context->signature_method)) {
 		lasso_assign_signature_context(*signature_context, *private_context);
 	} else {
 		rc = lasso_server_get_signature_context(server, signature_context);
@@ -1014,7 +1014,7 @@ lasso_server_export_to_query_for_provider_by_name(LassoServer *server, const cha
 				provider_id, &context));
 	query = lasso_node_build_query(node);
 	goto_cleanup_if_fail_with_rc(query, LASSO_PROFILE_ERROR_BUILDING_QUERY_FAILED);
-	if (lasso_validate_signature_method(context.signature_method)) {
+	if (lasso_ok_signature_method(context.signature_method)) {
 		lasso_assign_new_string(query, lasso_query_sign(query, context));
 	}
 	goto_cleanup_if_fail_with_rc(query,

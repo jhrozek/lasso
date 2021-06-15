@@ -824,7 +824,7 @@ lasso_legacy_extract_and_copy_signature_parameters(LassoNode *node, LassoNodeCla
 			node_data->sign_method_offset);
 	private_key_file = G_STRUCT_MEMBER(char *, node, node_data->private_key_file_offset);
 	certificate_file = G_STRUCT_MEMBER(char *, node, node_data->certificate_file_offset);
-	if (! lasso_validate_signature_method(signature_method)) {
+	if (! lasso_ok_signature_method(signature_method)) {
 		return FALSE;
 	}
 	if (lasso_node_set_signature(node,
@@ -1873,10 +1873,11 @@ lasso_node_impl_init_from_xml(LassoNode *node, xmlNode *xmlnode)
 			int what;
 			if (! lasso_get_integer_attribute(xmlnode, LASSO_SIGNATURE_METHOD_ATTRIBUTE,
 						BAD_CAST LASSO_LIB_HREF, &what,
-						LASSO_SIGNATURE_METHOD_RSA_SHA1,
+						lasso_get_min_signature_method(),
 						LASSO_SIGNATURE_METHOD_LAST))
 				break;
 			method = what;
+
 			if (! lasso_get_integer_attribute(xmlnode, LASSO_SIGNATURE_METHOD_ATTRIBUTE,
 					BAD_CAST LASSO_LIB_HREF, &what, LASSO_SIGNATURE_TYPE_NONE+1,
 					LASSO_SIGNATURE_TYPE_LAST))

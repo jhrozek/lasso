@@ -132,6 +132,19 @@ lasso_validate_signature_method(LassoSignatureMethod signature_method)
 		&& signature_method < (LassoSignatureMethod)LASSO_SIGNATURE_METHOD_LAST;
 }
 
+static inline gboolean
+lasso_allowed_signature_method(LassoSignatureMethod signature_method)
+{
+	return signature_method >= lasso_get_min_signature_method();
+}
+
+static inline gboolean
+lasso_ok_signature_method(LassoSignatureMethod signature_method)
+{
+	return lasso_validate_signature_method(signature_method) \
+	    && lasso_allowed_signature_method(signature_method);
+}
+
 typedef struct _LassoNode LassoNode;
 typedef struct _LassoNodeClass LassoNodeClass;
 typedef struct _LassoNodeClassData LassoNodeClassData;
