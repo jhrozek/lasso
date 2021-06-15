@@ -499,7 +499,7 @@ lasso_query_sign(char *query, LassoSignatureContext context)
         lasso_error_t rc = 0;
 
 	g_return_val_if_fail(query != NULL, NULL);
-	g_return_val_if_fail(lasso_validate_signature_method(context.signature_method), NULL);
+	g_return_val_if_fail(lasso_ok_signature_method(context.signature_method), NULL);
 
 	key = context.signature_key;
 	sign_method = context.signature_method;
@@ -804,6 +804,12 @@ lasso_query_verify_helper(const char *signed_content, const char *b64_signature,
 	} else {
 		goto_cleanup_with_rc(LASSO_DS_ERROR_INVALID_SIGALG);
 	}
+
+	/* is the signature algo allowed */
+	goto_cleanup_if_fail_with_rc(
+                lasso_allowed_signature_method(method),
+                LASSO_DS_ERROR_INVALID_SIGALG);
+
 	/* decode signature */
 	signature = g_malloc(key_size+1);
 	goto_cleanup_if_fail_with_rc(
@@ -2433,6 +2439,9 @@ _lasso_xmlsec_load_key_from_buffer(const char *buffer, size_t length, const char
 		0
 	};
 	xmlSecKey *private_key = NULL;
+
+	/* is the signature algo allowed */
+	goto_cleanup_if_fail(lasso_allowed_signature_method(signature_method));
 
 	xmlSecErrorsDefaultCallbackEnableOutput(FALSE);
 	switch (signature_method) {
