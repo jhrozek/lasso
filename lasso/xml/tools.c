@@ -594,22 +594,20 @@ lasso_query_sign(char *query, LassoSignatureContext context)
 			sigret_size = DSA_size(dsa);
 			break;
 		case LASSO_SIGNATURE_METHOD_HMAC_SHA1:
-		case LASSO_SIGNATURE_METHOD_HMAC_SHA256:
-		case LASSO_SIGNATURE_METHOD_HMAC_SHA384:
-		case LASSO_SIGNATURE_METHOD_HMAC_SHA512:
-			if ((rc = lasso_get_hmac_key(key, (void**)&hmac_key,
-										 &hmac_key_length))) {
-				message(G_LOG_LEVEL_CRITICAL, "Failed to get hmac key (%s)", lasso_strerror(rc));
-				goto done;
-			}
-			g_assert(hmac_key);
 			md = EVP_sha1();
 			sigret_size = EVP_MD_size(md);
-			/* key should be at least 128 bits long */
-			if (hmac_key_length < 16) {
-				critical("HMAC key should be at least 128 bits long");
-				goto done;
-			}
+			break;
+		case LASSO_SIGNATURE_METHOD_HMAC_SHA256:
+			md = EVP_sha256();
+			sigret_size = EVP_MD_size(md);
+			break;
+		case LASSO_SIGNATURE_METHOD_HMAC_SHA384:
+			md = EVP_sha384();
+			sigret_size = EVP_MD_size(md);
+			break;
+		case LASSO_SIGNATURE_METHOD_HMAC_SHA512:
+			md = EVP_sha512();
+			sigret_size = EVP_MD_size(md);
 			break;
 		default:
 			g_assert_not_reached();
@@ -645,6 +643,19 @@ lasso_query_sign(char *query, LassoSignatureContext context)
 		case LASSO_SIGNATURE_METHOD_HMAC_SHA256:
 		case LASSO_SIGNATURE_METHOD_HMAC_SHA384:
 		case LASSO_SIGNATURE_METHOD_HMAC_SHA512:
+			if ((rc = lasso_get_hmac_key(key, (void**)&hmac_key,
+										 &hmac_key_length))) {
+				message(G_LOG_LEVEL_CRITICAL, "Failed to get hmac key (%s)", lasso_strerror(rc));
+				goto done;
+			}
+			g_assert(hmac_key);
+
+			/* key should be at least 128 bits long */
+			if (hmac_key_length < 16) {
+				critical("HMAC key should be at least 128 bits long");
+				goto done;
+			}
+
 			HMAC(md, hmac_key, hmac_key_length, (unsigned char *)new_query,
 					strlen(new_query), sigret, &siglen);
 			status = 1;

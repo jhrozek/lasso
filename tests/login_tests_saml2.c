@@ -981,7 +981,7 @@ sso_initiated_by_sp(LassoServer *idp_context, LassoServer *sp_context, SsoCallba
 	lasso_release_gobject(sp_login_context);
 }
 
-START_TEST(test07_sso_sp_with_hmac_sha1_signatures)
+START_TEST(test07_sso_sp_with_hmac_sha256_signatures)
 {
 	LassoServer *idp_context = NULL;
 	LassoServer *sp_context = NULL;
@@ -990,7 +990,7 @@ START_TEST(test07_sso_sp_with_hmac_sha1_signatures)
 
 	/* Create the shared key */
 	key = lasso_key_new_for_signature_from_memory("xxxxxxxxxxxxxxxx", 16,
-			NULL, LASSO_SIGNATURE_METHOD_HMAC_SHA1, NULL);
+			NULL, LASSO_SIGNATURE_METHOD_HMAC_SHA256, NULL);
 	check_true(LASSO_IS_KEY(key));
 
 	/* Create an IdP context for IdP initiated SSO with provider metadata 1 */
@@ -1640,7 +1640,7 @@ login_saml2_suite()
 	tcase_add_test(tc_spSloSoap, test04_sso_then_slo_soap);
 	tcase_add_test(tc_idpKeyRollover, test05_sso_idp_with_key_rollover);
 	tcase_add_test(tc_spKeyRollover, test06_sso_sp_with_key_rollover);
-	tcase_add_test(tc_hmacSignature, test07_sso_sp_with_hmac_sha1_signatures);
+	tcase_add_test(tc_hmacSignature, test07_sso_sp_with_hmac_sha256_signatures);
 	tcase_add_test(tc_spLogin, test08_test_authnrequest_flags);
 	tcase_add_test(tc_ecp, test09_ecp);
 	tcase_add_test(tc_ecp, test10_ecp);
