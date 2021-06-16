@@ -276,6 +276,10 @@ class LoginTestCase(unittest.TestCase):
 
     def test07(self):
         '''SAMLv2 SSO with DSA key for the IdP'''
+        default_sign_meth = lasso.getDefaultSignatureMethod()
+        if default_sign_meth != lasso.SIGNATURE_METHOD_RSA_SHA1:
+            self.skipTest("This test requires that lasso is compiled with SHA1 as the default signature method")
+
         sp = lasso.Server(
             os.path.join(dataDir, 'sp5-saml2/metadata.xml'),
             os.path.join(dataDir, 'sp5-saml2/private-key.pem'))
