@@ -365,25 +365,25 @@ LlTxKnCrWAXftSm1rNtewTsF\n\
 	LassoKey *key2 = lasso_key_new_for_signature_from_file(
 			TESTSDATADIR "/sp5-saml2/private-key.pem", NULL,
 			LASSO_SIGNATURE_METHOD_RSA_SHA256, NULL);
-	char *message = "<samlp:AuthnRequest xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" ID=\"_E3F8E9116EE08F0E2607CF9789649BB4\" Version=\"2.0\" IssueInstant=\"2012-03-09T11:34:48Z\" ForceAuthn=\"false\" IsPassive=\"false\"><saml:Issuer>http://sp5/metadata</saml:Issuer><Signature xmlns=\"http://www.w3.org/2000/09/xmldsig#\">\n\
+	char *message = "<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\"><s:Body><samlp:ArtifactResolve ID=\"_5E4DB038BC15C020CE085F743D485443\" Version=\"2.0\" IssueInstant=\"2021-06-18T16:07:49Z\" Destination=\"http://idp5/artifact\"><saml:Issuer>http://sp5/metadata</saml:Issuer><Signature xmlns=\"http://www.w3.org/2000/09/xmldsig#\">\n\
 <SignedInfo>\n\
 <CanonicalizationMethod Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"/>\n\
-<SignatureMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#rsa-sha1\"/>\n\
-<Reference URI=\"#_E3F8E9116EE08F0E2607CF9789649BB4\">\n\
+<SignatureMethod Algorithm=\"http://www.w3.org/2001/04/xmldsig-more#rsa-sha256\"/>\n\
+<Reference URI=\"#_5E4DB038BC15C020CE085F743D485443\">\n\
 <Transforms>\n\
 <Transform Algorithm=\"http://www.w3.org/2000/09/xmldsig#enveloped-signature\"/>\n\
 <Transform Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"/>\n\
 </Transforms>\n\
-<DigestMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#sha1\"/>\n\
-<DigestValue>tMncKjklMJaJLbmB7bARmX14Fdg=</DigestValue>\n\
+<DigestMethod Algorithm=\"http://www.w3.org/2001/04/xmlenc#sha256\"/>\n\
+<DigestValue>1Xy/VevGqojdKIvLzkczdd9Mp3AFYvZfsakldADTuO4=</DigestValue>\n\
 </Reference>\n\
 </SignedInfo>\n\
-<SignatureValue>VjAHErXE8rz5yQ/t9Ubws11E59PsU/tXPtL6eCMAVLQxV4Bv0dwyYkeHtge1DXDT\n\
-usTy1c17+iuYCVqD3Db51+LMVsHchj0j44fhu/PXNQTmgiT2AuVfH97YhiBWykAs\n\
-LwT8MiE9vNGiHQwsWVjhdzooVmU0M80m0Ij2DFMcYiKzmuMhE4M65qUO4tygQLiL\n\
-YB5oPe0VYKEBJLfaTvuijLBTi4ecx6aU+HptAvuEOcCbcJZtGyv7jr2yuEDSq72S\n\
-0hwOV0CIsQoSf/vL7R9RzTs2bpgYVGqgerhpWsz6dqo7YX0NSj9pMbXZiOyX/YzS\n\
-uP3QSjow05NiPhy8ywKW8A==</SignatureValue>\n\
+<SignatureValue>R5unK5JQ8no8VCokUKKw8zXglIsjggH16cQxnqKl2GpFeeFh8Tzi4KRXTzVNXi9c\n\
+dID0FTAsFM2Ol5Sqg/j2TVasR93PyIg2pUOb00tNwx8D81xEi1lXdWThHfiinYI0\n\
+2qJSFj1H8wt/ceULmnvC0F01ga78LQervkjMaSpqlvyKYrNNOEJEYo0SJSUnUE5p\n\
+wlv30BjnUCyXWQl9i03MvpPSOTJkXrFLqbJB8rB/HNdS71lWAU3k8r56OAxzTXUn\n\
+WXr73mrQrLGJzbofDjO1Lfz8JpZXRzsffAsMCxKfoL+VzrElPNW5aklrFm603w2w\n\
+6/xQk0BsHvPP8k6V32RuXQ==</SignatureValue>\n\
 <KeyInfo>\n\
 <KeyValue>\n\
 <RSAKeyValue>\n\
@@ -401,7 +401,7 @@ AQAB\n\
 </RSAKeyValue>\n\
 </KeyValue>\n\
 </KeyInfo>\n\
-</Signature><samlp:NameIDPolicy Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:persistent\" AllowCreate=\"true\"/></samlp:AuthnRequest>";
+</Signature><samlp:Artifact>AAQAALQUO+cobSry7mQpUjWDhKkaePFoNDRBMDY3RDY3QjNFM0QzQzA1NzQ=</samlp:Artifact></samlp:ArtifactResolve></s:Body></s:Envelope>";
 	xmlDoc *doc;
 
 	doc = xmlParseDoc(BAD_CAST message);
@@ -411,7 +411,7 @@ AQAB\n\
 	fail_unless(lasso_key_query_verify(key, query2) == 0, "Disordered signature was not validated");
 	fail_unless(lasso_key_query_verify(key, query3) != 0, "Altered signature was validated");
 	fail_unless(lasso_key_saml2_xml_verify(key,
-		"_E3F8E9116EE08F0E2607CF9789649BB4", xmlDocGetRootElement(doc)) == 0,
+		"_5E4DB038BC15C020CE085F743D485443", xmlDocGetRootElement(doc)) == 0,
 		"XML Signature is not validated");
 	g_object_unref(key);
 	fail_unless(key2 != NULL, "Cannot load public key2");
@@ -420,7 +420,7 @@ AQAB\n\
 	fail_unless(lasso_key_query_verify(key2, query2) == 0, "Disordered signature was not validated");
 	fail_unless(lasso_key_query_verify(key2, query3) != 0, "Altered signature was validated");
 	fail_unless(lasso_key_saml2_xml_verify(key2,
-		"_E3F8E9116EE08F0E2607CF9789649BB4", xmlDocGetRootElement(doc)) == 0,
+		"_5E4DB038BC15C020CE085F743D485443", xmlDocGetRootElement(doc)) == 0,
 		"XML Signature is not validated");
 	g_object_unref(key2);
 	lasso_release_doc(doc);
