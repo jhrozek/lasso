@@ -1974,6 +1974,14 @@ START_TEST(test13_test_lasso_server_load_metadata)
 	LassoServer *server = NULL;
 	GList *loaded_entity_ids = NULL;
 	GList blacklisted_1 = { .data = "https://identities.univ-jfc.fr/idp/prod", .next = NULL };
+	const gchar *trusted_roots = TESTSDATADIR "/rootCA.crt";
+
+	/* The IDP metadata file is signed with rsa-sha1, so verifying it would
+	 * fail incase sha1 is not available
+	 */
+	if (lasso_get_default_signature_method() != LASSO_SIGNATURE_METHOD_RSA_SHA1) {
+		trusted_roots = NULL;
+	}
 
 	check_not_null(server = lasso_server_new(
 			TESTSDATADIR "/idp5-saml2/metadata.xml",
@@ -1983,7 +1991,7 @@ START_TEST(test13_test_lasso_server_load_metadata)
 	block_lasso_logs;
 	check_good_rc(lasso_server_load_metadata(server, LASSO_PROVIDER_ROLE_IDP,
 				TESTSDATADIR "/metadata/renater-metadata.xml",
-				TESTSDATADIR "/rootCA.crt",
+				trusted_roots,
 				&blacklisted_1, &loaded_entity_ids,
 				LASSO_SERVER_LOAD_METADATA_FLAG_DEFAULT));
 	unblock_lasso_logs;
